@@ -1,6 +1,6 @@
 // ========== 安全配置 ==========
 const CONFIG = {
-    BIN_ID: '6a38c8d1da38895dfee99737',
+    BIN_ID: '6a38d65df5f4af5e291b4d68',
     API_KEY: '$2a$10$70Gt63yNIYwnMtMKmOaJUO9qLL99C6d31ImUvdbjBgcORjS3EUBse',
     ADMIN_API_KEY: '$2a$10$d/CSfhFYMbLXEOPkOoPTUeqvLnFbB7rAIuIR.y7Ex5uZPhPDzPKoO',
     ADMIN_PASSWORD: '1.048596',
