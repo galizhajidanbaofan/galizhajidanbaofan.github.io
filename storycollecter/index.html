@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>奇异故事 - 首页</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; connect-src https://api.jsonbin.io; style-src 'self' 'unsafe-inline';">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>奇异故事</h1>
+            <nav>
+                <a href="index.html">首页</a>
+                <a href="admin.html">管理后台</a>
+            </nav>
+        </header>
+
+        <div class="post-form">
+            <h2>发布新帖</h2>
+            <input type="text" id="title" placeholder="帖子标题（不超过100字）" maxlength="100">
+            <textarea id="content" placeholder="帖子内容（不超过5000字）" maxlength="5000"></textarea>
+            
+            <div class="captcha-group">
+                <span id="captcha-question"></span>
+                <input type="number" id="captcha" placeholder="请输入验证码答案" style="width:150px;">
+                <button onclick="refreshCaptcha()" class="btn-small">刷新验证码</button>
+            </div>
+            
+            <button onclick="addPost()">发布帖子</button>
+        </div>
+
+        <div class="post-list" id="postList">
+            <p style="text-align:center;padding:40px;">正在加载帖子...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
