@@ -1,6 +1,6 @@
 // ========== JSONBin配置 ==========
 const BIN_ID = '6a38d65df5f4af5e291b4d68';
-const API_KEY = '$2a$10$i5FIGi/0QuiGdrLZH47aDuinije3CUQftq1IEt5dYP4amazmF8FjK';
+const API_KEY = '$2a$10$fSsQwf2TxKlfWU/zTta.l.0qsHSpmQ9G08HixJjMQvT0xzlqcM/g.';
 const ADMIN_PASSWORD = 'admin123';
 
 let posts = [];
