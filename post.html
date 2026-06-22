@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>帖子详情 - 奇异故事</title>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; connect-src https://api.jsonbin.io; style-src 'self' 'unsafe-inline';">
+    <title>帖子详情</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -19,6 +18,20 @@
 
         <div id="postDetail">
             <p style="text-align:center;padding:40px;">正在加载帖子...</p>
+        </div>
+        
+        <!-- 评论区域 -->
+        <div id="commentsSection" style="display:none;">
+            <div class="comment-form">
+                <h3>发表评论</h3>
+                <input type="text" id="commentNickname" placeholder="你的昵称（可选）" maxlength="20">
+                <textarea id="commentContent" placeholder="写下你的评论..." rows="4" maxlength="1000"></textarea>
+                <button onclick="addComment()">发表评论</button>
+            </div>
+            
+            <div class="comments-list" id="commentsList">
+                <!-- 评论动态渲染 -->
+            </div>
         </div>
     </div>
 

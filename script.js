@@ -1,6 +1,6 @@
 // ========== JSONBin配置 ==========
-const BIN_ID = '6a38d65df5f4af5e291b4d68';  // 你的BIN_ID
-const API_KEY = '$2a$10$fSsQwf2TxKlfWU/zTta.l.0qsHSpmQ9G08HixJjMQvT0xzlqcM/g.';  // 替换为你的密钥
+const BIN_ID = '6a38d65df5f4af5e291b4d68';
+const API_KEY = '$2a$10$i5FIGi/0QuiGdrLZH47aDuinije3CUQftq1IEt5dYP4amazmF8FjK';
 const ADMIN_PASSWORD = 'admin123';
 
 let posts = [];
@@ -8,9 +8,34 @@ let isAdmin = false;
 let lastPostTime = 0;
 let offlineMode = false;
 
+// 用户ID生成
+function generateUserId() {
+    let userId = localStorage.getItem('forum_user_id');
+    if (!userId) {
+        userId = 'user_' + Math.random().toString(36).substring(2, 10);
+        localStorage.setItem('forum_user_id', userId);
+    }
+    return userId;
+}
+
+function getNickname(inputNickname) {
+    if (inputNickname && inputNickname.trim()) {
+        return inputNickname.trim();
+    }
+    // 使用保存的昵称或默认昵称
+    let savedNickname = localStorage.getItem('forum_nickname');
+    if (savedNickname) return savedNickname;
+    return '匿名用户' + generateUserId().substring(5, 10);
+}
+
+function saveNickname(nickname) {
+    if (nickname && nickname.trim() && nickname !== '匿名用户') {
+        localStorage.setItem('forum_nickname', nickname.trim());
+    }
+}
+
 // ========== 核心功能 ==========
 
-// 测试连接
 async function testConnection() {
     try {
         const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
@@ -23,7 +48,6 @@ async function testConnection() {
     }
 }
 
-// 加载帖子
 async function loadPosts() {
     console.log('📥 正在加载帖子...');
     
@@ -32,16 +56,8 @@ async function loadPosts() {
     if (!isConnected) {
         console.warn('⚠️ JSONBin连接失败，使用离线模式');
         offlineMode = true;
-        
         const cached = localStorage.getItem('forum_posts_backup');
-        if (cached) {
-            posts = JSON.parse(cached);
-            console.log('📦 从本地加载了', posts.length, '个帖子');
-        } else {
-            posts = [];
-            console.log('📭 本地无缓存');
-        }
-        
+        posts = cached ? JSON.parse(cached) : [];
         renderCurrentPage();
         return;
     }
@@ -53,50 +69,27 @@ async function loadPosts() {
             headers: { 'X-Master-Key': API_KEY }
         });
         
-        console.log('📊 加载状态:', response.status);
-        
-        if (!response.ok) {
-            if (response.status === 401) {
-                console.error('❌ 401 - API密钥权限不足');
-                showMessage('API密钥权限不足，请检查配置', 'error');
-            }
-            throw new Error(`HTTP ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         
         const data = await response.json();
         posts = data.record.posts || [];
-        
         localStorage.setItem('forum_posts_backup', JSON.stringify(posts));
-        
         console.log('✅ 加载成功！帖子数:', posts.length);
         
     } catch (error) {
-        console.error('❌ 加载失败:', error.message);
-        
+        console.error('加载失败:', error);
         const cached = localStorage.getItem('forum_posts_backup');
-        if (cached) {
-            posts = JSON.parse(cached);
-            console.log('📦 使用本地缓存:', posts.length, '个帖子');
-        } else {
-            posts = [];
-        }
+        posts = cached ? JSON.parse(cached) : [];
     }
     
     renderCurrentPage();
 }
 
-// 保存帖子
 async function savePosts() {
     localStorage.setItem('forum_posts_backup', JSON.stringify(posts));
-    
-    if (offlineMode) {
-        console.log('💾 离线模式，仅保存到本地');
-        return false;
-    }
+    if (offlineMode) return false;
     
     try {
-        console.log('💾 正在保存到JSONBin...');
-        
         const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
             method: 'PUT',
             headers: {
@@ -106,23 +99,12 @@ async function savePosts() {
             body: JSON.stringify({ posts })
         });
         
-        console.log('📊 保存状态:', response.status);
-        
-        if (response.status === 401) {
-            console.error('❌ 401 - 没有写入权限');
-            showMessage('保存失败：API密钥权限不足', 'error');
-            return false;
-        }
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-        
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         console.log('✅ 保存成功');
         return true;
         
     } catch (error) {
-        console.error('❌ 保存失败:', error.message);
+        console.error('保存失败:', error);
         showMessage('服务器保存失败，已保存到本地', 'warning');
         return false;
     }
@@ -130,14 +112,10 @@ async function savePosts() {
 
 // 添加帖子
 async function addPost() {
-    console.log('📝 开始添加帖子');
-    
-    // 验证码检查
     const captchaInput = document.getElementById('captcha');
     if (captchaInput) {
         const userAnswer = parseInt(captchaInput.value);
         const correctAnswer = parseInt(captchaInput.dataset.answer);
-        
         if (isNaN(userAnswer) || userAnswer !== correctAnswer) {
             alert('验证码错误');
             refreshCaptcha();
@@ -145,7 +123,6 @@ async function addPost() {
         }
     }
     
-    // 频率限制
     const now = Date.now();
     if (now - lastPostTime < 30000) {
         alert('请等待30秒后再发帖');
@@ -153,51 +130,46 @@ async function addPost() {
     }
     lastPostTime = now;
     
+    const nicknameInput = document.getElementById('nickname');
     const titleInput = document.getElementById('title');
     const contentInput = document.getElementById('content');
     
+    const nickname = nicknameInput ? nicknameInput.value.trim() : '';
     const title = titleInput.value.trim();
     const content = contentInput.value.trim();
     
-    // 输入验证
     if (!title || !content) {
         alert('请填写标题和内容');
         return;
     }
     
-    if (title.length > 100) {
-        alert('标题不能超过100字');
+    if (title.length > 100 || content.length > 5000) {
+        alert('内容过长');
         return;
     }
     
-    if (content.length > 5000) {
-        alert('内容不能超过5000字');
-        return;
-    }
+    // 保存昵称
+    saveNickname(nickname);
     
-    // 创建帖子
     const post = {
         id: Date.now(),
+        userId: generateUserId(),
+        author: getNickname(nickname),
         title: escapeHtml(title),
         content: escapeHtml(content),
         time: new Date().toLocaleString('zh-CN'),
-        editTime: null
+        editTime: null,
+        comments: []  // 新增评论数组
     };
     
-    console.log('📝 新帖子:', post.title);
-    
-    // 添加到列表
     posts.unshift(post);
     
-    // 保存
     const saved = await savePosts();
     
-    // 清空表单
     titleInput.value = '';
     contentInput.value = '';
-    if (captchaInput) {
-        refreshCaptcha();
-    }
+    if (nicknameInput) nicknameInput.value = '';
+    if (captchaInput) refreshCaptcha();
     
     if (saved) {
         alert('✅ 发布成功！');
@@ -205,8 +177,83 @@ async function addPost() {
         alert('⚠️ 已保存到本地（离线模式）');
     }
     
-    // 重新加载
     await loadPosts();
+}
+
+// 添加评论
+async function addComment() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = parseInt(urlParams.get('id'));
+    
+    const post = posts.find(p => p.id === postId);
+    if (!post) {
+        alert('帖子不存在');
+        return;
+    }
+    
+    const nicknameInput = document.getElementById('commentNickname');
+    const contentInput = document.getElementById('commentContent');
+    
+    const nickname = nicknameInput ? nicknameInput.value.trim() : '';
+    const content = contentInput.value.trim();
+    
+    if (!content) {
+        alert('请输入评论内容');
+        return;
+    }
+    
+    if (content.length > 1000) {
+        alert('评论不能超过1000字');
+        return;
+    }
+    
+    // 保存昵称
+    saveNickname(nickname);
+    
+    const comment = {
+        id: Date.now(),
+        userId: generateUserId(),
+        author: getNickname(nickname),
+        content: escapeHtml(content),
+        time: new Date().toLocaleString('zh-CN')
+    };
+    
+    // 初始化评论数组
+    if (!post.comments) {
+        post.comments = [];
+    }
+    
+    post.comments.push(comment);
+    
+    const saved = await savePosts();
+    
+    if (nicknameInput) nicknameInput.value = '';
+    contentInput.value = '';
+    
+    if (saved) {
+        await loadPosts();
+        renderPostDetail();
+        showMessage('✅ 评论发表成功', 'success');
+    } else {
+        showMessage('⚠️ 评论已保存到本地', 'warning');
+        renderPostDetail();
+    }
+}
+
+// 删除评论
+async function deleteComment(postId, commentId) {
+    if (!verifyAdmin()) return;
+    if (!confirm('确定要删除这条评论吗？')) return;
+    
+    const post = posts.find(p => p.id === postId);
+    if (!post) return;
+    
+    post.comments = post.comments.filter(c => c.id !== commentId);
+    
+    await savePosts();
+    await loadPosts();
+    renderPostDetail();
+    showMessage('评论已删除', 'success');
 }
 
 // 删除帖子
@@ -351,7 +398,11 @@ function renderPostList() {
                     <a href="post.html?id=${post.id}">${post.title}</a>
                     ${post.editTime ? '<span style="font-size:12px;color:#999;">(已编辑)</span>' : ''}
                 </h3>
-                <div class="meta">📅 ${post.editTime || post.time}</div>
+                <div class="meta">
+                    <span class="post-author">👤 ${post.author || '匿名'}</span>
+                    📅 ${post.editTime || post.time}
+                    <span class="comment-count">💬 ${post.comments ? post.comments.length : 0}</span>
+                </div>
                 <div class="content">${post.content.substring(0, 150)}...</div>
             </div>
         `).join('')}
@@ -367,19 +418,63 @@ function renderPostDetail() {
     
     if (!post) {
         detail.innerHTML = '<p style="text-align:center;padding:40px;">帖子不存在</p>';
+        // 隐藏评论区域
+        const commentsSection = document.getElementById('commentsSection');
+        if (commentsSection) commentsSection.style.display = 'none';
         return;
     }
     
+    // 渲染帖子内容
     detail.innerHTML = `
         <div class="detail-header">
             <h2>${post.title}</h2>
-            <div class="meta">${post.editTime || post.time}</div>
+            <div class="meta">
+                <span class="post-author">👤 ${post.author || '匿名'}</span>
+                <span style="font-size:11px;color:#999;">ID: ${post.userId || '未知'}</span>
+                ${post.editTime ? ` | ✏️ 编辑于 ${post.editTime}` : ''}
+                <br>📅 发布于 ${post.time}
+                <span class="comment-count">💬 ${post.comments ? post.comments.length : 0} 条评论</span>
+            </div>
             <div style="margin-top:20px;white-space:pre-wrap;">${post.content}</div>
             <div style="margin-top:20px;">
                 <a href="index.html">← 返回首页</a>
             </div>
         </div>
     `;
+    
+    // 显示评论区域
+    const commentsSection = document.getElementById('commentsSection');
+    if (commentsSection) {
+        commentsSection.style.display = 'block';
+    }
+    
+    // 渲染评论
+    renderComments(post);
+}
+
+function renderComments(post) {
+    const commentsList = document.getElementById('commentsList');
+    if (!commentsList) return;
+    
+    if (!post.comments || post.comments.length === 0) {
+        commentsList.innerHTML = '<div class="no-comments">💬 暂无评论，来说两句吧</div>';
+        return;
+    }
+    
+    commentsList.innerHTML = post.comments.map(comment => `
+        <div class="comment-item">
+            <div class="comment-header">
+                <span class="comment-author">👤 ${comment.author || '匿名'}</span>
+                <span class="comment-time">${comment.time}</span>
+            </div>
+            <div class="comment-body">${comment.content}</div>
+            ${isAdmin || sessionStorage.getItem('admin_verified') ? `
+                <div class="comment-actions">
+                    <button onclick="deleteComment(${post.id}, ${comment.id})">🗑️ 删除</button>
+                </div>
+            ` : ''}
+        </div>
+    `).join('');
 }
 
 function renderAdminList() {
@@ -390,7 +485,7 @@ function renderAdminList() {
         adminList.innerHTML = `
             <div style="text-align:center;padding:40px;">
                 <p style="margin-bottom:20px;">🔒 需要管理员权限</p>
-                <button onclick="verifyAdmin()">管理员登录</button>
+                <button onclick="verifyAdmin()">验证管理员身份</button>
             </div>
         `;
         return;
@@ -406,7 +501,11 @@ function renderAdminList() {
             <div style="display:flex;justify-content:space-between;align-items:start;">
                 <div>
                     <h3>${post.title}</h3>
-                    <div class="meta">#${i+1} | ${post.editTime || post.time}</div>
+                    <div class="meta">
+                        👤 ${post.author || '匿名'} | 
+                        💬 ${post.comments ? post.comments.length : 0} 评论 | 
+                        #${i+1} | ${post.editTime || post.time}
+                    </div>
                 </div>
                 <div style="display:flex;gap:10px;">
                     <button class="edit" onclick="editPost(${post.id})">✏️ 修改</button>
@@ -419,9 +518,8 @@ function renderAdminList() {
 
 // ========== 初始化 ==========
 window.addEventListener('DOMContentLoaded', async () => {
-    console.log('加载中');
-    console.log('BIN_ID:', BIN_ID);
-    console.log('API_KEY前10位:', API_KEY.substring(0, 10) + '...');
+    console.log('🚀 论坛启动');
+    console.log('用户ID:', generateUserId());
     
     generateCaptcha();
     await loadPosts();
