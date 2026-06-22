@@ -105,7 +105,21 @@ function saveNickname(nickname) {
 function toggleTheme() {
     const currentTheme = localStorage.getItem('forum_theme') || 'modern';
     const newTheme = currentTheme === 'modern' ? 'retro' : 'modern';
-    applyTheme(newTheme);
+    
+    // 直接替换整个stylesheet
+    const oldLink = document.querySelector('link[data-theme]');
+    const newLink = document.createElement('link');
+    newLink.rel = 'stylesheet';
+    newLink.setAttribute('data-theme', newTheme);
+    newLink.href = newTheme === 'retro' ? 'style-retro.css' : 'style-modern.css';
+    
+    // 用新link替换旧link（同一位置）
+    if (oldLink) {
+        oldLink.parentNode.replaceChild(newLink, oldLink);
+    } else {
+        document.head.appendChild(newLink);
+    }
+    
     localStorage.setItem('forum_theme', newTheme);
 }
 
