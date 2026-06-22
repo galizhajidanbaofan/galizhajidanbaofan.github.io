@@ -1,0 +1,564 @@
+/* ========== 1990年代复古论坛样式 ========== */
+
+/* 全局样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Times New Roman", Times, serif;
+    background: #C0C0C0;  /* 经典Win95灰 */
+    color: #000000;
+    line-height: 1.6;
+    background-image: url("data:image/svg+xml,%3Csvg width='2' height='2' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='1' height='1' fill='%23B0B0B0'/%3E%3Crect x='1' y='1' width='1' height='1' fill='%23B0B0B0'/%3E%3C/svg%3E");
+    
+}
+
+.theme-switch {
+    background: #C0C0C0;
+    border-top: 2px solid #FFFFFF;
+    border-left: 2px solid #FFFFFF;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+    color: #000;
+    font-family: "Courier New", monospace;
+}
+.theme-switch:active {
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-right: 2px solid #FFFFFF;
+    border-bottom: 2px solid #FFFFFF;
+}
+
+
+.container {
+    max-width: 800px;
+    margin: 10px auto;
+    padding: 0 10px;
+}
+
+/* ========== 经典3D边框系统 ========== */
+
+/* 凸起3D效果 */
+.raised {
+    border-top: 2px solid #FFFFFF;
+    border-left: 2px solid #FFFFFF;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+}
+
+/* 凹陷3D效果 */
+.sunken {
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-right: 2px solid #FFFFFF;
+    border-bottom: 2px solid #FFFFFF;
+}
+
+/* ========== 头部 ========== */
+header {
+    background: #000080;  /* 经典深蓝 */
+    color: #FFFFFF;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    border-top: 2px solid #FFFFFF;
+    border-left: 2px solid #FFFFFF;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "Courier New", Courier, monospace;
+}
+
+header h1 {
+    font-size: 18px;
+    text-shadow: 1px 1px 0 #000;
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+
+nav a {
+    color: #FFFF00;
+    text-decoration: underline;
+    margin-left: 15px;
+    font-size: 14px;
+    font-family: "Times New Roman", Times, serif;
+}
+
+nav a:hover {
+    color: #00FFFF;
+    text-shadow: 0 0 5px #00FFFF;
+}
+
+/* ========== 发帖表单 ========== */
+.post-form {
+    background: #C0C0C0;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-top: 2px solid #FFFFFF;
+    border-left: 2px solid #FFFFFF;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+    font-family: "Times New Roman", Times, serif;
+}
+
+.post-form h2 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #000080;
+    font-family: "Courier New", Courier, monospace;
+    border-bottom: 1px solid #808080;
+    padding-bottom: 4px;
+}
+
+.post-form input,
+.post-form textarea,
+.comment-form input,
+.comment-form textarea {
+    width: 100%;
+    padding: 4px 6px;
+    margin-bottom: 8px;
+    background: #FFFFFF;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 13px;
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-right: 2px solid #FFFFFF;
+    border-bottom: 2px solid #FFFFFF;
+    outline: none;
+}
+
+.post-form input:focus,
+.post-form textarea:focus,
+.comment-form input:focus,
+.comment-form textarea:focus {
+    border-top: 2px solid #000080;
+    border-left: 2px solid #000080;
+    border-right: 2px solid #000080;
+    border-bottom: 2px solid #000080;
+}
+
+.post-form textarea {
+    height: 120px;
+    resize: vertical;
+}
+
+/* 昵称输入框 - 虚线边框复古感 */
+#nickname, #commentNickname {
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-right: 2px solid #FFFFFF;
+    border-bottom: 2px solid #FFFFFF;
+    background: #E8E8E8;
+    font-style: italic;
+}
+
+/* ========== 复古按钮 ========== */
+button,
+.btn {
+    background: #C0C0C0;
+    color: #000000;
+    padding: 6px 16px;
+    border-top: 2px solid #FFFFFF;
+    border-left: 2px solid #FFFFFF;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+    cursor: pointer;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    transition: none;
+}
+
+button:hover,
+.btn:hover {
+    background: #D4D4D4;
+    border-top: 2px solid #E0E0E0;
+    border-left: 2px solid #E0E0E0;
+}
+
+button:active,
+.btn:active {
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-right: 2px solid #FFFFFF;
+    border-bottom: 2px solid #FFFFFF;
+    background: #B0B0B0;
+}
+
+/* 特殊按钮颜色 */
+button.delete {
+    background: #C0C0C0;
+    color: #800000;
+}
+
+button.edit {
+    background: #C0C0C0;
+    color: #000080;
+}
+
+.btn-small {
+    padding: 3px 8px;
+    font-size: 11px;
+}
+
+/* ========== 验证码区域 ========== */
+.captcha-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    padding: 8px;
+    background: #E8E8E8;
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-right: 2px solid #FFFFFF;
+    border-bottom: 2px solid #FFFFFF;
+}
+
+.captcha-group span {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 16px;
+    font-weight: bold;
+    color: #000080;
+    background: #FFFFFF;
+    padding: 4px 10px;
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-right: 2px solid #FFFFFF;
+    border-bottom: 2px solid #FFFFFF;
+}
+
+.captcha-group input {
+    width: 120px !important;
+    margin-bottom: 0 !important;
+}
+
+/* ========== 帖子列表 ========== */
+.post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.post-item {
+    background: #C0C0C0;
+    padding: 12px;
+    border-top: 2px solid #FFFFFF;
+    border-left: 2px solid #FFFFFF;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+    transition: none;
+}
+
+.post-item:hover {
+    border-top: 2px solid #000080;
+    border-left: 2px solid #000080;
+    border-right: 2px solid #000080;
+    border-bottom: 2px solid #000080;
+}
+
+.post-item h3 {
+    font-size: 16px;
+    margin-bottom: 6px;
+    font-family: "Times New Roman", Times, serif;
+}
+
+.post-item h3 a {
+    color: #000080;
+    text-decoration: underline;
+}
+
+.post-item h3 a:hover {
+    color: #800000;
+}
+
+.post-item h3 a:visited {
+    color: #800080;
+}
+
+/* 帖子元信息 */
+.meta {
+    font-size: 12px;
+    color: #404040;
+    font-family: "Courier New", Courier, monospace;
+    border-bottom: 1px dotted #808080;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+}
+
+.post-author {
+    display: inline-block;
+    background: #002b80;
+    color: #FFFF00;
+    padding: 1px 8px;
+    font-size: 11px;
+    font-family: "Courier New", Courier, monospace;
+    margin-right: 8px;
+}
+
+.comment-count {
+    display: inline-block;
+    background: #808080;
+    color: #FFFFFF;
+    padding: 1px 6px;
+    font-size: 11px;
+    font-family: "Courier New", Courier, monospace;
+}
+
+/* 帖子内容预览 */
+.content {
+    color: #202020;
+    font-size: 13px;
+    line-height: 1.6;
+    font-family: "Times New Roman", Times, serif;
+}
+
+/* ========== 帖子详情页 ========== */
+.detail-header {
+    background: #C0C0C0;
+    padding: 16px;
+    margin-bottom: 10px;
+    border-top: 2px solid #FFFFFF;
+    border-left: 2px solid #FFFFFF;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+}
+
+.detail-header h2 {
+    font-size: 20px;
+    color: #000080;
+    font-family: "Times New Roman", Times, serif;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #808080;
+    padding-bottom: 8px;
+}
+
+.detail-header .meta {
+    font-size: 12px;
+    color: #404040;
+    font-family: "Courier New", Courier, monospace;
+}
+
+.detail-header a {
+    color: #000080;
+    text-decoration: underline;
+    font-family: "Times New Roman", Times, serif;
+}
+
+.detail-header a:hover {
+    color: #800000;
+}
+
+/* ========== 评论区域 ========== */
+#commentsSection {
+    margin-top: 10px;
+}
+
+.comment-form {
+    background: #C0C0C0;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-top: 2px solid #FFFFFF;
+    border-left: 2px solid #FFFFFF;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+}
+
+.comment-form h3 {
+    font-size: 15px;
+    color: #000080;
+    font-family: "Courier New", Courier, monospace;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #808080;
+    padding-bottom: 4px;
+}
+
+.comment-form textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.comment-item {
+    background: #D4D4D4;
+    padding: 10px;
+    border-top: 2px solid #FFFFFF;
+    border-left: 2px solid #FFFFFF;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 11px;
+}
+
+.comment-author {
+    font-weight: bold;
+    color: #000080;
+    background: #E8E8E8;
+    padding: 1px 6px;
+    border-top: 1px solid #FFFFFF;
+    border-left: 1px solid #FFFFFF;
+    border-right: 1px solid #808080;
+    border-bottom: 1px solid #808080;
+}
+
+.comment-time {
+    color: #606060;
+}
+
+.comment-body {
+    color: #202020;
+    font-size: 13px;
+    line-height: 1.6;
+    font-family: "Times New Roman", Times, serif;
+}
+
+.comment-actions {
+    margin-top: 6px;
+}
+
+.comment-actions button {
+    padding: 2px 10px;
+    font-size: 11px;
+    color: #800000;
+}
+
+.no-comments {
+    text-align: center;
+    padding: 20px;
+    color: #606060;
+    font-family: "Courier New", Courier, monospace;
+    font-style: italic;
+    background: #D4D4D4;
+    border-top: 2px solid #FFFFFF;
+    border-left: 2px solid #FFFFFF;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+}
+
+/* ========== 管理页面 ========== */
+.admin-item {
+    background: #C0C0C0;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-top: 2px solid #FFFFFF;
+    border-left: 2px solid #FFFFFF;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+}
+
+.admin-item h3 {
+    font-size: 15px;
+    color: #000080;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 6px;
+}
+
+/* ========== 消息提示（复古弹窗风格） ========== */
+.msg-box {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    background: #C0C0C0;
+    color: #000000;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 13px;
+    z-index: 9999;
+    border-top: 2px solid #FFFFFF;
+    border-left: 2px solid #FFFFFF;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+    min-width: 200px;
+    text-align: center;
+}
+
+.msg-box.success {
+    border-top: 2px solid #00FF00;
+    border-left: 2px solid #00FF00;
+    border-right: 2px solid #008000;
+    border-bottom: 2px solid #008000;
+}
+
+.msg-box.error {
+    border-top: 2px solid #FF0000;
+    border-left: 2px solid #FF0000;
+    border-right: 2px solid #800000;
+    border-bottom: 2px solid #800000;
+}
+
+/* ========== 滚动条复古化 ========== */
+::-webkit-scrollbar {
+    width: 16px;
+    background: #C0C0C0;
+}
+
+::-webkit-scrollbar-track {
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-right: 2px solid #FFFFFF;
+    border-bottom: 2px solid #FFFFFF;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #C0C0C0;
+    border-top: 2px solid #FFFFFF;
+    border-left: 2px solid #FFFFFF;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+}
+
+/* ========== 分隔线 ========== */
+hr {
+    border: none;
+    border-top: 2px solid #808080;
+    border-bottom: 2px solid #FFFFFF;
+    margin: 10px 0;
+}
+
+/* ========== 响应式（保持复古） ========== */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 4px;
+        margin: 4px auto;
+    }
+    
+    header {
+        flex-direction: column;
+        gap: 8px;
+        padding: 6px;
+    }
+    
+    header h1 {
+        font-size: 15px;
+    }
+    
+    nav a {
+        margin: 0 6px;
+        font-size: 12px;
+    }
+    
+    .post-item {
+        padding: 8px;
+    }
+}
