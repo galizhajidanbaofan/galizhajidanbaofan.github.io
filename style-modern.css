@@ -27,7 +27,7 @@ body {
 /* 放在 style-modern.css */
 .theme-switch {
     background: #f0f0f0;
-    border: 1px solid #ddd;
+    
     color: #333;
 }
 .theme-switch:hover {

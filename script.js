@@ -4,17 +4,71 @@ const API_KEY = '$2a$10$fSsQwf2TxKlfWU/zTta.l.0qsHSpmQ9G08HixJjMQvT0xzlqcM/g.';
 const ADMIN_PASSWORD_HASH = '97a3142172e58c70ea51faf6fa5f26eff18c90bbea88c9b4c5354afffd048f64';
 
 let posts = [];
-let isAdmin = false;
 let lastPostTime = 0;
 let offlineMode = false;
+
+// ========== 安全管理员认证（闭包保护）==========
+const AdminAuth = (function() {
+    let _adminToken = null;
+    
+    function generateToken() {
+        return 'tok_' + Math.random().toString(36).substring(2, 8) + 
+               Date.now().toString(36) + 
+               Math.random().toString(36).substring(2, 8);
+    }
+    
+    function getCookie(name) {
+        const cookies = document.cookie.split(';');
+        for (let c of cookies) {
+            const [key, val] = c.trim().split('=');
+            if (key === name) return val;
+        }
+        return null;
+    }
+    
+    return {
+        async verify(password) {
+            if (!password) return false;
+            const hashedInput = await sha256(password);
+            if (hashedInput === ADMIN_PASSWORD_HASH) {
+                _adminToken = generateToken();
+                sessionStorage.setItem('admin_token', _adminToken);
+                const expires = new Date();
+                expires.setDate(expires.getDate() + 7);
+                document.cookie = `admin_token=${_adminToken}; expires=${expires.toUTCString()}; path=/; SameSite=Strict`;
+                return true;
+            }
+            return false;
+        },
+        
+        isAuthenticated() {
+            if (!_adminToken) return false;
+            const sessionToken = sessionStorage.getItem('admin_token');
+            const cookieToken = getCookie('admin_token');
+            if (sessionToken === _adminToken && cookieToken === _adminToken) {
+                return true;
+            }
+            // 验证失败，清除
+            _adminToken = null;
+            sessionStorage.removeItem('admin_token');
+            document.cookie = 'admin_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            return false;
+        },
+        
+        logout() {
+            _adminToken = null;
+            sessionStorage.removeItem('admin_token');
+            document.cookie = 'admin_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        }
+    };
+})();
 
 // SHA-256哈希
 async function sha256(message) {
     const msgBuffer = new TextEncoder().encode(message);
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    return hashHex;
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 // 用户ID生成
@@ -39,6 +93,44 @@ function getNickname(inputNickname) {
 function saveNickname(nickname) {
     if (nickname && nickname.trim() && nickname !== '匿名用户') {
         localStorage.setItem('forum_nickname', nickname.trim());
+    }
+}
+
+// ========== 主题切换 ==========
+(function initTheme() {
+    const savedTheme = localStorage.getItem('forum_theme') || 'modern';
+    applyTheme(savedTheme);
+})();
+
+function toggleTheme() {
+    const currentTheme = localStorage.getItem('forum_theme') || 'modern';
+    const newTheme = currentTheme === 'modern' ? 'retro' : 'modern';
+    applyTheme(newTheme);
+    localStorage.setItem('forum_theme', newTheme);
+}
+
+function applyTheme(theme) {
+    const oldLink = document.querySelector('link[data-theme]');
+    const newLink = document.createElement('link');
+    newLink.rel = 'stylesheet';
+    newLink.setAttribute('data-theme', theme);
+    const timestamp = new Date().getTime();
+    
+    if (theme === 'retro') {
+        newLink.href = 'style-retro.css?v=' + timestamp;
+    } else {
+        newLink.href = 'style-modern.css?v=' + timestamp;
+    }
+    
+    document.head.appendChild(newLink);
+    
+    if (oldLink) {
+        setTimeout(() => oldLink.remove(), 100);
+    }
+    
+    const label = document.getElementById('themeLabel');
+    if (label) {
+        label.textContent = theme === 'retro' ? '风格' : '风格';
     }
 }
 
@@ -304,39 +396,20 @@ async function editPost(id) {
     alert('修改成功');
 }
 
-// ========== 管理员验证 ==========
+// ========== 管理员验证（安全版）==========
 
 async function verifyAdmin() {
-    if (isAdmin) return true;
-    
-    const stored = sessionStorage.getItem('admin_verified');
-    if (stored === 'true') {
-        isAdmin = true;
-        return true;
-    }
-    
-    // 检查Cookie（7天有效）
-    if (document.cookie.includes('admin_verified=true')) {
-        sessionStorage.setItem('admin_verified', 'true');
-        isAdmin = true;
+    // 先检查安全认证
+    if (AdminAuth.isAuthenticated()) {
         return true;
     }
     
     const password = prompt('请输入管理员密码：');
     if (!password) return false;
     
-    // 哈希验证
-    const hashedInput = await sha256(password);
+    const success = await AdminAuth.verify(password);
     
-    if (hashedInput === ADMIN_PASSWORD_HASH) {
-        sessionStorage.setItem('admin_verified', 'true');
-        
-        // 设置7天Cookie
-        const expires = new Date();
-        expires.setDate(expires.getDate() + 7);
-        document.cookie = `admin_verified=true; expires=${expires.toUTCString()}; path=/`;
-        
-        isAdmin = true;
+    if (success) {
         showMessage('✅ 验证成功（7天免登录）', 'success');
         return true;
     }
@@ -369,9 +442,7 @@ function escapeHtml(text) {
 }
 
 function logoutAdmin() {
-    sessionStorage.removeItem('admin_verified');
-    document.cookie = 'admin_verified=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    isAdmin = false;
+    AdminAuth.logout();
     alert('已退出管理');
     renderAdminList();
 }
@@ -482,7 +553,8 @@ function renderComments(post) {
         return;
     }
     
-    const isAdminUser = isAdmin || sessionStorage.getItem('admin_verified');
+    // 使用安全验证
+    const isAdminUser = AdminAuth.isAuthenticated();
     
     commentsList.innerHTML = post.comments.map(comment => `
         <div class="comment-item">
@@ -504,7 +576,8 @@ function renderAdminList() {
     const adminList = document.getElementById('adminList');
     if (!adminList) return;
     
-    if (!isAdmin && !sessionStorage.getItem('admin_verified')) {
+    // 使用安全验证
+    if (!AdminAuth.isAuthenticated()) {
         adminList.innerHTML = `
             <div style="text-align:center;padding:40px;">
                 <p style="margin-bottom:20px;">🔒 需要管理员权限</p>
