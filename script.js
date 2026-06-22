@@ -1,12 +1,21 @@
 // ========== JSONBin配置 ==========
 const BIN_ID = '6a38d65df5f4af5e291b4d68';
 const API_KEY = '$2a$10$fSsQwf2TxKlfWU/zTta.l.0qsHSpmQ9G08HixJjMQvT0xzlqcM/g.';
-const ADMIN_PASSWORD = 'admin123';
+const ADMIN_PASSWORD_HASH = '97a3142172e58c70ea51faf6fa5f26eff18c90bbea88c9b4c5354afffd048f64';
 
 let posts = [];
 let isAdmin = false;
 let lastPostTime = 0;
 let offlineMode = false;
+
+// SHA-256哈希
+async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+}
 
 // 用户ID生成
 function generateUserId() {
@@ -22,7 +31,6 @@ function getNickname(inputNickname) {
     if (inputNickname && inputNickname.trim()) {
         return inputNickname.trim();
     }
-    // 使用保存的昵称或默认昵称
     let savedNickname = localStorage.getItem('forum_nickname');
     if (savedNickname) return savedNickname;
     return '匿名用户' + generateUserId().substring(5, 10);
@@ -148,7 +156,6 @@ async function addPost() {
         return;
     }
     
-    // 保存昵称
     saveNickname(nickname);
     
     const post = {
@@ -159,7 +166,7 @@ async function addPost() {
         content: escapeHtml(content),
         time: new Date().toLocaleString('zh-CN'),
         editTime: null,
-        comments: []  // 新增评论数组
+        comments: []
     };
     
     posts.unshift(post);
@@ -207,7 +214,6 @@ async function addComment() {
         return;
     }
     
-    // 保存昵称
     saveNickname(nickname);
     
     const comment = {
@@ -218,7 +224,6 @@ async function addComment() {
         time: new Date().toLocaleString('zh-CN')
     };
     
-    // 初始化评论数组
     if (!post.comments) {
         post.comments = [];
     }
@@ -242,7 +247,7 @@ async function addComment() {
 
 // 删除评论
 async function deleteComment(postId, commentId) {
-    if (!verifyAdmin()) return;
+    if (!await verifyAdmin()) return;
     if (!confirm('确定要删除这条评论吗？')) return;
     
     const post = posts.find(p => p.id === postId);
@@ -258,7 +263,7 @@ async function deleteComment(postId, commentId) {
 
 // 删除帖子
 async function deletePost(id) {
-    if (!verifyAdmin()) return;
+    if (!await verifyAdmin()) return;
     if (!confirm('确定要删除这个帖子吗？')) return;
     
     posts = posts.filter(p => p.id !== id);
@@ -270,7 +275,7 @@ async function deletePost(id) {
 
 // 修改帖子
 async function editPost(id) {
-    if (!verifyAdmin()) return;
+    if (!await verifyAdmin()) return;
     
     const post = posts.find(p => p.id === id);
     if (!post) {
@@ -299,9 +304,9 @@ async function editPost(id) {
     alert('修改成功');
 }
 
-// ========== 辅助功能 ==========
+// ========== 管理员验证 ==========
 
-function verifyAdmin() {
+async function verifyAdmin() {
     if (isAdmin) return true;
     
     const stored = sessionStorage.getItem('admin_verified');
@@ -310,14 +315,33 @@ function verifyAdmin() {
         return true;
     }
     
-    const password = prompt('请输入管理员密码：');
-    if (password === ADMIN_PASSWORD) {
+    // 检查Cookie（7天有效）
+    if (document.cookie.includes('admin_verified=true')) {
         sessionStorage.setItem('admin_verified', 'true');
         isAdmin = true;
         return true;
     }
     
-    alert('密码错误！');
+    const password = prompt('请输入管理员密码：');
+    if (!password) return false;
+    
+    // 哈希验证
+    const hashedInput = await sha256(password);
+    
+    if (hashedInput === ADMIN_PASSWORD_HASH) {
+        sessionStorage.setItem('admin_verified', 'true');
+        
+        // 设置7天Cookie
+        const expires = new Date();
+        expires.setDate(expires.getDate() + 7);
+        document.cookie = `admin_verified=true; expires=${expires.toUTCString()}; path=/`;
+        
+        isAdmin = true;
+        showMessage('✅ 验证成功（7天免登录）', 'success');
+        return true;
+    }
+    
+    showMessage('❌ 密码错误', 'error');
     return false;
 }
 
@@ -346,6 +370,7 @@ function escapeHtml(text) {
 
 function logoutAdmin() {
     sessionStorage.removeItem('admin_verified');
+    document.cookie = 'admin_verified=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     isAdmin = false;
     alert('已退出管理');
     renderAdminList();
@@ -418,13 +443,11 @@ function renderPostDetail() {
     
     if (!post) {
         detail.innerHTML = '<p style="text-align:center;padding:40px;">帖子不存在</p>';
-        // 隐藏评论区域
         const commentsSection = document.getElementById('commentsSection');
         if (commentsSection) commentsSection.style.display = 'none';
         return;
     }
     
-    // 渲染帖子内容
     detail.innerHTML = `
         <div class="detail-header">
             <h2>${post.title}</h2>
@@ -442,13 +465,11 @@ function renderPostDetail() {
         </div>
     `;
     
-    // 显示评论区域
     const commentsSection = document.getElementById('commentsSection');
     if (commentsSection) {
         commentsSection.style.display = 'block';
     }
     
-    // 渲染评论
     renderComments(post);
 }
 
@@ -461,6 +482,8 @@ function renderComments(post) {
         return;
     }
     
+    const isAdminUser = isAdmin || sessionStorage.getItem('admin_verified');
+    
     commentsList.innerHTML = post.comments.map(comment => `
         <div class="comment-item">
             <div class="comment-header">
@@ -468,7 +491,7 @@ function renderComments(post) {
                 <span class="comment-time">${comment.time}</span>
             </div>
             <div class="comment-body">${comment.content}</div>
-            ${isAdmin || sessionStorage.getItem('admin_verified') ? `
+            ${isAdminUser ? `
                 <div class="comment-actions">
                     <button onclick="deleteComment(${post.id}, ${comment.id})">🗑️ 删除</button>
                 </div>
@@ -485,7 +508,7 @@ function renderAdminList() {
         adminList.innerHTML = `
             <div style="text-align:center;padding:40px;">
                 <p style="margin-bottom:20px;">🔒 需要管理员权限</p>
-                <button onclick="verifyAdmin()">验证管理员身份</button>
+                <button onclick="verifyAdmin()">登录</button>
             </div>
         `;
         return;
