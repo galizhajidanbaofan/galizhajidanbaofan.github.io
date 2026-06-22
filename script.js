@@ -114,23 +114,23 @@ function applyTheme(theme) {
     const newLink = document.createElement('link');
     newLink.rel = 'stylesheet';
     newLink.setAttribute('data-theme', theme);
-    const timestamp = new Date().getTime();
+    newLink.href = theme === 'retro' ? 'style-retro.css' : 'style-modern.css';
     
-    if (theme === 'retro') {
-        newLink.href = 'style-retro.css?v=' + timestamp;
-    } else {
-        newLink.href = 'style-modern.css?v=' + timestamp;
-    }
+    //等新样式加载完再移除旧样式
+    newLink.onload = function() {
+        if (oldLink) {
+            oldLink.remove();
+        }
+        console.log('✅ 主题切换完成:', theme);
+    };
     
+    // 先添加新样式（此时两个样式同时存在）
     document.head.appendChild(newLink);
     
-    if (oldLink) {
-        setTimeout(() => oldLink.remove(), 100);
-    }
-    
+    // 更新标签文字
     const label = document.getElementById('themeLabel');
     if (label) {
-        label.textContent = theme === 'retro' ? '风格' : '风格';
+        label.textContent = '风格';
     }
 }
 
