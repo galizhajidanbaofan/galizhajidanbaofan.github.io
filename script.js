@@ -99,49 +99,28 @@ function saveNickname(nickname) {
 // ========== 主题切换 ==========
 (function initTheme() {
     const savedTheme = localStorage.getItem('forum_theme') || 'modern';
-    applyTheme(savedTheme);
+    setTheme(savedTheme);
 })();
 
 function toggleTheme() {
     const currentTheme = localStorage.getItem('forum_theme') || 'modern';
     const newTheme = currentTheme === 'modern' ? 'retro' : 'modern';
-    
-    // 直接替换整个stylesheet
-    const oldLink = document.querySelector('link[data-theme]');
-    const newLink = document.createElement('link');
-    newLink.rel = 'stylesheet';
-    newLink.setAttribute('data-theme', newTheme);
-    newLink.href = newTheme === 'retro' ? 'style-retro.css' : 'style-modern.css';
-    
-    // 用新link替换旧link（同一位置）
-    if (oldLink) {
-        oldLink.parentNode.replaceChild(newLink, oldLink);
-    } else {
-        document.head.appendChild(newLink);
-    }
-    
+    setTheme(newTheme);
     localStorage.setItem('forum_theme', newTheme);
 }
 
-function applyTheme(theme) {
-    const oldLink = document.querySelector('link[data-theme]');
-    const newLink = document.createElement('link');
-    newLink.rel = 'stylesheet';
-    newLink.setAttribute('data-theme', theme);
-    newLink.href = theme === 'retro' ? 'style-retro.css' : 'style-modern.css';
+function setTheme(theme) {
+    const modernCss = document.getElementById('css-modern');
+    const retroCss = document.getElementById('css-retro');
     
-    //等新样式加载完再移除旧样式
-    newLink.onload = function() {
-        if (oldLink) {
-            oldLink.remove();
-        }
-        console.log('✅ 主题切换完成:', theme);
-    };
+    if (theme === 'retro') {
+        modernCss.disabled = true;
+        retroCss.disabled = false;
+    } else {
+        retroCss.disabled = true;
+        modernCss.disabled = false;
+    }
     
-    // 先添加新样式（此时两个样式同时存在）
-    document.head.appendChild(newLink);
-    
-    // 更新标签文字
     const label = document.getElementById('themeLabel');
     if (label) {
         label.textContent = '风格';
