@@ -11,61 +11,123 @@ body {
     line-height: 1.6;
 }
 
-/* 风格切换开关 */
-.theme-switch {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    cursor: pointer;
-    padding: 4px 10px;
-    border-radius: 4px;
-    user-select: none;
-    font-size: 13px;
-}
-
-/* 现代风格中的开关样式 */
-/* 放在 style-modern.css */
-.theme-switch {
-    background: #f0f0f0;
-    
-    color: #333;
-}
-.theme-switch:hover {
-    background: #e0e0e0;
-}
-
-.container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px;
-}
+/* ========== 头部 ========== */
 
 header {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
+    background: linear-gradient(135deg, #e8edf2 0%, #dce3ea 30%, #e3eaf2 60%, #d5dde6 100%);
+    padding: 24px 28px;
+    border-radius: 16px;
     margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 20px rgba(26, 115, 232, 0.08), 0 1px 4px rgba(0,0,0,0.04);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(26, 115, 232, 0.06);
+}
+
+/* 蓝色光效 */
+header::before {
+    content: '';
+    position: absolute;
+    top: -80%;
+    right: -20%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(26, 115, 232, 0.06) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+header::after {
+    content: '';
+    position: absolute;
+    bottom: -60%;
+    left: -10%;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(26, 115, 232, 0.04) 0%, transparent 70%);
+    pointer-events: none;
 }
 
 header h1 {
-    font-size: 24px;
+    font-size: 26px;
     color: #1a73e8;
+    font-weight: 700;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
 }
 
 nav a {
-    margin-left: 20px;
+    margin-left: 0;
     text-decoration: none;
-    color: #1a73e8;
+    color: #5a6d80;
     font-weight: 500;
-    transition: color 0.3s;
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.6);
 }
 
 nav a:hover {
-    color: #1557b0;
+    color: #1a73e8;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 12px rgba(26, 115, 232, 0.1);
+}
+
+/* 风格切换开关 */
+.theme-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 8px;
+    user-select: none;
+    font-size: 13px;
+    background: rgba(255, 255, 255, 0.5);
+    color: #5a6d80;
+    transition: all 0.3s ease;
+}
+
+.theme-switch:hover {
+    background: rgba(255, 255, 255, 0.85);
+    color: #1a73e8;
+    box-shadow: 0 2px 12px rgba(26, 115, 232, 0.1);
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        gap: 16px;
+        padding: 20px;
+    }
+    
+    header h1 {
+        font-size: 22px;
+    }
+    
+    nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    nav a, .theme-switch {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
 }
 
 .post-form {
