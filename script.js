@@ -413,6 +413,13 @@ async function verifyAdmin() {
     return false;
 }
 
+async function adminLogin() {
+    const success = await verifyAdmin();
+    if (success) {
+        renderAdminList();
+    }
+}
+
 function generateCaptcha() {
     const questionSpan = document.getElementById('captcha-question');
     const captchaInput = document.getElementById('captcha');
@@ -580,7 +587,7 @@ function renderAdminList() {
         adminList.innerHTML = `
             <div style="text-align:center;padding:40px;">
                 
-                <button onclick="verifyAdmin()">登录</button>
+                <button onclick="adminLogin()">登录</button>
             </div>
         `;
         return;
