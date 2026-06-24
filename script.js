@@ -291,6 +291,12 @@ function searchPosts() {
     const keyword = searchInput.value.trim();
     console.log('搜索关键词:', keyword);
     
+    const secretTriggers = ['秘密', '隐藏'];
+    if (secretTriggers.some(t => keyword.toLowerCase().includes(t.toLowerCase()))) {
+        window.location.href = 'secret.html';
+        return;
+    }
+
     if (!keyword) {
         clearSearch();
         return;
