@@ -358,6 +358,62 @@ button.edit:hover {
         align-items: flex-start;
     }
 }
+
+/* ========== 搜索栏 ========== */
+.search-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    align-items: center;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 10px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.search-bar input:focus {
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 2px rgba(26,115,232,0.1);
+}
+
+.search-bar button {
+    padding: 10px 16px;
+    white-space: nowrap;
+}
+
+/* 搜索结果 */
+.search-info {
+    padding: 8px 0;
+    color: #1a73e8;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.search-empty {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+    font-size: 15px;
+}
+
+.search-secret {
+    background: linear-gradient(135deg, #e8f0fe, #f0e8fe);
+    border: 1px solid #c4d7f2;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    color: #1a56b0;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+
 /* ========== 评论样式 ========== */
 
 /* 昵称输入框 */

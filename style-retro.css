@@ -103,6 +103,61 @@ nav a:hover {
     text-shadow: 0 0 5px #00FFFF;
 }
 
+/* ========== 搜索栏 ========== */
+.search-bar {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 10px;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 4px 8px;
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-right: 2px solid #FFFFFF;
+    border-bottom: 2px solid #FFFFFF;
+    font-family: "Courier New", monospace;
+    font-size: 13px;
+    outline: none;
+    background: white;
+}
+
+.search-bar input:focus {
+    border-top: 2px solid #000080;
+    border-left: 2px solid #000080;
+    border-right: 2px solid #000080;
+    border-bottom: 2px solid #000080;
+}
+
+/* 搜索结果 */
+.search-info {
+    font-family: "Courier New", monospace;
+    font-size: 12px;
+    color: #000080;
+    padding: 4px 0;
+}
+
+.search-empty {
+    text-align: center;
+    padding: 30px;
+    font-family: "Courier New", monospace;
+    color: #808080;
+}
+
+.search-secret {
+    background: #FFFFCC;
+    border-top: 2px solid #FFFFFF;
+    border-left: 2px solid #FFFFFF;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-family: "Courier New", monospace;
+    font-size: 13px;
+}
+
+
 /* ========== 发帖表单 ========== */
 .post-form {
     background: #C0C0C0;

@@ -6,6 +6,13 @@ const ADMIN_PASSWORD_HASH = '97a3142172e58c70ea51faf6fa5f26eff18c90bbea88c9b4c53
 let posts = [];
 let lastPostTime = 0;
 let offlineMode = false;
+let searchResults = null;  // null表示未搜索，数组表示搜索结果
+let secretKeywords = {
+    '咖喱炸鸡蛋包饭': '人间至味...既然如此你想必也注意到域名了吧',
+    '帮助': '💡 使用帮助：点击帖子标题查看详情，输入昵称后即可发帖评论。',
+    '咖喱蛋包饭': '人间至味...今晚想尝尝看吗？',
+    '管理员': ' 管理员可通过右上角管理后台登录。'
+};
 
 // ========== 安全管理员认证（闭包保护）==========
 const AdminAuth = (function() {
@@ -272,6 +279,88 @@ async function addPost() {
     await loadPosts();
 }
 
+// ========== 搜索功能 ==========
+
+function searchPosts() {
+    const keyword = document.getElementById('searchInput').value.trim();
+    
+    if (!keyword) {
+        clearSearch();
+        return;
+    }
+    
+    const lowerKeyword = keyword.toLowerCase();
+    
+    // 先检查是否触发关键词
+    let secretMessage = '';
+    for (const [key, value] of Object.entries(secretKeywords)) {
+        if (lowerKeyword.includes(key.toLowerCase())) {
+            secretMessage += value + '<br>';
+        }
+    }
+    
+    // 搜索帖子和评论
+    searchResults = posts.filter(post => {
+        const inTitle = post.title.toLowerCase().includes(lowerKeyword);
+        const inContent = post.content.toLowerCase().includes(lowerKeyword);
+        const inComments = post.comments && post.comments.some(c => 
+            c.content.toLowerCase().includes(lowerKeyword)
+        );
+        return inTitle || inContent || inComments;
+    });
+    
+    // 显示结果
+    const resultDiv = document.getElementById('searchResult');
+    resultDiv.style.display = 'block';
+    
+    let html = '';
+    
+    // 显示关键词触发话语
+    if (secretMessage) {
+        html += `<div class="search-secret">${secretMessage}</div>`;
+    }
+    
+    // 显示搜索结果
+    if (searchResults.length === 0) {
+        html += '<div class="search-empty">🔍 未找到相关帖子</div>';
+    } else {
+        html += `<div class="search-info">找到 ${searchResults.length} 个相关帖子</div>`;
+        html += searchResults.map(post => `
+            <div class="post-item">
+                <h3>
+                    <a href="post.html?id=${post.id}">${highlightKeyword(post.title, keyword)}</a>
+                    ${post.editTime ? '<span style="font-size:12px;color:#999;">(已编辑)</span>' : ''}
+                </h3>
+                <div class="meta">
+                    <span class="post-author">👤 ${post.author || '匿名'}</span>
+                    📅 ${post.editTime || post.time}
+                    <span class="comment-count">💬 ${post.comments ? post.comments.length : 0}</span>
+                </div>
+                <div class="content">${highlightKeyword(post.content.substring(0, 200), keyword)}...</div>
+            </div>
+        `).join('');
+    }
+    
+    resultDiv.innerHTML = html;
+    
+    // 隐藏普通帖子列表
+    document.getElementById('postList').style.display = 'none';
+}
+
+function clearSearch() {
+    searchResults = null;
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchResult').style.display = 'none';
+    document.getElementById('postList').style.display = '';
+    renderPostList();
+}
+
+function highlightKeyword(text, keyword) {
+    if (!keyword) return text;
+    const regex = new RegExp(`(${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return text.replace(regex, '<mark style="background:#ffeb3b;padding:1px 3px;border-radius:2px;">$1</mark>');
+}
+
 // 添加评论
 async function addComment() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -478,6 +567,10 @@ function renderPostList() {
     const postList = document.getElementById('postList');
     if (!postList) return;
     
+    if (searchResults !== null) {
+        return;
+    }
+
     const statusText = offlineMode ? '⚠️ 离线模式 - 数据仅保存在本地' : '';
     
     if (posts.length === 0) {
