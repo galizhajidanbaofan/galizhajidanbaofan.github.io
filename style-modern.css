@@ -369,12 +369,14 @@ button.edit:hover {
 
 .search-bar input {
     flex: 1;
+    min-width: 0;
     padding: 10px 16px;
     border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 14px;
     outline: none;
     transition: border-color 0.3s;
+    width: 100%;
 }
 
 .search-bar input:focus {
@@ -385,6 +387,7 @@ button.edit:hover {
 .search-bar button {
     padding: 10px 16px;
     white-space: nowrap;
+    flex-shrink: 0;
 }
 
 /* 搜索结果 */

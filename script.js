@@ -282,7 +282,14 @@ async function addPost() {
 // ========== 搜索功能 ==========
 
 function searchPosts() {
-    const keyword = document.getElementById('searchInput').value.trim();
+    const searchInput = document.getElementById('searchInput');
+    if (!searchInput) {
+        console.error('找不到搜索输入框');
+        return;
+    }
+    
+    const keyword = searchInput.value.trim();
+    console.log('搜索关键词:', keyword);
     
     if (!keyword) {
         clearSearch();
@@ -718,4 +725,14 @@ window.addEventListener('DOMContentLoaded', async () => {
     
     generateCaptcha();
     await loadPosts();
+
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                searchPosts();
+            }
+        });
+    }
+
 });
