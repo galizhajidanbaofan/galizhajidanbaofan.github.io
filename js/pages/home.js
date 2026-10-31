@@ -7,6 +7,7 @@ import { countComments, loadPosts } from '../store.js';
 import { filterPosts, isSecretTrigger, secretReplies } from '../search.js';
 import { emptyStateHtml, postListHtml } from '../render.js';
 import { openDialog } from '../ui.js';
+import { isLoggedIn, openLoginDialog } from '../account.js';
 
 const state = {
   posts: [],
@@ -160,6 +161,14 @@ function bindSearch() {
 
   form?.addEventListener('submit', (event) => {
     event.preventDefault();
+    /* 检索属于站内功能：未登录先要账号 */
+    if (!isLoggedIn()) {
+      openLoginDialog({
+        reason: '检索需要登录账号',
+        onSuccess: () => runSearch()
+      });
+      return;
+    }
     runSearch();
   });
 
