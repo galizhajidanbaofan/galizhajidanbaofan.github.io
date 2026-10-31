@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 2,
+  "note": "中段里程碑阶段才会出现的帖子（假江望舒刷帖）。由 js/hidden.js 在进入 stage 3 时并入首页，刷新后仍在。目前为空，等剧情文本定稿后填入；条目结构同 data/posts.json。",
+  "generatedAt": "2026-10-31T16:00:00+08:00",
+  "posts": []
+}

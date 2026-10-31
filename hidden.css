@@ -272,6 +272,59 @@ body[data-theme="retro"][data-hidden] .clock {
     gap: 0;
 }
 
+.chat__login {
+    margin-left: auto;
+    padding: 4px 14px;
+    font-size: 12.5px;
+    line-height: 1.5;
+}
+
+body[data-theme="retro"] .chat__login {
+    padding: 2px 12px;
+    font-size: 12px;
+}
+
+/* 登录弹窗里的表单 */
+.login-form {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.login-form .form-hint {
+    margin: 6px 0 0;
+}
+
+.login-form__note {
+    margin: 14px 0 0;
+    line-height: 1.7;
+}
+
+.chat__form .field::placeholder {
+    color: var(--muted);
+}
+
+.chat__quick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0 0;
+}
+
+.chat__quick .btn {
+    padding: 4px 12px;
+    font-size: 12.5px;
+}
+
+body[data-theme="retro"] .chat__quick .btn {
+    padding: 3px 10px;
+    font-size: 12px;
+}
+
+.chat__form .field.is-locked {
+    color: var(--muted);
+}
+
 .chat__bar {
     display: flex;
     align-items: center;
