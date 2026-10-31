@@ -63,15 +63,15 @@ async function sellerId() {
 export async function login(rawId, rawPassword) {
   const id = String(rawId || '').trim();
   const password = String(rawPassword || '');
-  if (!id || !password) return { ok: false, error: '账号和密码都要填。' };
+  if (!id || !password) return { ok: false, error: '请填写账号与密码。' };
 
   const expected = await sellerId();
-  if (!expected) return { ok: false, error: '读不到账号数据，过一会儿再试。' };
+  if (!expected) return { ok: false, error: '账号数据读取失败，请稍后重试。' };
 
   const idMatches = id.toLowerCase() === expected.toLowerCase();
   const passwordMatches = (await sha256(password)) === PASSWORD_HASH;
   if (!idMatches || !passwordMatches) {
-    return { ok: false, error: '账号或密码不正确。' };
+    return { ok: false, error: '账号或密码错误。' };
   }
 
   const account = { id: expected, since: Date.now() };
@@ -86,12 +86,11 @@ export async function login(rawId, rawPassword) {
 const LOGIN_FORM_HTML = `
   <form class="login-form" id="loginForm" autocomplete="off" novalidate>
     <label class="form-hint" for="loginId">账号</label>
-    <input class="field" type="text" id="loginId" placeholder="帖子里那个 ID" autocomplete="username" spellcheck="false">
+    <input class="field" type="text" id="loginId" placeholder="请输入账号" autocomplete="username" spellcheck="false">
     <label class="form-hint" for="loginPassword">密码</label>
-    <input class="field" type="password" id="loginPassword" placeholder="几位数字" autocomplete="current-password">
+    <input class="field" type="password" id="loginPassword" placeholder="请输入密码" autocomplete="current-password">
     <p class="admin-gate__error" id="loginError" role="alert"></p>
   </form>
-  <p class="form-hint login-form__note">账号和密码都在论坛的帖子里。没找到就先别看这里。</p>
 `;
 
 /**
@@ -101,10 +100,10 @@ const LOGIN_FORM_HTML = `
 export function openLoginDialog({ onSuccess, reason = '' } = {}) {
   const { close, dialog } = openDialog({
     title: '登录',
-    kicker: reason || '需要账号才能继续',
+    kicker: reason || '此功能需要登录账号',
     html: LOGIN_FORM_HTML,
     actions: [
-      { label: '算了' },
+      { label: '取消' },
       { label: '登录', primary: true, keep: true, onClick: () => {} }
     ]
   });

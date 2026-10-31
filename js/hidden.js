@@ -115,11 +115,10 @@ const CHAT = {
         '有人和我建立了通讯连接？怎么会？',
         '信号一直是断的，连短信都发不出去……你那边是怎么进来的？',
         '算了，先不管这个。能看见我打的字吗？我是江望舒，做民俗研究的。',
-        '我人还在恸山，在一口井里。',
-        '输入"怎么回事"，我把到这儿之后的经过说一遍。',
-        '📁',
-        '这儿有个文件夹，我把找到的东西都放里面了。'
+        '我人还在恸山，在一口井里。'
     ],
+    /* 讲完经过之后才递文件夹 */
+    afterOriginStory: ['这儿有个文件夹，我把找到的东西都放里面了。', '📁'],
     /* 固定选项按钮（暂定，等作者定稿后再增删） */
     quickReplies: ['怎么回事', '你是谁', '这里是什么地方', '你还好吗']
 };
@@ -294,11 +293,12 @@ function bindChat() {
         save();
 
         const replies = repliesFor(text);
+        if (text.includes('怎么回事')) replies.push(...CHAT.afterOriginStory);
         /* 长段（比如"怎么回事"）挤得密一点，短问答留出发消息的节奏 */
         const gap = replies.length > 5 ? 700 : 1500;
         replies.forEach((reply, index) => {
             window.setTimeout(() => {
-                append(messageHtml('other', reply));
+                append(reply === '📁' ? fileMessageHtml() : messageHtml('other', reply));
                 save();
             }, 700 + index * gap);
         });
