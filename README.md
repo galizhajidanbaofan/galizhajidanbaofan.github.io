@@ -27,12 +27,13 @@
 ├── post.html             帖子详情 + 评论区（只读）
 ├── admin.html            管理员模式 / 档案区
 ├── 404.html              找不到页面
-├── secret.html           隐藏入口（点文件夹 → 输入口令 2000）
-├── archive.html          伪聊天窗口（江望舒）
-├── dossier.html          档案条目 #7742「拟物」
-├── ui.css                通用组件层（弹窗、提示条、档案区、只读正文）
-├── style-modern.css      主题：现代（浅色卡片）
-├── style-retro.css       主题：复古（2000 年论坛皮肤 / Win98）
+├── secret.html           隐藏入口 · 一档「轻」：点文件夹 → 输入口令 2000
+├── archive.html          伪聊天窗口（江望舒）· 二档「中」
+├── dossier.html          档案条目 #7742「拟物」· 三档「重」
+├── ui.css                结构层 + 组件（布局、列表行、详情、弹窗、提示条、任务栏）
+├── hidden.css            隐藏页的「不该看到」皮肤：三档配色 + 扫描线 / 噪点 / 呼吸
+├── style-modern.css      主题：现代（米白纸面 / 编辑部排版）
+├── style-retro.css       主题：复古（Win98 桌面 + 窗口 + 任务栏 / 2000 年论坛）
 ├── favicon.svg
 ├── .nojekyll             让 Pages 不要跑 Jekyll，并允许发布 _archive/
 ├── js/
@@ -43,8 +44,10 @@
 │   ├── search.js         过滤、关键词高亮、彩蛋关键词
 │   ├── render.js         帖子 / 详情 / 评论的 HTML 渲染
 │   ├── theme.js          双主题切换
+│   ├── state.js          玩家进度（localStorage，只存选择不存正文）
 │   ├── auth.js           管理员口令校验（纯前端门槛）
-│   ├── ui.js             toast + 弹窗
+│   ├── ui.js             toast + 弹窗（openDialog / openModal）
+│   ├── hidden.js         隐藏页：冻结时钟、多出来的任务按钮、编号抖动、口令与聊天逻辑
 │   ├── lore.js           彩蛋关键词与触发词
 │   └── pages/
 │       ├── home.js       首页逻辑
@@ -58,6 +61,53 @@
 ├── _archive/             停用的旧文件（script.js、style.css）
 └── _data-backup/         迁移前的 JSONBin 原始快照
 ```
+
+## 双主题是怎么做的
+
+只有**一份 HTML**，两套主题只换「变量 + 皮肤」，结构不重复：
+
+- `ui.css` 定布局与组件（`.shell` `.mast` `.feed` `.row` `.detail` `.ui-modal` `.taskbar` …），
+  颜色字体全走变量，`body[data-theme]` 不参与样式判断；
+- `style-modern.css` / `style-retro.css` 只负责变量与皮肤；
+- 复古主题要画「窗口」，靠的是元素上的 `data-window="标题"` 属性：
+  `style-retro.css` 用 `[data-window]::before{content:attr(data-window)}` 画标题栏、
+  `::after` 画右上角按钮，`style-modern.css` 再用 `content:none` 关掉。
+  所以给一个区块加窗口外观 = 加一个属性，不用改结构；
+- `.desktop-icons`、`.taskbar` 只在复古主题下 `display:flex`，现代主题里是 `display:none`。
+
+窄屏（≤600px）两套主题都退化成单列：复古隐藏桌面图标、压缩任务栏、列表编号栏让位给标题。
+
+## 隐藏页的三档反差
+
+`secret.html` → `archive.html` → `dossier.html` 越往里越不对劲，靠 `<body data-hidden="light|mid|heavy">` 分档，
+`hidden.css` 只覆盖变量与少量皮肤，不改结构：
+
+| 档位 | 页面 | 现代主题 | 复古主题 |
+|---|---|---|---|
+| 轻 | `secret.html` | 纸色偏黄、锈红强调 | 桌面青绿压暗一档、标题栏转灰 |
+| 中 | `archive.html` | 墨黑纸 + 锈红，聊天记录像老终端 | 暗酒红桌面、标题栏酒红、聊天记录白底内凹 |
+| 重 | `dossier.html` | 近黑、锈红、噪点最重 | 窗口内部全黑、只剩标题栏还是系统色 |
+
+反差手段只有三类：**配色反转**、**系统症状**、**动效**。
+
+- 系统症状（`js/hidden.js`）：任务栏时钟冻结在 `00:00`；任务栏上多一个没有任何说明的 `?` 按钮；
+  档案编号每隔 5–11 秒抖动一下（`jitterNumber`，取数字位的 34% 改成相邻数字，620ms 后恢复）。
+  这些症状在常态页面不会出现——`js/main.js` 的时钟每 20 秒刷新一次，`hidden.js` 不启动定时器。
+- 动效：扫描线 / 噪点 / 极轻的整块闪烁（`@keyframes hiddenFlicker`），
+  全部挂在 `@media (prefers-reduced-motion: reduce)` 之下，系统开了「减少动态效果」就整组关掉。
+- 刻意**不加**任何警告文案：不对劲要靠玩家自己看出来，不能靠一行字告诉他们。
+
+## 玩家进度（localStorage）
+
+`js/state.js` 把玩家的选择存在 `localStorage['qiwenyishi_progress']`：
+
+```js
+{ version: 1, updatedAt: 1761888000000, choices: { duel: 'save_real' }, flags: {}, visited: [] }
+```
+
+- `recordChoice(key, value)` 记一次选择，`getChoice(key)` 读回来，`hasFlag/setFlags` 记剧情标记；
+- 只存选择与标记，**不存正文、不存口令**；读写都包了 try/catch，隐私模式下静默失败；
+- 目前还没人调用它，留给后续「两个江望舒对峙」的结局判定。
 
 ## 本地预览
 
@@ -156,5 +206,6 @@ maintenance: {
 
 - [ ] 把剧情线写完整（隐藏档案 `data/archive.json` 目前是空壳）
 - [ ] 管理员口令换成 PBKDF2（工具已就位，需要你亲自生成）
-- [ ] 搜索彩蛋里「帮助」那条文案还写着"输入昵称后即可发帖评论"，与已关闭发帖不一致
+- [ ] 搜索彩蛋的关键词表仍然写在 `js/lore.js`，跟帖子的 `■□` 遮蔽还没联动
 - [ ] 老帖子里的 `■□` 遮蔽字符目前是原样文本，尚未做成可交互的`打码`效果
+- [ ] 拟物的"瑕疵"线索还没埋进 UI 元信息（编号、ID、编辑时间、状态行都可做手脚）

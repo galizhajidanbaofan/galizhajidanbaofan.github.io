@@ -18,25 +18,25 @@ export async function boot() {
   const id = params.get('id');
   const fromArchive = params.get('from') === 'archive';
 
-  const hideComments = () => {
-    if (commentsSection) commentsSection.style.display = 'none';
+  const showOnly = (html) => {
+    detail.innerHTML = html;
+    if (commentsSection) commentsSection.hidden = true;
   };
 
   if (!id) {
-    detail.innerHTML = emptyStateHtml('未指定帖子。');
-    hideComments();
+    showOnly(emptyStateHtml('未指定帖子。'));
     return;
   }
 
   // 档案条目需要管理员模式
   if (fromArchive && !isAdmin()) {
-    detail.innerHTML = `
+    showOnly(`
       <div class="admin-gate">
-        <h2>需要管理员模式</h2>
-        <p class="admin-gate__desc">这是一条未公开的档案条目，请先进入管理员模式再查看。</p>
-        <p><a href="admin.html">前往管理员模式 →</a></p>
-      </div>`;
-    hideComments();
+        <p class="detail__kicker">受限条目</p>
+        <h2 class="admin-gate__title">需要管理员模式</h2>
+        <p class="admin-gate__desc">这是一条未公开的档案条目，请先进入档案区，用管理员口令解锁后查看。</p>
+        <p><a class="link" href="admin.html">前往档案区 →</a></p>
+      </div>`);
     return;
   }
 
@@ -45,21 +45,23 @@ export async function boot() {
     const post = findPost(dataset.posts, id);
 
     if (!post) {
-      detail.innerHTML = emptyStateHtml('帖子不存在，可能已被移除。');
-      hideComments();
+      showOnly(emptyStateHtml('帖子不存在，可能已被移除。'));
       return;
     }
 
     document.title = `${post.title} - ${CONFIG.siteName}`;
+
+    const task = document.getElementById('taskTitle');
+    if (task) task.textContent = post.title;
+
     detail.innerHTML = detailHtml(post, { archive: fromArchive });
 
-    if (commentsSection) commentsSection.style.display = 'block';
+    if (commentsSection) commentsSection.hidden = false;
     const commentsList = document.getElementById('commentsList');
     if (commentsList) commentsList.innerHTML = commentsHtml(post);
   } catch (error) {
     console.error(error);
-    detail.innerHTML = emptyStateHtml('加载失败，请稍后重试。');
-    hideComments();
+    showOnly(emptyStateHtml('加载失败，请稍后重试。'));
   }
 }
 

@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>帖子详情 - 奇闻异事</title>
 
-    <meta name="description" content="奇闻异事 - 帖子详情与评论。">
-    <meta name="theme-color" content="#1a73e8">
+    <meta name="description" content="奇闻异事 - 帖子正文与评论存档。">
+    <meta name="theme-color" content="#FBFAF6">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="奇闻异事">
     <meta property="og:title" content="奇闻异事">
-    <meta property="og:description" content="奇闻异事 - 帖子详情与评论。">
+    <meta property="og:description" content="奇闻异事 - 帖子正文与评论存档。">
 
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'">
 
@@ -19,35 +19,60 @@
     <link rel="stylesheet" href="style-retro.css" id="css-retro" disabled>
     <link rel="stylesheet" href="ui.css">
 </head>
-<body data-page="post">
-    <div class="container">
-        <header>
-            <h1>奇闻异事</h1>
-            <nav>
-                <a href="index.html">返回首页</a>
-                <a href="admin.html">管理后台</a>
+<body data-page="post" data-theme="modern">
+    <div class="desktop-icons" aria-hidden="true">
+        <a href="index.html"><span class="ico">▤</span>我的电脑</a>
+        <a href="admin.html"><span class="ico">▣</span>档案区</a>
+        <a href="index.html#about"><span class="ico">✎</span>说明.txt</a>
+    </div>
+
+    <div class="shell shell--narrow">
+        <header class="mast mast--compact" data-window="帖子 - 奇闻异事">
+            <p class="kicker">奇闻异事 · 论坛存档</p>
+            <nav class="top">
+                <a href="index.html">← 返回首页</a>
+                <a href="admin.html">档案区</a>
+                <span class="spacer"></span>
                 <button type="button" class="theme-switch" data-theme-toggle title="切换风格">
                     <span data-theme-label>风格</span>
                 </button>
             </nav>
+            <hr class="hairline">
         </header>
 
-        <div id="postDetail">
-            <p class="empty-state">正在加载帖子...</p>
-        </div>
+        <main class="feed" id="postDetail" data-window="帖子正文">
+            <p class="empty-state">正在加载帖子…</p>
+        </main>
 
-        <!-- 评论区（发表入口改为维护提示） -->
-        <div id="commentsSection" style="display:none;">
-            <form class="comment-form" id="commentForm" novalidate>
-                <h3>发表评论</h3>
-                <p class="form-note">本站正在维护，暂时无法发表评论。</p>
-                <input type="text" id="commentNickname" placeholder="你的昵称（可选）" maxlength="20">
-                <textarea id="commentContent" placeholder="写下你的评论..." rows="4" maxlength="1000"></textarea>
-                <button type="submit">发表评论</button>
+        <section class="feed" id="commentsSection" data-window="评论" style="display:none;">
+            <h2 class="section-title">评论</h2>
+            <ol class="comments" id="commentsList"></ol>
+
+            <form class="cform" id="commentForm" novalidate>
+                <label for="commentNickname">昵称</label>
+                <input class="field" type="text" id="commentNickname" maxlength="20" placeholder="不超过 20 字（可选）" autocomplete="off">
+
+                <label for="commentContent">评论</label>
+                <textarea class="field" id="commentContent" maxlength="1000" placeholder="不超过 1000 字"></textarea>
+
+                <div class="row-actions">
+                    <button type="submit" class="btn btn--primary">发表评论</button>
+                    <p class="form-hint">本站正在维护，评论功能暂时关闭。</p>
+                </div>
             </form>
+        </section>
 
-            <div class="comments-list" id="commentsList"></div>
-        </div>
+        <footer class="foot">
+            <span>奇闻异事 · 民间怪谈存档</span>
+            <span>维护期间只读</span>
+        </footer>
+    </div>
+
+    <div class="taskbar" aria-hidden="true">
+        <span class="start"><span class="flag"></span>开始</span>
+        <span class="task is-active" id="taskTitle">帖子正文</span>
+        <span class="task">奇闻异事</span>
+        <span class="clock" id="clock">--:--</span>
     </div>
 
     <script type="module" src="js/main.js"></script>

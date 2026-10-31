@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>管理员模式 - 奇闻异事</title>
+    <title>档案区 - 奇闻异事</title>
 
     <meta name="description" content="奇闻异事 - 管理员模式（只读档案区）。">
     <meta name="robots" content="noindex">
-    <meta name="theme-color" content="#1a73e8">
+    <meta name="theme-color" content="#FBFAF6">
 
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'">
 
@@ -16,21 +16,41 @@
     <link rel="stylesheet" href="style-retro.css" id="css-retro" disabled>
     <link rel="stylesheet" href="ui.css">
 </head>
-<body data-page="admin">
-    <div class="container">
-        <header>
-            <h1>档案区</h1>
-            <nav>
-                <a href="index.html">返回首页</a>
+<body data-page="admin" data-theme="modern">
+    <div class="desktop-icons" aria-hidden="true">
+        <a href="index.html"><span class="ico">▤</span>我的电脑</a>
+        <a href="admin.html"><span class="ico">▣</span>档案区</a>
+        <a href="index.html#about"><span class="ico">✎</span>说明.txt</a>
+    </div>
+
+    <div class="shell shell--narrow">
+        <header class="mast mast--compact" data-window="档案区 - 奇闻异事">
+            <p class="kicker">奇闻异事 · 未公开条目</p>
+            <nav class="top">
+                <a href="index.html">← 返回首页</a>
+                <span class="spacer"></span>
                 <button type="button" class="theme-switch" data-theme-toggle title="切换风格">
                     <span data-theme-label>风格</span>
                 </button>
             </nav>
+            <hr class="hairline">
         </header>
 
-        <div id="adminRoot">
-            <p class="empty-state">正在验证...</p>
-        </div>
+        <main class="feed" id="adminRoot" data-window="档案区 - 需要口令">
+            <p class="empty-state">正在验证…</p>
+        </main>
+
+        <footer class="foot">
+            <span>奇闻异事 · 民间怪谈存档</span>
+            <span>管理员模式为只读</span>
+        </footer>
+    </div>
+
+    <div class="taskbar" aria-hidden="true">
+        <span class="start"><span class="flag"></span>开始</span>
+        <span class="task is-active">档案区</span>
+        <span class="task">奇闻异事</span>
+        <span class="clock" id="clock">--:--</span>
     </div>
 
     <script type="module" src="js/main.js"></script>

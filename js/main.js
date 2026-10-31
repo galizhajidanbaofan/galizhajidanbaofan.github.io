@@ -12,6 +12,17 @@ document.addEventListener('click', (event) => {
   toggleTheme();
 });
 
+/* 复古主题任务栏的时钟；现代主题下任务栏不可见，但保持数值一致 */
+const clock = document.getElementById('clock');
+if (clock) {
+  const tick = () => {
+    const now = new Date();
+    clock.textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  };
+  tick();
+  setInterval(tick, 20000);
+}
+
 const pageModules = {
   home: './pages/home.js',
   post: './pages/post.js',

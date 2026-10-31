@@ -1,0 +1,491 @@
+/* ============================================================
+   隐藏页皮肤（secret / archive / dossier）
+   ------------------------------------------------------------
+   原则：结构与常态页完全一致（同一套 shell / data-window 窗口），
+   只换变量与少量覆盖，让玩家先觉得"还是这个站"，再发现"不对"。
+
+   三档：light（secret）→ mid（聊天室）→ heavy（档案 #7742）
+   两套主题各自一套色：
+     现代：纸 → 旧纸 → 墨黑纸     强调：琥珀 → 锈红 → 血红
+     复古：青绿桌面 → 暗酒红 → 近黑   标题栏：藏青 → 深灰 → 血褐
+   ============================================================ */
+
+/* ---------- 覆盖层：扫描线 / 噪点 / 极轻闪烁 ---------- */
+
+body[data-hidden]::before,
+body[data-hidden]::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9000;
+}
+
+/* 扫描线 */
+body[data-hidden]::before {
+    background: repeating-linear-gradient(
+        0deg,
+        transparent 0 2px,
+        rgba(0, 0, 0, .12) 2px 4px
+    );
+}
+
+/* 噪点 */
+body[data-hidden]::after {
+    opacity: .028;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+}
+
+body[data-hidden="light"]::before { opacity: .45; }
+body[data-hidden="light"]::after { display: none; }
+
+body[data-hidden="mid"]::before { opacity: .7; }
+
+body[data-hidden="heavy"]::before { opacity: .85; }
+body[data-hidden="heavy"]::after { opacity: .05; }
+
+/* 极轻闪烁：只闪窗口，不闪正文可读性 */
+@keyframes hiddenFlicker {
+    0%, 92%, 100% { opacity: 1; }
+    94% { opacity: .955; }
+    96% { opacity: 1; }
+    97.5% { opacity: .965; }
+}
+
+body[data-hidden="mid"] .feed,
+body[data-hidden="mid"] .mast { animation: hiddenFlicker 9s steps(1, end) infinite; }
+body[data-hidden="heavy"] .feed,
+body[data-hidden="heavy"] .mast { animation: hiddenFlicker 5.5s steps(1, end) infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+    body[data-hidden]::before,
+    body[data-hidden]::after { animation: none; }
+    body[data-hidden] .feed,
+    body[data-hidden] .mast { animation: none; }
+}
+
+/* ============================================================
+   现代主题：纸的背面
+   ============================================================ */
+
+body[data-theme="modern"][data-hidden="light"] {
+    --bg: #F1EADA;
+    --fg: #221C14;
+    --muted: #6A5C4A;
+    --line: #D2C4AB;
+    --accent: #8A3B12;
+    --accent-fg: #FBF3E4;
+    --card: #F7F1E3;
+    --card-2: #EDE3CE;
+    background-image: radial-gradient(circle at 50% 0%, rgba(138, 59, 18, .05), transparent 60%);
+}
+
+body[data-theme="modern"][data-hidden="mid"] {
+    --bg: #14110D;
+    --fg: #D9CFBE;
+    --muted: #8B8071;
+    --line: #362F27;
+    --accent: #C2410C;
+    --accent-fg: #14110D;
+    --card: #1B1712;
+    --card-2: #221C16;
+    --shadow: 0 24px 60px -30px rgba(0, 0, 0, .9);
+    background-image: radial-gradient(circle at 50% 0%, rgba(194, 65, 12, .10), transparent 62%);
+}
+
+body[data-theme="modern"][data-hidden="heavy"] {
+    --bg: #0C0A08;
+    --fg: #CEC4B4;
+    --muted: #7E7365;
+    --line: #2A231C;
+    --accent: #B42318;
+    --accent-fg: #0C0A08;
+    --card: #131009;
+    --card-2: #191410;
+    --shadow: 0 26px 70px -30px rgba(0, 0, 0, 1);
+    background-image: radial-gradient(circle at 50% 0%, rgba(180, 35, 24, .12), transparent 60%);
+}
+
+/* 现代主题没有窗口边框，隐藏页给它一层"文件袋"的壳，
+   让玩家一眼看出"这一页被单独装订过" */
+body[data-theme="modern"][data-hidden] .feed {
+    border: 1px solid var(--line);
+    background: var(--card);
+    padding: 22px 24px 18px;
+}
+
+body[data-theme="modern"][data-hidden] .mast {
+    border-bottom: 1px solid var(--line);
+}
+
+/* 深色档位下，列表行 hover 与 notice 要跟着换 */
+body[data-theme="modern"][data-hidden="mid"] .row:hover,
+body[data-theme="modern"][data-hidden="heavy"] .row:hover {
+    background: rgba(194, 65, 12, .09);
+}
+
+body[data-theme="modern"][data-hidden="mid"] .notice,
+body[data-theme="modern"][data-hidden="heavy"] .notice {
+    background: rgba(194, 65, 12, .08);
+}
+
+/* ============================================================
+   复古主题：安全模式
+   ============================================================ */
+
+body[data-theme="retro"][data-hidden="light"] {
+    --bg: #006161;
+    --accent: #404040;
+    background-color: #006161;
+}
+
+body[data-theme="retro"][data-hidden="mid"] {
+    --bg: #3A1010;
+    --accent: #2A0A0A;
+    --link: #D9B48F;
+    background-color: #3A1010;
+}
+
+body[data-theme="retro"][data-hidden="heavy"] {
+    --bg: #140606;
+    --accent: #5A0000;
+    --link: #E0A0A0;
+    background-color: #140606;
+}
+
+/* 桌面图标底色跟着桌面走（style-retro.css 里写死成 #008080） */
+body[data-theme="retro"][data-hidden="light"] .desktop-icons .ico { background: #006161; box-shadow: inset 1px 1px 0 #006161; }
+body[data-theme="retro"][data-hidden="mid"] .desktop-icons .ico { background: #3A1010; box-shadow: inset 1px 1px 0 #3A1010; }
+body[data-theme="retro"][data-hidden="heavy"] .desktop-icons .ico { background: #140606; box-shadow: inset 1px 1px 0 #140606; }
+
+/* 标题栏换色（覆盖 style-retro.css 的藏青渐变） */
+body[data-theme="retro"][data-hidden="light"] [data-window]::before {
+    background: linear-gradient(90deg, #303030 0%, #6E6E6E 100%);
+}
+
+body[data-theme="retro"][data-hidden="mid"] [data-window]::before {
+    background: linear-gradient(90deg, #2A0A0A 0%, #7A1A1A 100%);
+}
+
+body[data-theme="retro"][data-hidden="heavy"] [data-window]::before {
+    background: linear-gradient(90deg, #3B0000 0%, #8B0000 100%);
+}
+
+/* 复古隐藏页：正文区偏冷、链接偏暗 */
+body[data-theme="retro"][data-hidden] .post-body {
+    background: #0E0E0E;
+    color: #C8C8C8;
+}
+
+/* 中档：聊天记录做成白底内凹的"编辑框"，窗口本身还是标准灰 */
+body[data-theme="retro"][data-hidden="mid"] .chat__log {
+    background: #FFFFFF;
+    border: 2px inset #808080;
+    padding: 10px 12px;
+}
+
+body[data-theme="retro"][data-hidden="mid"] .msg__bubble {
+    background: #FFFFFF;
+}
+
+/* 重档：整个窗口内部压黑，只剩标题栏还是系统色 —— 系统已经被它占了一半 */
+body[data-theme="retro"][data-hidden="heavy"] .feed {
+    background: #0B0B0B;
+    border-color: #4A4A4A #1A1A1A #1A1A1A #4A4A4A;
+}
+
+body[data-theme="retro"][data-hidden="heavy"] .dossier__body {
+    background: transparent;
+    color: #D6CEC6;
+}
+
+body[data-theme="retro"][data-hidden="heavy"] .dossier__body h2 { color: #C8201E; }
+body[data-theme="retro"][data-hidden="heavy"] .dossier__body h3 { color: #A99B8E; border-bottom-color: #332B25; }
+body[data-theme="retro"][data-hidden="heavy"] .dossier__body s { color: #8A8078; }
+body[data-theme="retro"][data-hidden="heavy"] .dossier__body .em { color: #E23A32; }
+body[data-theme="retro"][data-hidden="heavy"] .dossier__body .redacted { background: #D6CEC6; color: #D6CEC6; }
+body[data-theme="retro"][data-hidden="heavy"] .dossier__body .redacted:hover { background: transparent; color: #E23A32; }
+body[data-theme="retro"][data-hidden="heavy"] .dossier__head,
+body[data-theme="retro"][data-hidden="heavy"] .dossier__foot {
+    color: #A99B8E;
+    border-color: #332B25;
+}
+
+body[data-theme="retro"][data-hidden="heavy"] .dossier__no,
+body[data-theme="retro"][data-hidden="heavy"] .dossier__stamp { color: #C8201E; }
+
+body[data-theme="retro"][data-hidden="mid"] .row:hover,
+body[data-theme="retro"][data-hidden="heavy"] .row:hover {
+    background: #2A0A0A;
+}
+
+/* 多余的任务栏按钮（系统症状，由 hidden.js 插入） */
+body[data-theme="retro"][data-hidden] .task--phantom {
+    font-style: normal;
+    color: #3A3A3A;
+}
+
+/* 时钟冻结时的观感 */
+body[data-theme="retro"][data-hidden] .clock {
+    color: #3A0A0A;
+}
+
+/* ============================================================
+   三页共用的内容块
+   ============================================================ */
+
+.hidden-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    padding: 56px 16px 64px;
+    text-align: center;
+}
+
+.hidden-stage__icon {
+    font-size: 64px;
+    line-height: 1;
+    cursor: pointer;
+    filter: saturate(.85);
+    transition: transform .18s ease, filter .18s ease;
+}
+
+.hidden-stage__icon:hover {
+    transform: translateY(-2px) scale(1.04);
+    filter: saturate(1);
+}
+
+.hidden-stage__hint {
+    font-size: 12px;
+    letter-spacing: .28em;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+/* ---------- 聊天室（中档） ---------- */
+
+.chat {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.chat__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.chat__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: .18em;
+}
+
+.chat__status::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #2F7A46;
+    animation: hiddenBlink 2.4s ease-in-out infinite;
+}
+
+@keyframes hiddenBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .28; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .chat__status::before { animation: none; }
+}
+
+.chat__log {
+    flex: 1;
+    min-height: 320px;
+    max-height: 54vh;
+    overflow-y: auto;
+    padding: 18px 2px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    scroll-behavior: smooth;
+}
+
+.chat__log::-webkit-scrollbar { width: 6px; }
+.chat__log::-webkit-scrollbar-thumb { background: var(--line); }
+
+.msg { display: flex; gap: 10px; align-items: flex-start; }
+.msg--self { flex-direction: row-reverse; }
+
+.msg__avatar {
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    font-size: 15px;
+    border: 1px solid var(--line);
+    background: var(--card-2);
+}
+
+.msg__body { max-width: min(74%, 480px); display: flex; flex-direction: column; gap: 5px; }
+.msg--self .msg__body { align-items: flex-end; }
+
+.msg__bubble {
+    padding: 9px 13px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--fg);
+    font-size: 14px;
+    line-height: 1.75;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.msg--self .msg__bubble { background: var(--card-2); }
+
+.msg__bubble--file {
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 1;
+    padding: 10px 14px;
+}
+
+.msg__bubble--file:hover { border-color: var(--accent); }
+
+.msg__time {
+    font-size: 11px;
+    letter-spacing: .1em;
+    color: var(--muted);
+    font-family: var(--font-mono);
+}
+
+.msg-system {
+    align-self: center;
+    font-size: 11px;
+    letter-spacing: .3em;
+    color: var(--muted);
+    padding: 4px 0;
+}
+
+.chat__form {
+    display: flex;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+}
+
+.chat__form .field { flex: 1; }
+
+/* ---------- 档案 #7742（重档） ---------- */
+
+.dossier { display: flex; flex-direction: column; gap: 18px; }
+
+.dossier__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+}
+
+.dossier__no {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: .16em;
+    color: var(--accent);
+}
+
+.dossier__stamp {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: .34em;
+    color: var(--accent);
+    border: 1px solid currentColor;
+    padding: 3px 10px;
+    opacity: .78;
+}
+
+.dossier__body {
+    font-size: 14.5px;
+    line-height: 2.05;
+    color: var(--fg);
+    max-width: 70ch;
+}
+
+.dossier__body h2 {
+    font-family: var(--font-title);
+    font-size: 30px;
+    letter-spacing: .22em;
+    text-align: center;
+    margin: 6px 0 22px;
+    color: var(--accent);
+}
+
+.dossier__body h3 {
+    font-size: 13px;
+    letter-spacing: .2em;
+    color: var(--muted);
+    margin: 26px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+}
+
+.dossier__body p { margin-bottom: 8px; }
+
+.dossier__body .em {
+    display: block;
+    text-align: center;
+    font-family: var(--font-title);
+    font-size: 22px;
+    letter-spacing: .3em;
+    color: var(--accent);
+    margin: 16px 0;
+}
+
+.dossier__body .redacted {
+    background: var(--fg);
+    color: var(--fg);
+    padding: 1px 6px;
+    user-select: none;
+    transition: background .2s ease, color .2s ease;
+}
+
+.dossier__body .redacted:hover {
+    background: transparent;
+    color: var(--accent);
+}
+
+.dossier__body s { color: var(--muted); }
+
+.dossier__foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--muted);
+}
+
+/* 小屏 */
+@media (max-width: 600px) {
+    .hidden-stage { padding: 40px 8px 48px; }
+    .hidden-stage__icon { font-size: 52px; }
+    .chat__log { max-height: 52vh; min-height: 260px; }
+    .msg__body { max-width: 82%; }
+    .dossier__body { font-size: 13.5px; line-height: 1.95; }
+    .dossier__body h2 { font-size: 24px; }
+    .dossier__stamp { margin-left: 0; }
+}

@@ -1,12 +1,12 @@
 /**
- * 首页：帖子列表、搜索、加载更多，以及「发帖」入口的维护提示。
+ * 首页：帖子列表、搜索、加载更多，以及「发布新帖」的维护提示。
  */
 import { CONFIG } from '../config.js';
 import { escapeHtml } from '../format.js';
 import { countComments, loadPosts } from '../store.js';
 import { filterPosts, isSecretTrigger, secretReplies } from '../search.js';
-import { emptyStateHtml, postItemHtml, postListHtml } from '../render.js';
-import { openModal } from '../ui.js';
+import { emptyStateHtml, postListHtml } from '../render.js';
+import { openDialog } from '../ui.js';
 
 const state = {
   posts: [],
@@ -15,7 +15,7 @@ const state = {
 };
 
 export async function boot() {
-  bindMaintenance();
+  bindPostEntry();
   bindSearch();
   bindLoadMore();
 
@@ -26,7 +26,7 @@ export async function boot() {
   } catch (error) {
     console.error(error);
     const list = document.getElementById('postList');
-    if (list) list.innerHTML = emptyStateHtml('帖子加载失败，请刷新页面重试。');
+    if (list) list.innerHTML = `<li>${emptyStateHtml('帖子加载失败，请刷新页面重试。')}</li>`;
     return;
   }
 
@@ -34,15 +34,64 @@ export async function boot() {
   renderStats();
 }
 
-/* ---------- 维护提示 ---------- */
+/* ---------- 发布入口：表单还在，提交只会看到维护说明 ---------- */
 
-function bindMaintenance() {
-  const form = document.getElementById('postForm');
-  if (!form) return;
-  form.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    await openModal(CONFIG.maintenance);
+function bindPostEntry() {
+  document.getElementById('openPostForm')?.addEventListener('click', openPostForm);
+}
+
+function openPostForm() {
+  const dialog = openDialog({
+    title: '发布新帖',
+    kicker: '维护期间只读',
+    wide: true,
+    html: `
+      <p>表单还留着，但发布通道正在维护，提交后会看到说明。已有帖子不受影响。</p>
+      <form class="form-grid" id="dialogPostForm" novalidate>
+        <label for="dlgNickname">昵称</label>
+        <input class="field" type="text" id="dlgNickname" maxlength="20" placeholder="不超过 20 字（可选）" autocomplete="off">
+
+        <label for="dlgTitle">标题</label>
+        <input class="field" type="text" id="dlgTitle" maxlength="100" placeholder="不超过 100 字">
+
+        <label for="dlgContent">内容</label>
+        <textarea class="field" id="dlgContent" maxlength="5000" placeholder="不超过 5000 字"></textarea>
+      </form>`,
+    actions: [
+      { label: '取消', keep: true },
+      { label: '发布', primary: true, keep: true }
+    ]
   });
+
+  const form = dialog.dialog.querySelector('#dialogPostForm');
+  const publish = dialog.dialog.querySelector('.ui-modal__actions .btn--primary');
+
+  const submitMaintenance = async (event) => {
+    event?.preventDefault();
+    await openMaintenanceNotice(dialog);
+  };
+
+  form?.addEventListener('submit', submitMaintenance);
+  publish?.addEventListener('click', submitMaintenance);
+}
+
+function openMaintenanceNotice(dialog) {
+  const { title, message } = CONFIG.maintenance;
+  dialog.body.innerHTML = '';
+  const kicker = document.createElement('p');
+  kicker.className = 'ui-modal__kicker';
+  kicker.textContent = title;
+  dialog.body.appendChild(kicker);
+
+  String(message)
+    .split(/\n{2,}/)
+    .forEach((paragraph) => {
+      const p = document.createElement('p');
+      p.textContent = paragraph;
+      dialog.body.appendChild(p);
+    });
+
+  dialog.setActions([{ label: CONFIG.maintenance.confirmText || '知道了', primary: true }]);
 }
 
 /* ---------- 列表 ---------- */
@@ -52,12 +101,12 @@ function renderList() {
   if (!list) return;
 
   if (!state.posts.length) {
-    list.innerHTML = emptyStateHtml('📝 暂无帖子');
+    list.innerHTML = `<li>${emptyStateHtml('这里还没有帖子。')}</li>`;
     renderLoadMore();
     return;
   }
 
-  list.innerHTML = postListHtml(state.posts.slice(0, state.visible));
+  list.innerHTML = postListHtml(state.posts.slice(0, state.visible), { total: state.posts.length });
   renderLoadMore();
 }
 
@@ -66,12 +115,9 @@ function renderLoadMore() {
   if (!box) return;
 
   const remaining = state.posts.length - state.visible;
-  if (remaining <= 0) {
-    box.innerHTML = '';
-    return;
-  }
-
-  box.innerHTML = `<button type="button" data-load-more>加载更多（还有 ${remaining} 条）</button>`;
+  box.innerHTML = remaining <= 0
+    ? ''
+    : `<button type="button" class="btn" data-load-more>加载更多（还有 ${remaining} 篇）</button>`;
 }
 
 function bindLoadMore() {
@@ -85,26 +131,42 @@ function bindLoadMore() {
 }
 
 function renderStats() {
-  const target = document.getElementById('listStats');
-  if (!target) return;
   const comments = countComments(state.posts);
-  target.textContent = `共 ${state.posts.length} 篇帖子 · ${comments} 条评论`;
+  const total = state.posts.length;
+
+  const numbers = document.querySelectorAll('#siteStats b');
+  if (numbers.length === 2) {
+    numbers[0].textContent = String(total);
+    numbers[1].textContent = String(comments);
+  }
+
+  const stats = document.getElementById('listStats');
+  if (stats) {
+    stats.textContent = total
+      ? `共 ${total} 篇帖子 · ${comments} 条评论 · 只读模式`
+      : '暂无帖子';
+  }
+
+  const task = document.getElementById('taskStats');
+  if (task) task.textContent = `${total} 篇 · ${comments} 条评论`;
 }
 
 /* ---------- 搜索 ---------- */
 
 function bindSearch() {
+  const form = document.getElementById('searchForm');
   const input = document.getElementById('searchInput');
-  const searchBtn = document.getElementById('searchBtn');
   const clearBtn = document.getElementById('clearSearchBtn');
 
-  searchBtn?.addEventListener('click', runSearch);
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    runSearch();
+  });
+
   clearBtn?.addEventListener('click', clearSearch);
+
   input?.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      runSearch();
-    }
+    if (event.key === 'Escape') clearSearch();
   });
 }
 
@@ -128,21 +190,26 @@ function runSearch() {
   const resultBox = document.getElementById('searchResult');
   const listBox = document.getElementById('postList');
   const moreBox = document.getElementById('loadMore');
+  const statsBox = document.getElementById('listStats');
   if (!resultBox) return;
 
   let html = '';
   if (replies.length) {
-    html += `<div class="search-secret">${replies.map(escapeHtml).join('<br>')}</div>`;
+    html += `<div class="notice"><b>回应</b><span>${replies.map(escapeHtml).join('<br>')}</span></div>`;
   }
   html += matches.length
-    ? `<div class="search-info">找到 ${matches.length} 个相关帖子</div>` +
-      postListHtml(matches, { keyword })
-    : emptyStateHtml('🔍 未找到相关帖子');
+    ? `<p class="list-stats">找到 ${matches.length} 篇相关帖子</p>
+       <ol class="post-list">${postListHtml(matches, {
+         keyword,
+         numberOf: (post) => state.posts.length - state.posts.indexOf(post)
+       })}</ol>`
+    : emptyStateHtml('没有找到相关帖子。换个词试试，或者清空检索。');
 
   resultBox.innerHTML = html;
-  resultBox.style.display = 'block';
-  if (listBox) listBox.style.display = 'none';
-  if (moreBox) moreBox.style.display = 'none';
+  resultBox.hidden = false;
+  if (listBox) listBox.hidden = true;
+  if (moreBox) moreBox.hidden = true;
+  if (statsBox) statsBox.hidden = true;
 
   state.keyword = keyword;
 }
@@ -155,11 +222,18 @@ function clearSearch() {
   const resultBox = document.getElementById('searchResult');
   if (resultBox) {
     resultBox.innerHTML = '';
-    resultBox.style.display = 'none';
+    resultBox.hidden = true;
   }
 
   const listBox = document.getElementById('postList');
-  if (listBox) listBox.style.display = '';
+  if (listBox) listBox.hidden = false;
+
+  const statsBox = document.getElementById('listStats');
+  if (statsBox) statsBox.hidden = false;
+
+  const moreBox = document.getElementById('loadMore');
+  if (moreBox) moreBox.hidden = false;
 
   renderList();
+  renderStats();
 }
