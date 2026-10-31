@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📁 </title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #c0c0c0;
+            font-family: "Courier New", "SimSun", monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: 
+                radial-gradient(ellipse at 50% 50%, rgba(20,20,20,0.8) 0%, #0a0a0a 100%);
+            cursor: crosshair;
+        }
+
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.08) 2px,
+                rgba(0,0,0,0.08) 4px
+            );
+        }
+
+        .dossier-container {
+            max-width: 650px;
+            width: 92%;
+            max-height: 85vh;
+            background: #111111;
+            border: 1px solid #333;
+            border-radius: 4px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dossier-header {
+            padding: 12px 20px;
+            border-bottom: 1px solid #222;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0d0d0d;
+            flex-shrink: 0;
+        }
+
+        .dossier-header .title {
+            font-size: 13px;
+            color: #8b0000;
+            letter-spacing: 2px;
+            font-family: "SimHei", "黑体", monospace;
+        }
+
+        .dossier-header .stamp {
+            font-size: 10px;
+            color: #8b0000;
+            border: 1px solid #8b0000;
+            padding: 2px 8px;
+            letter-spacing: 2px;
+            opacity: 0.6;
+        }
+
+        .dossier-header a {
+            color: #444;
+            text-decoration: none;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        .dossier-header a:hover {
+            color: #8b0000;
+        }
+
+        .dossier-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            line-height: 2;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            color: #aaa;
+        }
+
+        .dossier-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .dossier-content::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+
+        .dossier-content::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 2px;
+        }
+
+        .dossier-content h2 {
+            font-family: "SimHei", "黑体", monospace;
+            color: #8b0000;
+            font-size: 18px;
+            letter-spacing: 3px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .dossier-content h3 {
+            font-family: "SimHei", "黑体", monospace;
+            color: #666;
+            font-size: 14px;
+            letter-spacing: 2px;
+            margin-top: 20px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 4px;
+        }
+
+        .dossier-content p {
+            margin-bottom: 8px;
+            text-indent: 2em;
+        }
+
+        .dossier-content .redacted {
+            background: #222;
+            color: #222;
+            padding: 1px 6px;
+            user-select: none;
+        }
+
+        .dossier-content .redacted:hover {
+            background: #333;
+            color: #aaa;
+        }
+
+        @media (max-width: 768px) {
+            .dossier-container {
+                width: 96%;
+                max-height: 90vh;
+            }
+            .dossier-content {
+                padding: 16px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="scanline"></div>
+
+    <div class="dossier-container">
+        <div class="dossier-header">
+            <span class="title">📁  #7742</span>
+            <span class="stamp">CLASSIFIED</span>
+            <a href="archive.html">← 返回</a>
+        </div>
+
+        <div class="dossier-content">
+            <!-- ↓↓↓ 以下内容你自己填充 ↓↓↓ -->
+            
+            <h2>拟物</h2>
+            
+            <h3>一、基本信息</h3>
+            <p>类型：智慧生物</p>
+            <p>分类：未定</p>
+            <p>安全性：高危</p>
+            <p>初次发现于□□山区</p>
+            <p>初次发现于1996年</p>
+            <p>尝试收容于1999年</p>
+            <p>收容失效于2026年</p>
+            
+            <h3>二、详细记录</h3>
+            <p>引发<□□-□□□事件></p>
+            <p>发生于□□□□年□月，收容物因□□影响导致收容失效，造成□□□姜□死亡。</p>
+            <p>该奇异具有“仿造”的特性，各种意义上的：</p>
+            <p>       </p>
+            <b><span style="color:#8b0000;">仿造是完美的</span></b>
+            <p>      </p>
+            <p>该奇异可以仿造出满足特定要求的任意生物，并一定程度上读取后者的记忆；</p>
+            <p>该奇异可以仿造任意造物，并获得相应特性；</p>
+            <p>该奇异可以仿造其他奇异，但无法完全仿造其能力。</p>
+            <p>该奇异仿造之物越复杂，仿造所需与冷却的时间越长。</p>
+            <p>以此性质命名该奇异为“仿造”。</p>
+            <p>该奇异具有自主意识，拥有较高的思考与伪装能力，能够说谎；极易突破收容，方式包括但不限于仿造成你现在所读的这一段文字，仿造成收容人员，仿造成收容空间等等。</p>
+            <p>收容方法：</p>
+            <p>每隔六十年献祭一位牺牲部成员以使得拟物一直处于仿造的冷却期。</p>
+            
+            <h3>三、备注</h3>
+            <i><s>这未免过于残忍了……明明我们能采用其他不会消耗人命的方法</s></i>
+            <p class="redacted">████████████████并非完美</p>
+            
+            <!-- ↑↑↑ 以上内容你自己填充 ↑↑↑ -->
+        </div>
+    </div>
+</body>
+</html>
