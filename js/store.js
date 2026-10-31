@@ -25,6 +25,7 @@ function normalizePost(post) {
   const rawComments = Array.isArray(post.comments) ? post.comments : [];
   return {
     id: post.id,
+    tier: Number.isFinite(post.tier) ? post.tier : undefined,
     userId: post.userId || '',
     author: String(post.author || '匿名').trim() || '匿名',
     title: String(post.title || '(无标题)'),
@@ -76,6 +77,57 @@ export function loadPosts() {
 
 export function loadArchive() {
   return loadDataset(CONFIG.data.archive);
+}
+
+/**
+ * 聊天室进度（sessionStorage.chat_state）。
+ * 只用来决定「哪些帖子现在该出现」，页面其它地方一律不读它。
+ */
+function chatProgress() {
+  try {
+    const raw = sessionStorage.getItem('chat_state');
+    if (!raw) return { anomalies: 0, impostor: false };
+    const state = JSON.parse(raw);
+    return {
+      anomalies: Array.isArray(state?.anomalies) ? state.anomalies.length : 0,
+      impostor: Boolean(state?.impostor)
+    };
+  } catch (error) {
+    return { anomalies: 0, impostor: false };
+  }
+}
+
+async function loadStoryExtras(progress) {
+  const extras = [];
+
+  if (progress.anomalies > 0) {
+    const glitch = await loadDataset(CONFIG.data.glitch).catch(() => ({ posts: [] }));
+    extras.push(...(glitch.posts || []).filter((post) => (post.tier ?? 1) <= progress.anomalies));
+  }
+
+  if (progress.impostor) {
+    const late = await loadDataset(CONFIG.data.late).catch(() => ({ posts: [] }));
+    extras.push(...(late.posts || []));
+  }
+
+  return extras;
+}
+
+/**
+ * 帖子列表 = 公开帖 + 当前进度解锁的剧情帖，统一按时间倒序。
+ * 时间坏掉的（拟物抄坏的残片）落在列表最后。
+ * 首页、详情页都用这个，保证「刚刚刷出来的帖子」点得进去。
+ */
+export async function loadStoryPosts() {
+  const dataset = await loadPosts();
+  const extras = await loadStoryExtras(chatProgress());
+  if (!extras.length) return dataset;
+
+  const posts = [...dataset.posts, ...extras].sort(
+    (a, b) => timeValue(b) - timeValue(a) || Number(b.id) - Number(a.id)
+  );
+
+  return { ...dataset, posts };
 }
 
 export function countComments(posts) {

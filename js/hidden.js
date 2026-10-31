@@ -170,9 +170,29 @@ const CHAT = {
                 '你说的那些方块，不是排版问题。',
                 '有人把字从句子中间挖走了，挖得很干净，连字节数都补平了。帖子还读得通，只是缺了几处指代。'
             ]
+        },
+        {
+            id: 'shared-id',
+            pattern: /(ID|账号|号).{0,6}(一样|相同|同一个|一样的)|同一(个)?账号|一号多用/i,
+            replies: [
+                '姜生、南安、张月升、林晓夏——把那四篇翻出来，看页面右侧那行 ID。',
+                '四个人，一个号。',
+                '一个人只能有一个账号。除非这张表本来就不是「人」的表——它是从别处整张抄过来的，抄的时候名字和号码拆成两张表各自抄，对不上了。'
+            ]
+        },
+        {
+            id: 'split-id',
+            pattern: /署名|两个号|两个账号|🌕|月亮|月圆/,
+            replies: [
+                '……等一下。',
+                '我自己发的帖子，用的是哪个号？',
+                '「恸山行记」是我发的，ID 是 user_5wkmj0tr。那篇「关于这个论坛的考究」也是我，ID 却是 user_r0a4np06。',
+                '我没有第二个号。那个不是我写的。'
+            ]
         }
     ],
     anomalyTrace: '井壁上多了一道新的刻痕，比刚才深。',
+    anomalyPostsHint: '……等等。论坛的帖子数不对了。你自己去看一眼。',
 
     /* ── 三类：违禁词。打出来就会被涂黑，三次之后强制失联 ── */
     banned: ['拟物', '仿造', '收容', '仿制品'],
@@ -479,6 +499,7 @@ function bindChat() {
                 chatState.anomalies.push(anomaly.id);
                 queue.push(...anomaly.replies.map((line) => messageHtml('other', line)));
                 queue.push(systemHtml(CHAT.anomalyTrace));
+                queue.push(messageHtml('other', CHAT.anomalyPostsHint));
 
                 if (chatState.anomalies.length >= 3 && !chatState.impostor) {
                     chatState.impostor = true;

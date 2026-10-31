@@ -511,6 +511,13 @@ mark.hl {
     color: var(--muted);
 }
 
+/* 详情页：正文与评论分区之间留口子，避免两块糊在一起 */
+#commentsSection { margin-top: 46px; }
+
+@media (max-width: 600px) {
+    #commentsSection { margin-top: 30px; }
+}
+
 .comments {
     list-style: none;
     margin: 0;

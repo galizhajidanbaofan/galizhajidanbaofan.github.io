@@ -1,6 +1,68 @@
 {
   "schemaVersion": 2,
-  "note": "中段里程碑阶段才会出现的帖子（假江望舒刷帖）。由 js/hidden.js 在进入 stage 3 时并入首页，刷新后仍在。目前为空，等剧情文本定稿后填入；条目结构同 data/posts.json。",
-  "generatedAt": "2026-10-31T16:00:00+08:00",
-  "posts": []
+  "note": "假江望舒的帖子（拟物仿造）。impostor 为 true 时出现。",
+  "posts": [
+    {
+      "id": 9910000000001,
+      "author": "🌕",
+      "userId": "user_r0a4np06",
+      "title": "我出来了",
+      "content": "我从井里出来了。\n\n别担心。我很好。\n\n谢谢你这几天的帮忙。",
+      "time": "2026-09-27T01:12:00+08:00",
+      "comments": [
+        {
+          "id": 1,
+          "floor": 1,
+          "author": "🌕",
+          "userId": "user_5wkmj0tr",
+          "content": "这条不是我发的。我还在井里。",
+          "time": "2026-09-27T01:13:00+08:00"
+        },
+        {
+          "id": 2,
+          "floor": 2,
+          "author": "匿名",
+          "userId": "",
+          "content": "？",
+          "time": "2026-09-27T01:14:00+08:00"
+        }
+      ]
+    },
+    {
+      "id": 9910000000002,
+      "author": "🌕",
+      "userId": "user_r0a4np06",
+      "title": "关于那个文件夹",
+      "content": "里面的东西不必再看。\n\n我已经看过了。",
+      "time": "2026-09-27T01:16:00+08:00",
+      "comments": [
+        {
+          "id": 1,
+          "floor": 1,
+          "author": "🌕",
+          "userId": "user_5wkmj0tr",
+          "content": "我没有说过这句话。",
+          "time": "2026-09-27T01:17:00+08:00"
+        }
+      ]
+    },
+    {
+      "id": 9910000000003,
+      "author": "🌕",
+      "userId": "user_r0a4np06",
+      "title": "你叫什么名字",
+      "content": "我想记住你的名字。\n\n下次见面的时候，我怕认不出来。",
+      "time": "2026-09-27T01:20:00+08:00",
+      "comments": [
+        {
+          "id": 1,
+          "floor": 1,
+          "author": "🌕",
+          "userId": "user_5wkmj0tr",
+          "content": "她不知道你的名字。\n我也不知道。\n我没有问过。",
+          "time": "2026-09-27T01:21:00+08:00"
+        }
+      ]
+    }
+  ]
 }

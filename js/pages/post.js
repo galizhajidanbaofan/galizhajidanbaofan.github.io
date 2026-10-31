@@ -3,7 +3,7 @@
  */
 import { CONFIG } from '../config.js';
 import { isAdmin } from '../auth.js';
-import { findPost, loadArchive, loadPosts } from '../store.js';
+import { findPost, loadArchive, loadStoryPosts } from '../store.js';
 import { commentsHtml, detailHtml, emptyStateHtml } from '../render.js';
 import { openModal } from '../ui.js';
 
@@ -20,7 +20,11 @@ export async function boot() {
 
   const showOnly = (html) => {
     detail.innerHTML = html;
-    if (commentsSection) commentsSection.hidden = true;
+    if (commentsSection) {
+      commentsSection.hidden = true;
+      commentsSection.style.display = '';
+    }
+
   };
 
   if (!id) {
@@ -41,7 +45,7 @@ export async function boot() {
   }
 
   try {
-    const dataset = fromArchive ? await loadArchive() : await loadPosts();
+    const dataset = fromArchive ? await loadArchive() : await loadStoryPosts();
     const post = findPost(dataset.posts, id);
 
     if (!post) {
@@ -56,7 +60,11 @@ export async function boot() {
 
     detail.innerHTML = detailHtml(post, { archive: fromArchive });
 
-    if (commentsSection) commentsSection.hidden = false;
+    if (commentsSection) {
+      commentsSection.style.display = '';
+      commentsSection.hidden = false;
+    }
+
     const commentsList = document.getElementById('commentsList');
     if (commentsList) commentsList.innerHTML = commentsHtml(post);
   } catch (error) {

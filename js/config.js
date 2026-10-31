@@ -8,7 +8,11 @@ export const CONFIG = {
     // 公开帖子
     posts: 'data/posts.json',
     // 隐藏帖子（管理员模式可读），文件格式与 posts.json 相同
-    archive: 'data/archive.json'
+    archive: 'data/archive.json',
+    // 异常帖：聊天室里每发现一条异常就多出几条（tier 见文件内注释）
+    glitch: 'data/posts-glitch.json',
+    // 假江望舒的帖子：聊天室出现「有人用我的账号在发帖」之后才可见
+    late: 'data/posts-late.json'
   },
 
   list: {

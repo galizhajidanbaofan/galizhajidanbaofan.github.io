@@ -3,7 +3,7 @@
  */
 import { CONFIG } from '../config.js';
 import { escapeHtml } from '../format.js';
-import { countComments, loadPosts } from '../store.js';
+import { countComments, loadStoryPosts } from '../store.js';
 import { filterPosts, isSecretTrigger, secretReplies } from '../search.js';
 import { emptyStateHtml, postListHtml } from '../render.js';
 import { openDialog } from '../ui.js';
@@ -21,7 +21,7 @@ export async function boot() {
   bindLoadMore();
 
   try {
-    const dataset = await loadPosts();
+    const dataset = await loadStoryPosts();
     state.posts = dataset.posts;
     state.visible = Math.min(CONFIG.list.pageSize, state.posts.length);
   } catch (error) {
