@@ -423,6 +423,10 @@ body[data-theme="retro"] .chat__quick .btn {
 }
 
 .msg-system {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     align-self: center;
     font-size: 11px;
     letter-spacing: .3em;
@@ -542,3 +546,89 @@ body[data-theme="retro"] .chat__quick .btn {
     .dossier__body h2 { font-size: 24px; }
     .dossier__stamp { margin-left: 0; }
 }
+
+/* ---------- 线索系统：链接气泡 / 涂黑 / 红色选项 ---------- */
+
+.msg__link {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 3px 10px;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+    font-size: 12.5px;
+    letter-spacing: .04em;
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.msg__link:hover { background: var(--accent); color: var(--bg); }
+
+/* 被涂黑的一条：字在，读不到 */
+.msg__bubble--redacted {
+    background: #0B0B0B;
+    border-color: #0B0B0B;
+    color: transparent;
+    letter-spacing: .12em;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 52%;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.msg__bubble--redacted::selection { background: transparent; }
+
+/* 只在这一刻出现的红字选项 */
+.chat__quick .btn--danger {
+    color: #C8201E;
+    border-color: #C8201E;
+}
+
+.chat__quick .btn--danger:hover {
+    background: #C8201E;
+    color: #FFFBEB;
+}
+
+body[data-theme="retro"] .chat__quick .btn--danger { color: #800000; border-color: #800000; }
+body[data-theme="retro"] .chat__quick .btn--danger:hover { background: #800000; color: #FFFFFF; }
+body[data-theme="retro"] .msg__link { border-color: #808080; color: #0000EE; }
+body[data-theme="retro"] .msg__link:hover { background: #000080; color: #FFFFFF; }
+
+/* ---------- 结局页 ---------- */
+
+.ending { padding: 26px 8px 20px; text-align: center; }
+.ending__kicker {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: .42em;
+    color: var(--muted);
+}
+.ending__title {
+    font-family: var(--font-title);
+    font-size: 44px;
+    font-weight: 600;
+    letter-spacing: .34em;
+    margin: 16px 0 20px;
+    color: var(--accent);
+    text-indent: .34em;
+}
+.ending__line { margin: 0 auto 20px; }
+.ending__text {
+    font-size: 15px;
+    line-height: 2.05;
+    max-width: 34ch;
+    margin: 0 auto;
+    text-wrap: balance;
+}
+.ending__actions { justify-content: center; gap: 12px; margin-top: 28px; }
+
+@media (max-width: 600px) {
+    .ending__title { font-size: 32px; letter-spacing: .26em; text-indent: .26em; }
+    .ending__text { font-size: 14px; }
+    .ending__actions { flex-direction: column; align-items: stretch; }
+}
+
+/* 破折号交给 CSS，文字换行时不会被拆到两行 */
+.msg-system::before,
+.msg-system::after { content: '———'; flex: 0 0 auto; opacity: .55; }
+.msg-system__text { flex: 0 1 auto; }
