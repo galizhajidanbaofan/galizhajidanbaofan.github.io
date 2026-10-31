@@ -506,9 +506,11 @@ function bindChat() {
     if (loadChatState().locked) applyLock();
     input.focus();
 
-    /* 它在学你说话：输入框被锁，而你"自己"还在说话 */
+    /* 它在学你说话：输入框被锁，而你"自己"还在说话。
+       首访要把开场白念完再动手，否则两句会撞在一起。 */
     if (loadChatState().impostor && !loadChatState().locked) {
-        window.setTimeout(() => runLockSequence(), 2600);
+        const openingSpan = isFirstVisit ? 1000 + CHAT.openingLines.length * 1500 : 0;
+        window.setTimeout(() => runLockSequence(), Math.max(2600, openingSpan + 900));
     }
 
     form.addEventListener('submit', (event) => {
