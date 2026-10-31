@@ -242,6 +242,14 @@ button, input, textarea { font: inherit; color: inherit; }
 
 .card p + p { margin-top: 10px; }
 
+.card__sign {
+    margin-top: 14px !important;
+    font-size: 12px !important;
+    letter-spacing: .1em;
+    text-align: right;
+    color: var(--muted);
+}
+
 .card a.link {
     display: inline-block;
     margin-top: 12px;
