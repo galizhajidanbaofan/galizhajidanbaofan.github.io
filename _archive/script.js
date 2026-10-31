@@ -1,6 +1,9 @@
 // ========== JSONBin配置 ==========
+// 【归档文件，已停用】
+// 原文件里的 JSONBin Master Key 已在此处替换为占位符：它曾以明文形式随站点公开，
+// 属于严重的凭据泄露，仓库里不应保留真实的 key。
 const BIN_ID = '6a38d65df5f4af5e291b4d68';
-const API_KEY = '$2a$10$fSsQwf2TxKlfWU/zTta.l.0qsHSpmQ9G08HixJjMQvT0xzlqcM/g.';
+const API_KEY = 'REDACTED_JSONBIN_MASTER_KEY';
 const ADMIN_PASSWORD_HASH = '97a3142172e58c70ea51faf6fa5f26eff18c90bbea88c9b4c5354afffd048f64';
 
 let posts = [];

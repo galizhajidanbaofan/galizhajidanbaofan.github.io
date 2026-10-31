@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 2,
+  "note": "隐藏帖（仅管理员模式可阅）。形式与 posts.json 一致，每条必须「不能带 hidden 字段」；下面的 posts 数组默认为空。",
+  "generatedAt": "2026-10-31T14:46:39+08:00",
+  "posts": []
+}

@@ -3,29 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>管理后台</title>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; connect-src https://api.jsonbin.io; style-src 'self' 'unsafe-inline';">
+    <title>管理员模式 - 奇闻异事</title>
+
+    <meta name="description" content="奇闻异事 - 管理员模式（只读档案区）。">
+    <meta name="robots" content="noindex">
+    <meta name="theme-color" content="#1a73e8">
+
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'">
+
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style-modern.css" id="css-modern">
     <link rel="stylesheet" href="style-retro.css" id="css-retro" disabled>
+    <link rel="stylesheet" href="ui.css">
 </head>
-<body>
+<body data-page="admin">
     <div class="container">
         <header>
-            <h1>帖子管理</h1>
+            <h1>档案区</h1>
             <nav>
                 <a href="index.html">返回首页</a>
-                <a href="admin.html" onclick="logoutAdmin()" style="color:red;">退出管理</a>
-                <span class="theme-switch" onclick="toggleTheme()" title="切换风格">
-                    <span id="themeLabel">风格</span>
-                </span>
+                <button type="button" class="theme-switch" data-theme-toggle title="切换风格">
+                    <span data-theme-label>风格</span>
+                </button>
             </nav>
         </header>
 
-        <div id="adminList">
-            <p style="text-align:center;padding:40px;">正在验证...</p>
+        <div id="adminRoot">
+            <p class="empty-state">正在验证...</p>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>

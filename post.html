@@ -3,42 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>帖子详情</title>
+    <title>帖子详情 - 奇闻异事</title>
+
+    <meta name="description" content="奇闻异事 - 帖子详情与评论。">
+    <meta name="theme-color" content="#1a73e8">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="奇闻异事">
+    <meta property="og:title" content="奇闻异事">
+    <meta property="og:description" content="奇闻异事 - 帖子详情与评论。">
+
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'">
+
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style-modern.css" id="css-modern">
     <link rel="stylesheet" href="style-retro.css" id="css-retro" disabled>
+    <link rel="stylesheet" href="ui.css">
 </head>
-<body>
+<body data-page="post">
     <div class="container">
         <header>
             <h1>奇闻异事</h1>
             <nav>
                 <a href="index.html">返回首页</a>
                 <a href="admin.html">管理后台</a>
-                <span class="theme-switch" onclick="toggleTheme()" title="切换风格">
-                    <span id="themeLabel">风格</span>
-                </span>
+                <button type="button" class="theme-switch" data-theme-toggle title="切换风格">
+                    <span data-theme-label>风格</span>
+                </button>
             </nav>
         </header>
 
         <div id="postDetail">
-            <p style="text-align:center;padding:40px;">正在加载帖子...</p>
+            <p class="empty-state">正在加载帖子...</p>
         </div>
-        
-        <!-- 评论区域 -->
+
+        <!-- 评论区（发表入口改为维护提示） -->
         <div id="commentsSection" style="display:none;">
-            <div class="comment-form">
+            <form class="comment-form" id="commentForm" novalidate>
                 <h3>发表评论</h3>
+                <p class="form-note">本站正在维护，暂时无法发表评论。</p>
                 <input type="text" id="commentNickname" placeholder="你的昵称（可选）" maxlength="20">
                 <textarea id="commentContent" placeholder="写下你的评论..." rows="4" maxlength="1000"></textarea>
-                <button onclick="addComment()">发表评论</button>
-            </div>
-            
-            <div class="comments-list" id="commentsList">
-                <!-- 评论动态渲染 -->
-            </div>
+                <button type="submit">发表评论</button>
+            </form>
+
+            <div class="comments-list" id="commentsList"></div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>

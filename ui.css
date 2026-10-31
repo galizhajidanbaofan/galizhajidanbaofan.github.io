@@ -1,0 +1,460 @@
+/* ============================================================
+   ui.css —— 通用组件层
+   两套主题（style-modern.css / style-retro.css）负责页面骨架，
+   这里只放新增的交互组件：提示条、弹窗、按钮、档案区、只读正文等。
+   ============================================================ */
+
+:root {
+    --ui-accent: #1a73e8;
+    --ui-accent-ink: #ffffff;
+    --ui-accent-soft: rgba(26, 115, 232, 0.08);
+    --ui-surface: #ffffff;
+    --ui-surface-sunken: #f7f9fc;
+    --ui-border: #e3e8ef;
+    --ui-text: #333333;
+    --ui-muted: #8a94a6;
+    --ui-danger: #d93025;
+    --ui-radius: 12px;
+    --ui-shadow: 0 8px 32px rgba(16, 40, 80, 0.16);
+    --ui-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace;
+}
+
+/* 复古主题：跟着 Win98 的灰白配色走 */
+body[data-theme="retro"] {
+    --ui-accent: #000080;
+    --ui-accent-ink: #ffffff;
+    --ui-accent-soft: #e8e8e8;
+    --ui-surface: #c0c0c0;
+    --ui-surface-sunken: #d4d0c8;
+    --ui-border: #808080;
+    --ui-text: #000000;
+    --ui-muted: #404040;
+    --ui-danger: #a00000;
+    --ui-radius: 0;
+    --ui-shadow: none;
+}
+
+/* ========== 按钮 ========== */
+
+.ui-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font: inherit;
+    font-size: 14px;
+    color: var(--ui-text);
+    background: var(--ui-surface);
+    border: 1px solid var(--ui-border);
+    border-radius: var(--ui-radius);
+    cursor: pointer;
+    transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.ui-btn:hover {
+    border-color: var(--ui-accent);
+    background: var(--ui-accent-soft);
+}
+
+.ui-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.ui-btn--primary {
+    color: var(--ui-accent-ink);
+    background: var(--ui-accent);
+    border-color: var(--ui-accent);
+}
+
+.ui-btn--primary:hover {
+    background: var(--ui-accent);
+    filter: brightness(1.08);
+}
+
+body[data-theme="retro"] .ui-btn {
+    padding: 4px 14px;
+    background: #c0c0c0;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    border-radius: 0;
+    cursor: default;
+}
+
+body[data-theme="retro"] .ui-btn:active {
+    border-color: #808080 #ffffff #ffffff #808080;
+}
+
+body[data-theme="retro"] .ui-btn--primary {
+    color: #ffffff;
+    background: #000080;
+}
+
+/* 「加载更多」 */
+[data-load-more] {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    font: inherit;
+    font-size: 14px;
+    color: var(--ui-accent);
+    background: var(--ui-surface);
+    border: 1px dashed var(--ui-border);
+    border-radius: var(--ui-radius);
+    cursor: pointer;
+}
+
+[data-load-more]:hover {
+    background: var(--ui-accent-soft);
+}
+
+body[data-theme="retro"] [data-load-more] {
+    color: #0000ee;
+    background: #c0c0c0;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    border-radius: 0;
+    cursor: default;
+}
+
+#loadMore {
+    margin: 8px 0 32px;
+}
+
+/* ========== 提示条 ========== */
+
+.ui-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 32px;
+    z-index: 2000;
+    max-width: min(90vw, 420px);
+    padding: 12px 22px;
+    font-size: 14px;
+    color: #ffffff;
+    background: rgba(32, 40, 56, 0.94);
+    border-radius: 999px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+    transform: translate(-50%, 16px);
+    opacity: 0;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none;
+}
+
+.ui-toast.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+.ui-toast--success {
+    background: rgba(24, 128, 72, 0.95);
+}
+
+.ui-toast--error {
+    background: rgba(180, 42, 34, 0.95);
+}
+
+body[data-theme="retro"] .ui-toast {
+    border-radius: 0;
+    border: 2px solid #ffffff;
+    box-shadow: none;
+    font-family: var(--ui-mono);
+}
+
+/* ========== 弹窗 ========== */
+
+.ui-modal-mask {
+    position: fixed;
+    inset: 0;
+    z-index: 1900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(16, 24, 40, 0.42);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.ui-modal-mask.is-visible {
+    opacity: 1;
+}
+
+.ui-modal {
+    width: min(440px, 100%);
+    padding: 26px 28px 22px;
+    background: var(--ui-surface);
+    border-radius: 16px;
+    box-shadow: var(--ui-shadow);
+    transform: translateY(12px);
+    transition: transform 0.24s ease;
+}
+
+.ui-modal-mask.is-visible .ui-modal {
+    transform: translateY(0);
+}
+
+.ui-modal__title {
+    margin-bottom: 14px;
+    font-size: 19px;
+    color: var(--ui-accent);
+}
+
+.ui-modal__body p {
+    margin-bottom: 10px;
+    font-size: 14px;
+    line-height: 1.85;
+    color: var(--ui-text);
+}
+
+.ui-modal__body p:last-child {
+    margin-bottom: 0;
+}
+
+.ui-modal__actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 22px;
+}
+
+body[data-theme="retro"] .ui-modal {
+    border-radius: 0;
+    border: 2px outset #ffffff;
+    box-shadow: 3px 3px 0 #404040;
+}
+
+body[data-theme="retro"] .ui-modal__title {
+    padding-bottom: 4px;
+    font-size: 14px;
+    color: #ffffff;
+    background: #000080;
+    padding: 3px 6px;
+    margin: -20px -22px 14px;
+}
+
+body[data-theme="retro"] .ui-modal__body p {
+    font-size: 13px;
+    line-height: 1.75;
+}
+
+/* ========== 列表 / 状态 ========== */
+
+.empty-state {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--ui-muted);
+    font-size: 14px;
+}
+
+.list-stats {
+    margin: 20px 0 14px;
+    font-size: 13px;
+    color: var(--ui-muted);
+}
+
+#searchResult {
+    margin-bottom: 8px;
+}
+
+mark.hl {
+    padding: 0 2px;
+    color: #8a3b00;
+    background: #ffe9a8;
+    border-radius: 3px;
+}
+
+body[data-theme="retro"] mark.hl {
+    color: #000000;
+    background: #ffff00;
+    border-radius: 0;
+}
+
+/* ========== 只读正文 ========== */
+
+.post-body {
+    margin: 20px 0;
+    padding: 20px 22px;
+    font-size: 15px;
+    line-height: 2;
+    color: var(--ui-text);
+    background: var(--ui-surface-sunken);
+    border-radius: var(--ui-radius);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+body[data-theme="retro"] .post-body {
+    background: #ffffff;
+    border: 2px inset #808080;
+    border-radius: 0;
+    font-size: 14px;
+}
+
+.post-uid {
+    font-family: var(--ui-mono);
+    font-size: 12px;
+    opacity: 0.72;
+}
+
+.post-flag {
+    margin-left: 6px;
+    font-size: 12px;
+    color: var(--ui-muted);
+}
+
+.admin-badge {
+    display: inline-block;
+    margin: 6px 0 12px;
+    padding: 3px 12px;
+    font-size: 12px;
+    color: #8a5a00;
+    background: #fff4d6;
+    border: 1px solid #f0d68a;
+    border-radius: 999px;
+}
+
+body[data-theme="retro"] .admin-badge {
+    color: #ffffff;
+    background: #800000;
+    border: 1px solid #000000;
+    border-radius: 0;
+}
+
+.no-comments {
+    padding: 24px;
+    text-align: center;
+    color: var(--ui-muted);
+    font-size: 14px;
+}
+
+/* ========== 管理员模式 ========== */
+
+.admin-gate {
+    max-width: 420px;
+    margin: 48px auto;
+    padding: 28px 30px;
+    background: var(--ui-surface);
+    border: 1px solid var(--ui-border);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(16, 40, 80, 0.07);
+}
+
+.admin-gate h2 {
+    margin-bottom: 10px;
+    font-size: 20px;
+    color: var(--ui-accent);
+}
+
+.admin-gate__desc {
+    margin-bottom: 18px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--ui-muted);
+}
+
+.admin-gate__label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--ui-text);
+}
+
+.admin-gate input[type="password"] {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.admin-gate__error {
+    min-height: 20px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--ui-danger);
+}
+
+.admin-gate .ui-btn {
+    width: 100%;
+}
+
+body[data-theme="retro"] .admin-gate {
+    border: 2px outset #ffffff;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.admin-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+    padding: 16px 20px;
+    background: var(--ui-accent-soft);
+    border: 1px solid var(--ui-border);
+    border-radius: var(--ui-radius);
+}
+
+.admin-mode {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ui-accent);
+}
+
+.admin-mode__hint {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--ui-muted);
+}
+
+body[data-theme="retro"] .admin-toolbar {
+    border: 2px inset #808080;
+    border-radius: 0;
+    background: #d4d0c8;
+}
+
+body[data-theme="retro"] .admin-mode {
+    color: #000080;
+}
+
+/* ========== 表单说明 ========== */
+
+.form-note {
+    margin-bottom: 14px;
+    padding: 10px 14px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ui-muted);
+    background: var(--ui-accent-soft);
+    border-left: 3px solid var(--ui-accent);
+    border-radius: 6px;
+}
+
+body[data-theme="retro"] .form-note {
+    color: #000000;
+    background: #ffffcc;
+    border: 1px solid #808080;
+    border-left: 3px solid #000080;
+    border-radius: 0;
+    font-size: 12px;
+}
+
+/* ========== 窄屏 ========== */
+
+@media (max-width: 640px) {
+    .ui-modal {
+        padding: 22px 20px 18px;
+    }
+
+    .post-body {
+        padding: 16px;
+        font-size: 14px;
+        line-height: 1.9;
+    }
+
+    .admin-gate {
+        margin: 24px auto;
+        padding: 22px 20px;
+    }
+
+    .admin-toolbar {
+        padding: 14px 16px;
+    }
+}
