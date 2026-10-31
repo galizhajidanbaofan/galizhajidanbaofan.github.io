@@ -57,7 +57,7 @@ export function postListHtml(posts, options = {}) {
     .join('');
 }
 
-export function detailHtml(post, { archive = false } = {}) {
+export function detailHtml(post, { archive = false, includeDelayed = false } = {}) {
   const uid = post.userId || '未知';
 
   return `
@@ -79,12 +79,16 @@ export function detailHtml(post, { archive = false } = {}) {
     </article>`;
 }
 
-export function commentsHtml(post) {
-  if (!post.comments.length) {
+export function commentsHtml(post, { includeDelayed = false } = {}) {
+  const list = includeDelayed
+    ? post.comments
+    : post.comments.filter((comment) => !comment.delayed);
+
+  if (!list.length) {
     return '<li><p class="empty-state">还没有人回复。</p></li>';
   }
 
-  return post.comments
+  return list
     .map((comment) => `
       <li class="comment">
         <div class="comment__head">

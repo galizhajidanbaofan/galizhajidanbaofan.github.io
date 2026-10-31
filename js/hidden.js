@@ -84,8 +84,12 @@ const CHAT = {
     /* 三类线索共用一张表，命中顺序：违禁词 → 异常 → 这里 */
     autoReplies: {
         '你好': '你好。',
-        '你是谁': '我是谁...',
-        '这里是什么地方': '这里是我留下的聊天室。',
+        '你是谁': [
+            '我叫江望舒，做民俗研究。',
+            '这个论坛不是我的，我只是借这里的一条道。',
+            '牌匾是没有的，不过事务所的官网我留着，你可以看看。',
+            { text: '（链接已传输）', link: { href: 'office.html', label: '望舒民俗研究室' } }
+        ],
         '怎么回事': [
             '先说怎么进去的。',
             '恸山在行政区划上不完全属于任何一个县，地图上那一带是空白，只有等高线。我按姜生帖子里写的方位，从镇子往北，坐了两个小时的中巴，又走了半天山路。',
@@ -173,7 +177,7 @@ const CHAT = {
         },
         {
             id: 'shared-id',
-            pattern: /(ID|账号|号).{0,6}(一样|相同|同一个|一样的)|同一(个)?账号|一号多用/i,
+            pattern: /ID|账号|用户名|同一个号|一号多用|一号多用/i,
             replies: [
                 '姜生、南安、张月升、林晓夏——把那四篇翻出来，看页面右侧那行 ID。',
                 '四个人，一个号。',
@@ -213,6 +217,18 @@ const CHAT = {
     ],
     impostorTrace: '—— 论坛有新帖，署名 🌕 ——',
 
+    /* ── 中段里程碑：她开始怀疑对面是不是你 ── */
+    lockSystemLine: '输入已锁定',
+    lockSelfLine: '我在。',
+    lockLines: [
+        '……刚才那句，不是你打的吧。',
+        '不对。是它打的。',
+        '它开始学你说话了。',
+        '你现在打不出字了，对吧。',
+        '先别急。它学得快，但有几样东西它学不会。',
+        '它分不清「我」和「你」该用在哪。你回头翻它发的帖子，从头到尾都是乱的。'
+    ],
+
     openingLines: [
         '有人和我建立了通讯连接？怎么会？',
         '信号一直是断的，连短信都发不出去……你那边是怎么进来的？',
@@ -222,7 +238,7 @@ const CHAT = {
     /* 讲完经过之后才递文件夹 */
     afterOriginStory: ['这儿有个文件夹，我把找到的东西都放里面了。', '📁'],
     /* 固定选项按钮 */
-    quickReplies: ['怎么回事', '你是谁', '这里是什么地方', '你还好吗']
+    quickReplies: ['怎么回事', '你是谁', '你还好吗', '那东西']
 };
 
 function chatTime() {
@@ -305,7 +321,7 @@ function repliesFor(text) {
 
 /* ---------- 线索状态（一次会话内有效） ---------- */
 
-const blankState = () => ({ redact: 0, anomalies: [], impostor: false });
+const blankState = () => ({ redact: 0, anomalies: [], impostor: false, impostorAt: null, locked: false });
 
 function loadChatState() {
     try {
@@ -430,6 +446,42 @@ function bindChat() {
         quickBar.appendChild(chip);
     };
 
+    const applyLock = () => {
+        input.value = '';
+        input.disabled = true;
+        input.placeholder = CHAT.lockSystemLine;
+        input.classList.add('is-locked');
+        const submit = form.querySelector('button[type="submit"]');
+        if (submit) submit.disabled = true;
+        quickBar.querySelectorAll('button').forEach((button) => { button.disabled = true; });
+    };
+
+    let locking = false;
+    const runLockSequence = () => {
+        if (locking) return;
+        locking = true;
+
+        const state = loadChatState();
+        state.locked = true;
+        saveChatState(state);
+
+        applyLock();
+        append(systemHtml(CHAT.lockSystemLine));
+        save();
+
+        const lines = [
+            messageHtml('self', CHAT.lockSelfLine),
+            ...CHAT.lockLines.map((line) => messageHtml('other', line))
+        ];
+
+        lines.forEach((html, index) => {
+            window.setTimeout(() => {
+                append(html);
+                save();
+            }, 900 + index * 1400);
+        });
+    };
+
     /* ---------- 开场与历史 ---------- */
 
     const isFirstVisit = !sessionStorage.getItem(CHAT.firstVisitKey);
@@ -451,10 +503,17 @@ function bindChat() {
 
     renderLoginState();
     if (loadChatState().redact >= 2) revealChip();
+    if (loadChatState().locked) applyLock();
     input.focus();
+
+    /* 它在学你说话：输入框被锁，而你"自己"还在说话 */
+    if (loadChatState().impostor && !loadChatState().locked) {
+        window.setTimeout(() => runLockSequence(), 2600);
+    }
 
     form.addEventListener('submit', (event) => {
         event.preventDefault();
+        if (loadChatState().locked) return;
         if (!isLoggedIn()) {
             promptLogin('需要账号才能说话');
             return;
@@ -503,6 +562,7 @@ function bindChat() {
 
                 if (chatState.anomalies.length >= 3 && !chatState.impostor) {
                     chatState.impostor = true;
+                    chatState.impostorAt = Date.now();
                     queue.push(...CHAT.impostorLines.map((line) => messageHtml('other', line)));
                     queue.push(systemHtml(CHAT.impostorTrace));
                 }

@@ -67,6 +67,14 @@ export async function boot() {
 
     const commentsList = document.getElementById('commentsList');
     if (commentsList) commentsList.innerHTML = commentsHtml(post);
+
+    /* 有人在盯着这条帖子：先让你看到原文，一秒后反驳才刷出来 */
+    if (post.comments.some((comment) => comment.delayed)) {
+      window.setTimeout(() => {
+        detail.innerHTML = detailHtml(post, { archive: fromArchive, includeDelayed: true });
+        if (commentsList) commentsList.innerHTML = commentsHtml(post, { includeDelayed: true });
+      }, 1000);
+    }
   } catch (error) {
     console.error(error);
     showOnly(emptyStateHtml('加载失败，请稍后重试。'));

@@ -20,10 +20,12 @@ export async function boot() {
   bindSearch();
   bindLoadMore();
 
+  let nextAt = null;
   try {
     const dataset = await loadStoryPosts();
     state.posts = dataset.posts;
     state.visible = Math.min(CONFIG.list.pageSize, state.posts.length);
+    nextAt = dataset.nextAt;
   } catch (error) {
     console.error(error);
     const list = document.getElementById('postList');
@@ -33,6 +35,37 @@ export async function boot() {
 
   renderList();
   renderStats();
+  scheduleReveal(nextAt);
+}
+
+/* ---------- 有人在往论坛里塞帖子：到点自己冒出来 ---------- */
+
+function scheduleReveal(nextAt) {
+  if (!nextAt) return;
+  const delay = Math.max(400, nextAt - Date.now() + 150);
+  window.setTimeout(refreshQuietly, delay);
+}
+
+async function refreshQuietly() {
+  try {
+    const dataset = await loadStoryPosts();
+    const before = state.posts.length;
+    state.posts = dataset.posts;
+
+    if (!state.keyword) {
+      state.visible = Math.min(Math.max(state.visible, CONFIG.list.pageSize), state.posts.length);
+      renderList();
+    }
+    renderStats();
+    scheduleReveal(dataset.nextAt);
+
+    if (state.posts.length > before) {
+      const stats = document.getElementById('listStats');
+      if (stats) stats.setAttribute('data-flash', '1');
+    }
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 /* ---------- 发布入口：表单还在，提交只会看到维护说明 ---------- */

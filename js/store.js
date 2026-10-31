@@ -17,6 +17,7 @@ function normalizeComment(comment, index) {
     userId: comment.userId || '',
     author: String(comment.author || '匿名').trim() || '匿名',
     content: String(comment.content ?? ''),
+    delayed: Boolean(comment.delayed),
     time: parseTime(comment.time) ? comment.time : null
   };
 }
@@ -86,19 +87,30 @@ export function loadArchive() {
 function chatProgress() {
   try {
     const raw = sessionStorage.getItem('chat_state');
-    if (!raw) return { anomalies: 0, impostor: false };
+    if (!raw) return { anomalies: 0, impostor: false, impostorAt: null };
     const state = JSON.parse(raw);
     return {
       anomalies: Array.isArray(state?.anomalies) ? state.anomalies.length : 0,
-      impostor: Boolean(state?.impostor)
+      impostor: Boolean(state?.impostor),
+      impostorAt: Number.isFinite(state?.impostorAt) ? state.impostorAt : null
     };
   } catch (error) {
-    return { anomalies: 0, impostor: false };
+    return { anomalies: 0, impostor: false, impostorAt: null };
   }
 }
 
-async function loadStoryExtras(progress) {
+/** 假帖之间的间隔：她不可能一口气发三条，得让玩家看着它一条条冒出来。 */
+export const LATE_GAP_MS = 5000;
+
+/**
+ * 剧情帖 = 已解锁的那部分。
+ * 假江望舒三帖按「impostor 被触发的那一刻」起算，每 5 秒出现一条，
+ * 时间戳取真实的出现时刻，所以玩家刷新几次看到的都是「刚刚」。
+ * nextAt 是下一条该出现的时刻，页面据此挂定时器。
+ */
+async function loadStoryExtras(progress, now) {
   const extras = [];
+  let nextAt = null;
 
   if (progress.anomalies > 0) {
     const glitch = await loadDataset(CONFIG.data.glitch).catch(() => ({ posts: [] }));
@@ -107,10 +119,23 @@ async function loadStoryExtras(progress) {
 
   if (progress.impostor) {
     const late = await loadDataset(CONFIG.data.late).catch(() => ({ posts: [] }));
-    extras.push(...(late.posts || []));
+    const ordered = [...(late.posts || [])].sort((a, b) => Number(a.id) - Number(b.id));
+
+    if (!progress.impostorAt) {
+      extras.push(...ordered);
+    } else {
+      ordered.forEach((post, index) => {
+        const revealAt = progress.impostorAt + LATE_GAP_MS * (index + 1);
+        if (revealAt <= now) {
+          extras.push({ ...post, time: new Date(revealAt).toISOString() });
+        } else if (nextAt === null || revealAt < nextAt) {
+          nextAt = revealAt;
+        }
+      });
+    }
   }
 
-  return extras;
+  return { extras, nextAt };
 }
 
 /**
@@ -118,16 +143,16 @@ async function loadStoryExtras(progress) {
  * 时间坏掉的（拟物抄坏的残片）落在列表最后。
  * 首页、详情页都用这个，保证「刚刚刷出来的帖子」点得进去。
  */
-export async function loadStoryPosts() {
+export async function loadStoryPosts(now = Date.now()) {
   const dataset = await loadPosts();
-  const extras = await loadStoryExtras(chatProgress());
-  if (!extras.length) return dataset;
+  const { extras, nextAt } = await loadStoryExtras(chatProgress(), now);
+  if (!extras.length) return { ...dataset, nextAt };
 
   const posts = [...dataset.posts, ...extras].sort(
     (a, b) => timeValue(b) - timeValue(a) || Number(b.id) - Number(a.id)
   );
 
-  return { ...dataset, posts };
+  return { ...dataset, posts, nextAt };
 }
 
 export function countComments(posts) {
