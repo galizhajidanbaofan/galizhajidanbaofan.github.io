@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>奇闻异事 - 论坛存档</title>
+
+    <meta name="description" content="奇闻异事，一处收集身边怪事的旧论坛存档。维护期间只读，旧帖仍可翻阅。">
+    <meta name="theme-color" content="#FBFAF6">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="奇闻异事">
+    <meta property="og:title" content="奇闻异事 - 论坛存档">
+    <meta property="og:description" content="一处收集奇异见闻的旧论坛。维护期间只读，帖子照常可读。">
+
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'">
+
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style-modern.css" id="css-modern">
+    <link rel="stylesheet" href="style-retro.css" id="css-retro" disabled>
+    <link rel="stylesheet" href="ui.css">
+</head>
+<body data-page="home" data-theme="modern">
+    <!-- 复古主题的桌面图标；现代主题下隐藏 -->
+    <div class="desktop-icons" aria-hidden="true">
+        <a href="forum.html"><span class="ico">▤</span>我的电脑</a>
+        <a href="admin.html"><span class="ico">▣</span>管理员登录</a>
+        <a href="#about"><span class="ico">✎</span>说明.txt</a>
+    </div>
+
+    <div class="shell">
+        <header class="mast" data-window="奇闻异事 - 论坛存档">
+            <p class="kicker">民俗资料 · 论坛存档</p>
+
+            <div class="mast__row">
+                <div class="mast__intro">
+                    <h1>奇闻异事</h1>
+                    <p class="tagline">一处收集奇异见闻的旧论坛。维护期间只读，帖子照常可读。</p>
+                </div>
+                <div class="stats" id="siteStats">
+                    <div><b>—</b><span>篇帖子</span></div>
+                    <div><b>—</b><span>条评论</span></div>
+                </div>
+            </div>
+
+            <hr class="hairline">
+
+            <nav class="top">
+                <a href="forum.html" aria-current="page">首页</a>
+                <a href="admin.html">管理员登录</a>
+                <a href="#about">关于</a>
+                <span class="spacer"></span>
+                <button type="button" class="btn btn--quiet" id="openPostForm">发布新帖</button>
+                <button type="button" class="theme-switch" data-theme-toggle title="切换风格">
+                    <span data-theme-label>风格</span>
+                </button>
+            </nav>
+        </header>
+
+        <div class="layout">
+            <main class="feed" data-window="帖子列表 - 论坛存档">
+                <p class="notice">
+                    <b>维护中</b>
+                    <span>发帖与评论暂时关闭。已有内容可正常阅读，档案区需管理员口令进入。</span>
+                </p>
+
+                <form class="find" id="searchForm" role="search">
+                    <input type="text" id="searchInput" placeholder="搜索帖子标题或内容..." autocomplete="off" aria-label="搜索帖子标题或内容">
+                    <span class="hint">回车检索</span>
+                    <button type="submit" class="btn btn--primary" id="searchBtn">检索</button>
+                    <button type="button" class="btn btn--quiet" id="clearSearchBtn">清除</button>
+                </form>
+
+                <div id="searchResult" hidden></div>
+
+                <p class="list-stats" id="listStats">正在读取…</p>
+
+                <ol class="post-list" id="postList">
+                    <li><p class="empty-state">正在加载帖子…</p></li>
+                </ol>
+
+                <div class="more" id="loadMore"></div>
+            </main>
+
+            <aside class="rail">
+                <section class="card" id="about" data-window="关于本站.txt">
+                    <h2>关于本站</h2>
+                    <p>收集各位生活中遇到的奇异事件与相关灵感。原先可以发帖评论，现在整站处于维护状态，只保留阅读。</p>
+                </section>
+
+                <section class="card" data-window="管理员登录 - 需要账号">
+                    <h2>管理员登录</h2>
+                    <p>未公开的条目单独存放在档案区里，需要账号与密码，且只读。</p>
+                    <a class="link" href="admin.html">前往登录 →</a>
+                </section>
+
+                <section class="card" data-window="公告.txt">
+                    <h2>公告</h2>
+                    <p>近期接到用户反馈：在本站搜索栏输入特定语句时，页面回应出现异常。经初步排查，异常并非由本站现有程序触发，具体原因仍在定位。</p>
+                    <p>在查清之前，本站进入维护状态：发帖与评论功能暂时关闭，既有内容仍可正常浏览。</p>
+                    <p>维护期间，请勿在搜索栏输入来源不明的语句。恢复时间另行公告。</p>
+                    <p class="card__sign">奇闻异事 · 站务组</p>
+                </section>
+            </aside>
+        </div>
+
+        <footer class="foot">
+            <span>奇闻异事 · 民间怪谈存档</span>
+            <span>维护期间只读 · 发帖与评论已关闭</span>
+        </footer>
+    </div>
+
+    <div class="taskbar" aria-hidden="true">
+        <span class="start"><span class="flag"></span>开始</span>
+        <span class="task is-active">奇闻异事 - 论坛存档</span>
+        <span class="tray" id="taskStats">论坛存档</span>
+        <span class="clock" id="clock">--:--</span>
+    </div>
+
+    <noscript>
+        <p class="empty-state">本站需要启用 JavaScript 才能显示内容。</p>
+    </noscript>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -153,6 +153,6 @@ if (!isAdmin()) {
             <p class="detail__kicker">操作已完成</p>
             <h2 class="detail__title">本次站务操作已执行</h2>
             <p class="duel__lead">该处置在同一会话中不可重复执行。如需另行处理，请重新登录后台。</p>
-            <p class="row-actions"><a class="btn btn--quiet" href="index.html">回到论坛首页</a></p>`;
+            <p class="row-actions"><a class="btn btn--quiet" href="forum.html">回到论坛首页</a></p>`;
     } else render('main');
 }

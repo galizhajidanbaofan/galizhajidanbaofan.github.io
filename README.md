@@ -23,7 +23,10 @@
 
 ```
 .
-├── index.html            首页：帖子列表、搜索、发帖入口（维护提示）
+├── index.html            起点：异常事件图书馆（3D 选书 → 第一卷进论坛）
+├── forum.html            论坛首页：帖子列表、搜索、发帖入口（维护提示）
+├── library.css           图书馆独立皮肤（深藏青 + 金，不吃论坛两套主题）
+├── js/library.js         图书馆：卷宗登记、3D 取出、翻页过场
 ├── post.html             帖子详情 + 评论区（只读）
 ├── admin.html            管理员模式 / 档案区
 ├── 404.html              找不到页面
@@ -33,6 +36,9 @@
 ├── office.html           江望舒的民俗研究室（官网外壳，从聊天关键词「工作」进入）
 ├── map.html              恸山局部图（手绘等高线 SVG，从关键词「恸山」进入）
 ├── ending-lost.html      坏结局 01「失联」（聊天室连说三次违禁词后触发）
+├── ending.html           结局页（?e=shutdown|compromise|insight|outplayed|innocent）
+├── log.html              管理员日志（只读，入口在管理员模式工具栏）
+├── duel.html             站务决策页（关站 / 封号，五条结局分支）
 ├── ui.css                结构层 + 组件（布局、列表行、详情、弹窗、提示条、任务栏）
 ├── hidden.css            隐藏页的「不该看到」皮肤：三档配色 + 扫描线 / 噪点 / 呼吸
 ├── style-modern.css      主题：现代（米白纸面 / 编辑部排版）
@@ -53,6 +59,11 @@
 │   ├── hidden.js         隐藏页：冻结时钟、多出来的任务按钮、编号抖动、口令、聊天与三类线索
 │   ├── account.js        开篇谜题的账号门（卖号帖 → 账号 / 密码 → 聊天室）
 │   ├── lore.js           彩蛋关键词与触发词
+│   ├── endings.js        结局表（END 02–06）
+│   ├── ending.js         结局页渲染
+│   ├── log.js            管理员日志（骨架，正文待补）
+│   ├── duel.js           站务决策：关站 / 封号 / 五条结局分支
+│   ├── library.js        → 见上，图书馆
 │   └── pages/
 │       ├── home.js       首页逻辑
 │       ├── post.js       详情页逻辑

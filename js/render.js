@@ -84,7 +84,7 @@ export function detailHtml(post, { archive = false, includeDelayed = false } = {
         </div>
       </header>
       <div class="post-body">${escapeHtml(post.content)}</div>
-      <div class="detail__foot"><a href="index.html">← 返回首页</a></div>
+      <div class="detail__foot"><a href="forum.html">← 返回首页</a></div>
     </article>`;
 }
 

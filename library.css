@@ -8,15 +8,17 @@
 }
 
 :root {
-    --lb-ink: #14100F;
-    --lb-ink-2: #1D1517;
-    --lb-wine: #6E1F2A;
-    --lb-wine-deep: #401828;
-    --lb-wine-soft: #A2525C;
-    --lb-paper: #E9E4DC;
-    --lb-paper-dim: #B9B2A9;
-    --lb-grey: #6E6668;
-    --lb-hi: #C9C4C0;
+    --lb-ink: #081226;
+    --lb-ink-2: #0E1D3A;
+    --lb-blue: #4A67A2;
+    --lb-blue-deep: #2A3F72;
+    --lb-blue-soft: #6D80A7;
+    --lb-paper: #EDEEF1;
+    --lb-paper-dim: #B9C1CD;
+    --lb-grey: #7E8AA3;
+    --lb-hi: #BDC5CF;
+    --lb-gold: #FFE68A;
+    --lb-gold-deep: #D9B95C;
 
     --lb-serif: "Songti SC", "Source Han Serif SC", "Noto Serif SC", "SimSun", Georgia, serif;
     --lb-mono: "JetBrains Mono", "Cascadia Mono", Consolas, ui-monospace, monospace;
@@ -51,8 +53,8 @@ body {
 
 body {
     background:
-        radial-gradient(120% 80% at 50% -10%, rgba(110, 31, 42, .30) 0%, transparent 60%),
-        radial-gradient(90% 60% at 50% 120%, rgba(64, 24, 40, .45) 0%, transparent 70%),
+        radial-gradient(120% 80% at 50% -10%, rgba(74, 103, 162, .32) 0%, transparent 62%),
+        radial-gradient(90% 60% at 50% 120%, rgba(14, 29, 58, .85) 0%, transparent 72%),
         var(--lb-ink);
     color: var(--lb-paper);
     font-family: var(--lb-ui);
@@ -67,7 +69,7 @@ body::before {
     position: fixed;
     inset: 0;
     pointer-events: none;
-    background-image: radial-gradient(circle at 1px 1px, rgba(233, 228, 220, .045) 1px, transparent 0);
+    background-image: radial-gradient(circle at 1px 1px, rgba(237, 238, 241, .05) 1px, transparent 0);
     background-size: 4px 4px;
     mix-blend-mode: screen;
 }
@@ -81,8 +83,8 @@ body::before {
     justify-content: space-between;
     gap: 16px;
     padding: 9px clamp(16px, 4vw, 40px);
-    border-bottom: 1px solid rgba(233, 228, 220, .14);
-    background: rgba(20, 16, 15, .72);
+    border-bottom: 1px solid rgba(237, 238, 241, .14);
+    background: rgba(8, 18, 38, .74);
     backdrop-filter: blur(6px);
     font-family: var(--lb-mono);
     font-size: 11px;
@@ -100,8 +102,8 @@ body::before {
 .lib-strip__dot {
     width: 7px;
     height: 7px;
-    background: var(--lb-wine-soft);
-    box-shadow: 0 0 0 3px rgba(162, 82, 92, .18);
+    background: var(--lb-gold);
+    box-shadow: 0 0 0 3px rgba(255, 230, 138, .16);
     animation: libPulse 3.4s ease-in-out infinite;
 }
 
@@ -133,7 +135,7 @@ body::before {
     font-family: var(--lb-mono);
     font-size: 11px;
     letter-spacing: .34em;
-    color: var(--lb-wine-soft);
+    color: var(--lb-gold-deep);
 }
 
 .lib-head h1 {
@@ -157,7 +159,7 @@ body::before {
     width: 54px;
     height: 1px;
     margin: 26px auto 22px;
-    background: linear-gradient(90deg, transparent, var(--lb-wine-soft), transparent);
+    background: linear-gradient(90deg, transparent, var(--lb-gold-deep), transparent);
 }
 
 .lib-head__note {
@@ -200,10 +202,10 @@ body::before {
     height: 15px;
     border-radius: 1px;
     background:
-        linear-gradient(180deg, #3A2A26 0%, #241A18 55%, #150F0E 100%);
+        linear-gradient(180deg, #33456F 0%, #1D2C4E 52%, #101B34 100%);
     box-shadow:
         0 26px 34px -18px rgba(0, 0, 0, .85),
-        inset 0 1px 0 rgba(233, 228, 220, .12);
+        inset 0 1px 0 rgba(237, 238, 241, .16);
 }
 
 .lib-shelf__board::before,
@@ -213,7 +215,7 @@ body::before {
     top: 16px;
     width: 1px;
     height: 26px;
-    background: linear-gradient(180deg, rgba(233, 228, 220, .12), transparent);
+    background: linear-gradient(180deg, rgba(237, 238, 241, .14), transparent);
 }
 
 .lib-shelf__board::before { left: 8%; }
@@ -291,10 +293,10 @@ body::before {
     padding: 20px 12px 16px;
     transform: translateZ(calc(var(--bk-d) / 2));
     background:
-        linear-gradient(155deg, rgba(233, 228, 220, .10) 0%, transparent 42%),
-        linear-gradient(180deg, #7A2430 0%, var(--lb-wine) 42%, #521620 100%);
-    border: 1px solid rgba(233, 228, 220, .22);
-    box-shadow: inset 0 0 0 6px rgba(20, 16, 15, .28);
+        linear-gradient(155deg, rgba(237, 238, 241, .12) 0%, transparent 44%),
+        linear-gradient(180deg, #5674AE 0%, var(--lb-blue) 44%, #33497D 100%);
+    border: 1px solid rgba(237, 238, 241, .26);
+    box-shadow: inset 0 0 0 6px rgba(8, 18, 38, .26);
     color: var(--lb-paper);
     text-align: center;
 }
@@ -303,7 +305,7 @@ body::before {
     font-family: var(--lb-mono);
     font-size: 9.5px;
     letter-spacing: .3em;
-    color: rgba(233, 228, 220, .72);
+    color: var(--lb-gold);
 }
 
 .bk__name {
@@ -312,14 +314,14 @@ body::before {
     font-size: clamp(17px, 2.6vw, 21px);
     font-weight: 600;
     letter-spacing: .22em;
-    text-shadow: 0 1px 0 rgba(0, 0, 0, .45);
+    text-shadow: 0 1px 0 rgba(8, 18, 38, .45);
 }
 
 .bk__hint {
     font-family: var(--lb-mono);
     font-size: 9px;
     letter-spacing: .22em;
-    color: rgba(233, 228, 220, .55);
+    color: rgba(255, 230, 138, .8);
     opacity: 0;
     transform: translateY(4px);
     transition: opacity .3s ease, transform .3s ease;
@@ -333,8 +335,8 @@ body::before {
     height: 100%;
     transform-origin: left center;
     transform: rotateY(-90deg);
-    background: linear-gradient(90deg, #451520, #5E1B26 62%, #3A1119);
-    border-top: 1px solid rgba(233, 228, 220, .16);
+    background: linear-gradient(90deg, #21344F, #33497D 62%, #1A2A47);
+    border-top: 1px solid rgba(237, 238, 241, .18);
     border-bottom: 1px solid rgba(0, 0, 0, .5);
     display: flex;
     align-items: center;
@@ -360,21 +362,21 @@ body::before {
     transform-origin: right center;
     transform: rotateY(90deg);
     background:
-        linear-gradient(90deg, rgba(0, 0, 0, .35), rgba(0, 0, 0, 0) 22%),
+        linear-gradient(90deg, rgba(8, 18, 38, .38), rgba(8, 18, 38, 0) 24%),
         repeating-linear-gradient(
             90deg,
-            #CFC7BC 0 2px,
-            #A79E93 2px 3px
+            #D7DCE5 0 2px,
+            #AEB8C6 2px 3px
         );
-    opacity: .7;
+    opacity: .72;
 }
 
 /* 封底 */
 .bk__back {
     inset: 0;
     transform: rotateY(180deg) translateZ(calc(var(--bk-d) / 2));
-    background: linear-gradient(180deg, #4A1620, #34121A);
-    border: 1px solid rgba(233, 228, 220, .12);
+    background: linear-gradient(180deg, #2C3F6B, #1D2C4E);
+    border: 1px solid rgba(237, 238, 241, .12);
 }
 
 /* 悬停 / 键盘聚焦：书转正、抬起、暖光 */
@@ -394,9 +396,9 @@ body::before {
 .bk:not(:disabled):hover .bk__front,
 .bk:not(:disabled):focus-visible .bk__front {
     box-shadow:
-        inset 0 0 0 6px rgba(20, 16, 15, .28),
-        0 0 0 1px rgba(233, 228, 220, .38),
-        0 0 44px rgba(162, 82, 92, .45);
+        inset 0 0 0 6px rgba(8, 18, 38, .26),
+        0 0 0 1px rgba(255, 230, 138, .5),
+        0 0 44px rgba(74, 103, 162, .55);
 }
 
 .bk:not(:disabled):active {
@@ -415,15 +417,15 @@ body::before {
 
 .bk--locked .bk__front {
     background:
-        linear-gradient(155deg, rgba(233, 228, 220, .05) 0%, transparent 42%),
-        linear-gradient(180deg, #3A2C2C 0%, #2A2022 60%, #201819 100%);
-    border-color: rgba(201, 196, 192, .16);
+        linear-gradient(155deg, rgba(237, 238, 241, .05) 0%, transparent 42%),
+        linear-gradient(180deg, #2B3550 0%, #1E2740 60%, #161E33 100%);
+    border-color: rgba(189, 197, 207, .18);
 }
 
 .bk--locked .bk__name { color: var(--lb-grey); }
 
 .bk--locked .bk__spine {
-    background: linear-gradient(90deg, #2A2022, #332628 62%, #221A1B);
+    background: linear-gradient(90deg, #1E2740, #29344F 62%, #182034);
 }
 
 .bk--locked .bk__edge { opacity: .3; }
@@ -434,7 +436,7 @@ body::before {
     transform: rotateY(10deg) rotateX(8deg) translateY(-32px) translateZ(70px) scale(1.05);
 }
 
-.bk.is-opening .bk__front { box-shadow: 0 0 60px rgba(233, 228, 220, .35); }
+.bk.is-opening .bk__front { box-shadow: 0 0 60px rgba(255, 230, 138, .35); }
 
 .bk__caption {
     margin: 0;
@@ -461,7 +463,7 @@ body::before {
     top: 0;
     width: 50%;
     height: 100%;
-    background: linear-gradient(180deg, #F2EEE7, #DAD3C8);
+    background: linear-gradient(180deg, #F4F5F7, #DCE1E9);
     transform: scaleX(0);
     box-shadow: 0 0 60px rgba(0, 0, 0, .45);
 }
@@ -488,7 +490,7 @@ body::before {
     flex-wrap: wrap;
     margin-top: clamp(52px, 9vw, 96px);
     padding-top: 14px;
-    border-top: 1px solid rgba(233, 228, 220, .12);
+    border-top: 1px solid rgba(237, 238, 241, .12);
     font-family: var(--lb-mono);
     font-size: 10.5px;
     letter-spacing: .12em;
