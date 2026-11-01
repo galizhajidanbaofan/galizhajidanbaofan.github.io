@@ -10,7 +10,7 @@
    ============================================================ */
 
 import { initTheme, toggleTheme } from './theme.js';
-import { toast } from './ui.js';
+import { openDialog, toast } from './ui.js';
 import { escapeHtml } from './format.js';
 import { getAccount, isLoggedIn, logout, openLoginDialog } from './account.js';
 
@@ -64,12 +64,12 @@ function bindSecret() {
     const icon = document.getElementById('folderIcon');
     if (!icon) return;
 
-    icon.addEventListener('click', () => {
-        const password = window.prompt('请输入密码：');
-        if (password === '2000') {
-            window.location.href = 'archive.html';
-        } else if (password !== null) {
-            window.alert('✕ 密码错误');
+    const enter = () => { window.location.href = 'archive.html'; };
+    icon.addEventListener('click', enter);
+    icon.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            enter();
         }
     });
 }
@@ -146,13 +146,17 @@ const CHAT = {
         '咖喱蛋包饭': '好想吃...',
         '奇异': '算是对这类超自然现象以及生物的统称',
         '你还好吗': '还活着，能说话，就不算太糟。',
-        '救援': '他们会来的。只是山里比地图上要绕。'
+        '救援': '他们会来的。只是山里比地图上要绕。',
+        '管理员': '最开始的第一条「关于本站」，可能就是管理员发的。口令说不定会和这个网站本身相关。',
+        '幕后人员': '我也很好奇，为什么我们还能找到这些东西。说不定还有人在暗中帮助我们。'
     },
 
     /* ── 二类：异常。命中即登记，第一次会在井壁上多一道刻痕 ── */
     anomalies: [
         {
             id: 'ad',
+            label: '一排「AAA」开头的号',
+            hint: '有一类账号，名字前面挂着三个字母，回帖永远只有两个字。',
             pattern: /广告|AAA|道士|代课|代考/,
             replies: [
                 '那些「AAA」开头的号，我第一天看着就不对。',
@@ -161,6 +165,8 @@ const CHAT = {
         },
         {
             id: 'numbering',
+            label: '帖子编号会跳',
+            hint: '帖子列表左边那个编号，你数过没有？同一篇帖，刷新一次就换一个数。',
             pattern: /编号|序号|NO\./i,
             replies: [
                 '编号会自己跳。',
@@ -169,6 +175,8 @@ const CHAT = {
         },
         {
             id: 'censor',
+            label: '帖子里的方块',
+            hint: '有一篇帖子的标题和正文里都有方块。别人以为那是排版问题。',
             pattern: /口口|□□|方块|打码|乱码/,
             replies: [
                 '你说的那些方块，不是排版问题。',
@@ -177,7 +185,9 @@ const CHAT = {
         },
         {
             id: 'shared-id',
-            pattern: /ID|账号|用户名|同一个号|一号多用|一号多用/i,
+            label: '四个作者共用一个 ID',
+            hint: '有几篇完全不同的人写的帖子，署名底下那行 ID 是同一个。',
+            pattern: /ID|账号|用户名|同一个号|一号多用/i,
             replies: [
                 '姜生、南安、张月升、林晓夏——把那四篇翻出来，看页面右侧那行 ID。',
                 '四个人，一个号。',
@@ -186,6 +196,8 @@ const CHAT = {
         },
         {
             id: 'split-id',
+            label: '同一个署名，两个 ID',
+            hint: '有一个署名，底下挂着两个不同的 ID —— 一个是真的，一个不是。',
             pattern: /署名|两个号|两个账号|🌕|月亮|月圆/,
             replies: [
                 '……等一下。',
@@ -238,7 +250,19 @@ const CHAT = {
     /* 讲完经过之后才递文件夹 */
     afterOriginStory: ['这儿有个文件夹，我把找到的东西都放里面了。', '📁'],
     /* 固定选项按钮 */
-    quickReplies: ['怎么回事', '你是谁', '你还好吗', '那东西']
+    quickReplies: ['怎么回事', '你是谁', '你还好吗', '那东西'],
+
+    /* ── 两个「人」的选项：管理员（讲过经过之后解锁）、幕后人员（读过档案之后解锁）── */
+    adminChip: '管理员',
+    adminReply: '最开始的第一条「关于本站」，可能就是管理员发的。口令说不定会和这个网站本身相关。',
+    helperChip: '幕后人员',
+    helperReply: '我也很好奇，为什么我们还能找到这些东西。说不定还有人在暗中帮助我们。',
+    dossierKey: 'chat_dossier_read',
+
+    /* ── 想一想：她自己把线索排一遍 ── */
+    thinkLabel: '想一想',
+    thinkKicker: '推理',
+    thinkTitle: '把手上这些排一排'
 };
 
 function chatTime() {
@@ -321,7 +345,7 @@ function repliesFor(text) {
 
 /* ---------- 线索状态（一次会话内有效） ---------- */
 
-const blankState = () => ({ redact: 0, anomalies: [], impostor: false, impostorAt: null, locked: false });
+const blankState = () => ({ redact: 0, anomalies: [], impostor: false, impostorAt: null, locked: false, toldOrigin: false });
 
 function loadChatState() {
     try {
@@ -342,6 +366,43 @@ function saveChatState(state) {
 const BANNED_RE = new RegExp(CHAT.banned.join('|'));
 
 const anomalyFor = (text) => CHAT.anomalies.find((item) => item.pattern.test(text));
+
+/* 玩家按下「想一想」：她把手上的线索排一遍，缺哪条就只说个模糊方向 */
+function thinkDialog() {
+    const state = loadChatState();
+    const found = state.anomalies
+        .map((id) => CHAT.anomalies.find((item) => item.id === id))
+        .filter(Boolean);
+    const missing = CHAT.anomalies.filter((item) => !state.anomalies.includes(item.id));
+
+    const parts = [];
+
+    parts.push(found.length
+        ? `<p>已经记下的，是这些：${escapeHtml(found.map((item) => item.label).join('、'))}。</p>`
+        : '<p>现在手上什么也没有。先随便问问，或者回论坛翻两篇帖子。</p>');
+
+    if (missing.length) {
+        parts.push('<p>还没弄明白的，大概在下面这几个方向：</p>');
+        parts.push(`<ul class="ui-hints">${missing.map((item) => `<li>${escapeHtml(item.hint)}</li>`).join('')}</ul>`);
+    } else {
+        parts.push('<p>论坛里能挑出来的毛病，我差不多都记下了。剩下的不在帖子里。</p>');
+    }
+
+    if (state.redact) {
+        parts.push('<p>还有，别再在聊天室里提那东西的名字。它听得见。</p>');
+    }
+    if (state.locked) {
+        parts.push('<p>我现在打不了字，只能看。你想清楚再动。</p>');
+    }
+
+    openDialog({
+        kicker: CHAT.thinkKicker,
+        title: CHAT.thinkTitle,
+        html: parts.join(''),
+        wide: true,
+        actions: [{ label: '知道了', primary: true }]
+    });
+}
 
 function bindChat() {
     const log = document.getElementById('chatMessages');
@@ -409,21 +470,37 @@ function bindChat() {
 
     const quickBar = document.createElement('div');
     quickBar.className = 'chat__quick';
-    CHAT.quickReplies.forEach((label) => {
+
+    const say = (label) => {
+        if (!isLoggedIn()) {
+            promptLogin('需要账号才能说话');
+            return;
+        }
+        input.value = label;
+        form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    };
+
+    const addChip = (label, className = 'btn btn--quiet') => {
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = 'btn btn--quiet';
+        button.className = className;
         button.textContent = label;
-        button.addEventListener('click', () => {
-            if (!isLoggedIn()) {
-                promptLogin('需要账号才能说话');
-                return;
-            }
-            input.value = label;
-            form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-        });
+        button.dataset.chip = label;
+        button.addEventListener('click', () => say(label));
         quickBar.appendChild(button);
-    });
+        return button;
+    };
+
+    CHAT.quickReplies.forEach((label) => addChip(label));
+
+    /* 「想一想」摆在同一行的另一头，颜色单独一档 —— 它不属于对话，属于你自己 */
+    const thinkButton = document.createElement('button');
+    thinkButton.type = 'button';
+    thinkButton.className = 'chat__think';
+    thinkButton.textContent = CHAT.thinkLabel;
+    thinkButton.addEventListener('click', () => thinkDialog());
+    quickBar.appendChild(thinkButton);
+
     form.before(quickBar);
 
     /* 第三次被涂黑之前，她只肯用这层皮来指代那东西：一枚红色的「拟物」 */
@@ -453,7 +530,10 @@ function bindChat() {
         input.classList.add('is-locked');
         const submit = form.querySelector('button[type="submit"]');
         if (submit) submit.disabled = true;
-        quickBar.querySelectorAll('button').forEach((button) => { button.disabled = true; });
+        quickBar.querySelectorAll('button').forEach((button) => {
+            if (button.classList.contains('chat__think')) return;
+            button.disabled = true;
+        });
     };
 
     let locking = false;
@@ -502,6 +582,23 @@ function bindChat() {
     }
 
     renderLoginState();
+    syncChips();
+
+    /* 从帖子里的可疑 ID 跳过来：登录之后自动替玩家发一句 */
+    const probe = new URLSearchParams(window.location.search).get('probe');
+    const runProbe = () => {
+        if (!probe) return;
+        input.value = `这个 ID 好像到处都是：${probe}`;
+        form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+        history.replaceState(null, '', 'archive.html');
+    };
+    if (probe) {
+        if (isLoggedIn()) {
+            window.setTimeout(runProbe, 900);
+        } else {
+            window.setTimeout(() => openLoginDialog({ reason: '需要账号才能说话', onSuccess: () => window.setTimeout(runProbe, 600) }), 900);
+        }
+    }
     if (loadChatState().redact >= 2) revealChip();
     if (loadChatState().locked) applyLock();
     input.focus();
@@ -511,6 +608,19 @@ function bindChat() {
     if (loadChatState().impostor && !loadChatState().locked) {
         const openingSpan = isFirstVisit ? 1000 + CHAT.openingLines.length * 1500 : 0;
         window.setTimeout(() => runLockSequence(), Math.max(2600, openingSpan + 900));
+    }
+
+    /* 两个「人」的选项：条件满足才出现在快捷栏里，且只加一次。
+       写成函数声明，别用 const —— 上面启动区就要调用它，const 会撞 TDZ。 */
+    function syncChips() {
+        const state = loadChatState();
+        if (state.toldOrigin && !quickBar.querySelector(`[data-chip="${CHAT.adminChip}"]`)) {
+            addChip(CHAT.adminChip);
+        }
+        const readDossier = sessionStorage.getItem(CHAT.dossierKey) === '1';
+        if (readDossier && !quickBar.querySelector(`[data-chip="${CHAT.helperChip}"]`)) {
+            addChip(CHAT.helperChip);
+        }
     }
 
     form.addEventListener('submit', (event) => {
@@ -575,7 +685,14 @@ function bindChat() {
         } else {
             /* 一类：背景补充 */
             const replies = repliesFor(text);
-            if (text.includes('怎么回事')) replies.push(...CHAT.afterOriginStory);
+            if (text.includes('怎么回事')) {
+                replies.push(...CHAT.afterOriginStory);
+                if (!chatState.toldOrigin) {
+                    chatState.toldOrigin = true;
+                    saveChatState(chatState);
+                }
+                window.setTimeout(syncChips, 900 + queue.length * 900);
+            }
             queue.push(...replies.map(replyHtml));
         }
 
@@ -603,4 +720,11 @@ if (themeButton) themeButton.addEventListener('click', toggleTheme);
 
 if (KIND === 'secret') bindSecret();
 if (KIND === 'chat') bindChat();
-if (KIND === 'dossier') jitterNumber(document.getElementById('dossierNo'));
+if (KIND === 'dossier') {
+    try {
+        sessionStorage.setItem(CHAT.dossierKey, '1');
+    } catch (error) {
+        /* 隐私模式忽略 */
+    }
+    jitterNumber(document.getElementById('dossierNo'));
+}

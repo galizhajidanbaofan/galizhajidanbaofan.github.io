@@ -579,6 +579,39 @@ body[data-theme="retro"] .chat__quick .btn {
 .msg__bubble--redacted::selection { background: transparent; }
 
 /* 只在这一刻出现的红字选项 */
+.chat__quick .chat__think {
+    margin-left: auto;
+    order: 999;
+    padding: 4px 14px;
+    font-size: 12.5px;
+    font-family: var(--font-ui);
+    letter-spacing: .06em;
+    color: var(--accent);
+    background: transparent;
+    border: 1px solid currentColor;
+    border-radius: var(--radius, 2px);
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease;
+}
+
+.chat__quick .chat__think:hover {
+    background: var(--accent);
+    color: var(--card, #111);
+}
+
+.chat__quick .chat__think:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+body[data-theme="retro"] .chat__quick .chat__think {
+    padding: 3px 12px;
+    font-size: 12px;
+    border-radius: 0;
+    background: var(--card, #C0C0C0);
+    border-color: #000080;
+    color: #000080;
+}
+
+body[data-theme="retro"] .chat__quick .chat__think:hover { background: #000080; color: #FFFFFF; }
+
 .chat__quick .btn--danger {
     color: #C8201E;
     border-color: #C8201E;
@@ -589,7 +622,40 @@ body[data-theme="retro"] .chat__quick .btn {
     color: #FFFBEB;
 }
 
-body[data-theme="retro"] .chat__quick .btn--danger { color: #800000; border-color: #800000; }
+body[data-theme="retro"] .chat__quick .chat__think {
+    margin-left: auto;
+    order: 999;
+    padding: 4px 14px;
+    font-size: 12.5px;
+    font-family: var(--font-ui);
+    letter-spacing: .06em;
+    color: var(--accent);
+    background: transparent;
+    border: 1px solid currentColor;
+    border-radius: var(--radius, 2px);
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease;
+}
+
+.chat__quick .chat__think:hover {
+    background: var(--accent);
+    color: var(--card, #111);
+}
+
+.chat__quick .chat__think:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+body[data-theme="retro"] .chat__quick .chat__think {
+    padding: 3px 12px;
+    font-size: 12px;
+    border-radius: 0;
+    background: var(--card, #C0C0C0);
+    border-color: #000080;
+    color: #000080;
+}
+
+body[data-theme="retro"] .chat__quick .chat__think:hover { background: #000080; color: #FFFFFF; }
+
+.chat__quick .btn--danger { color: #800000; border-color: #800000; }
 body[data-theme="retro"] .chat__quick .btn--danger:hover { background: #800000; color: #FFFFFF; }
 body[data-theme="retro"] .msg__link { border-color: #808080; color: #0000EE; }
 body[data-theme="retro"] .msg__link:hover { background: #000080; color: #FFFFFF; }

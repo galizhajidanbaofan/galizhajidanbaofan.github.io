@@ -38,8 +38,8 @@ export async function boot() {
       <div class="admin-gate">
         <p class="detail__kicker">受限条目</p>
         <h2 class="admin-gate__title">需要管理员模式</h2>
-        <p class="admin-gate__desc">这是一条未公开的档案条目，请先进入档案区，用管理员口令解锁后查看。</p>
-        <p><a class="link" href="admin.html">前往档案区 →</a></p>
+        <p class="admin-gate__desc">这是一条未公开的档案条目，请先在「管理员登录」用账号与密码登录后查看。</p>
+        <p><a class="link" href="admin.html">前往管理员登录 →</a></p>
       </div>`);
     return;
   }

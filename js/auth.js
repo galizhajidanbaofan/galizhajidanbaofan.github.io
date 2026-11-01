@@ -80,8 +80,15 @@ export function isAdmin() {
   return Boolean(token) && getCookie(COOKIE_NAME) === token;
 }
 
-export async function login(password) {
-  const ok = await verifyPassword(password);
+/** 账号是否匹配（明文比对，账号本身不是秘密）。 */
+export function verifyAccount(account) {
+  const expected = String(CONFIG.admin.account || '').trim();
+  if (!expected) return true;
+  return String(account || '').trim().toLowerCase() === expected.toLowerCase();
+}
+
+export async function login(account, password) {
+  const ok = verifyAccount(account) && (await verifyPassword(password));
   if (!ok) return false;
 
   const token = issueToken();

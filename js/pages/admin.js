@@ -25,18 +25,21 @@ export async function boot() {
 function renderGate(root) {
   root.innerHTML = `
     <div class="admin-gate">
-      <p class="detail__kicker">管理员模式</p>
-      <h2 class="admin-gate__title">需要口令</h2>
-      <p class="admin-gate__desc">解锁后可阅读未公开的档案条目。管理员模式只读，不提供修改或删除功能。</p>
+      <p class="detail__kicker">仅限站务</p>
+      <h2 class="admin-gate__title">需要账号与密码</h2>
+      <p class="admin-gate__desc">登录后可阅读未公开的档案条目。管理员模式只读，不提供修改或删除功能。</p>
       <form id="adminForm" autocomplete="off">
-        <label class="form-hint" for="adminPassword">管理员口令</label>
-        <input class="field" type="password" id="adminPassword" placeholder="请输入口令" required>
+        <label class="form-hint" for="adminAccount">账号</label>
+        <input class="field" type="text" id="adminAccount" placeholder="请输入账号" autocomplete="username" required>
+        <label class="form-hint" for="adminPassword">密码</label>
+        <input class="field" type="password" id="adminPassword" placeholder="请输入密码" autocomplete="current-password" required>
         <p class="admin-gate__error" id="adminError" role="alert"></p>
-        <button type="submit" class="btn btn--primary">解锁档案区</button>
+        <button type="submit" class="btn btn--primary">登录</button>
       </form>
     </div>`;
 
   const form = root.querySelector('#adminForm');
+  const account = root.querySelector('#adminAccount');
   const input = root.querySelector('#adminPassword');
   const error = root.querySelector('#adminError');
 
@@ -46,11 +49,11 @@ function renderGate(root) {
     const button = form.querySelector('button[type="submit"]');
     button.disabled = true;
 
-    const ok = await login(input.value);
+    const ok = await login(account.value, input.value);
     button.disabled = false;
 
     if (!ok) {
-      error.textContent = '口令不正确。';
+      error.textContent = '账号或密码不正确。';
       input.select();
       return;
     }

@@ -15,6 +15,11 @@ export const CONFIG = {
     late: 'data/posts-late.json'
   },
 
+  clues: {
+    // 这几个 ID 在帖子列表与详情页里会加粗、可点；点了回聊天室把它念给她听
+    suspectUids: ['user_r0a4np06', 'user_tmdiygzf', 'user_duynljbi']
+  },
+
   list: {
     // 首页每次显示多少条，多余的点「加载更多」
     pageSize: 10
@@ -29,12 +34,16 @@ export const CONFIG = {
   admin: {
     // 管理令牌有效期（天）
     sessionDays: 7,
+    // 管理员账号（明文比对；口令只存哈希）
+    // 取档案 #7742 的编号：user_7742
+    account: 'user_7742',
     // 支持两种口令写法：
     //   { type: 'sha256', hash: '<64 位十六进制>' }
     //   { type: 'pbkdf2', iterations: 210000, salt: '<hex>', hash: '<hex>' }
     // 用 tools/password-hash.html 生成 pbkdf2 条目，替换下面这条即可。
+    // 当前口令即玩家在站内反复遇到的那个年份。
     credentials: [
-      { type: 'sha256', hash: '97a3142172e58c70ea51faf6fa5f26eff18c90bbea88c9b4c5354afffd048f64' }
+      { type: 'sha256', hash: '81a83544cf93c245178cbc1620030f1123f435af867c79d87135983c52ab39d9' }
     ]
   }
 };

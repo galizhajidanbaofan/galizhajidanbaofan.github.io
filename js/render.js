@@ -2,6 +2,7 @@
  * 渲染层：只负责把数据变成 HTML 字符串。
  * 所有用户内容都必须经过 escapeHtml / highlight（内部含转义）。
  */
+import { CONFIG } from './config.js';
 import { escapeHtml, excerpt, formatDateTime } from './format.js';
 import { highlight } from './search.js';
 
@@ -18,6 +19,14 @@ function splitStamp(value) {
     .map((part, index) => (index === 0 ? part : part.padStart(2, '0')))
     .join('.');
   return { date, clock: clockPart.slice(0, 5) };
+}
+
+/* 可疑 ID 加粗可点：点下去回聊天室，把它原样念给她听 */
+function uidHtml(uid) {
+  const suspect = (CONFIG.clues?.suspectUids || []).includes(uid);
+  const label = `ID: ${escapeHtml(uid)}`;
+  if (!suspect) return `<span class="uid">${label}</span>`;
+  return `<button type="button" class="uid uid--flag" data-probe-id="${escapeHtml(uid)}" title="这个 ID 有点不对">${label}</button>`;
 }
 
 export function postItemHtml(post, { keyword = '', archive = false, no = 0 } = {}) {
@@ -38,7 +47,7 @@ export function postItemHtml(post, { keyword = '', archive = false, no = 0 } = {
         <p class="row__excerpt">${highlight(excerpt(post.content, 150), keyword)}</p>
         <div class="row__meta">
           <span>${escapeHtml(post.author)}</span>
-          <span class="uid">ID: ${escapeHtml(uid)}</span>
+          ${uidHtml(uid)}
           <span>回复 ${post.comments.length}</span>
           <span class="row__stamp">${escapeHtml(stamp.date)} ${escapeHtml(stamp.clock)}</span>
         </div>
@@ -68,7 +77,7 @@ export function detailHtml(post, { archive = false, includeDelayed = false } = {
         ${archive ? '<p class="admin-badge">仅管理员模式可见</p>' : ''}
         <div class="detail__meta">
           <span>${escapeHtml(post.author)}</span>
-          <span class="uid">ID: ${escapeHtml(uid)}</span>
+          ${uidHtml(uid)}
           <span>发布于 ${escapeHtml(formatDateTime(post.time))}</span>
           ${post.editTime ? `<span>编辑于 ${escapeHtml(formatDateTime(post.editTime))}</span>` : ''}
           <span>${post.comments.length} 条评论</span>

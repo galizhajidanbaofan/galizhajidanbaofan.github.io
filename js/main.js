@@ -39,3 +39,11 @@ if (modulePath) {
     console.error('[启动失败]', error);
   }
 }
+
+/* 帖子里的可疑 ID 是按钮：点它，回聊天室，让她把这句话从头听一遍 */
+document.addEventListener('click', (event) => {
+  const trigger = event.target.closest('[data-probe-id]');
+  if (!trigger) return;
+  event.preventDefault();
+  window.location.href = `archive.html?probe=${encodeURIComponent(trigger.dataset.probeId)}`;
+});

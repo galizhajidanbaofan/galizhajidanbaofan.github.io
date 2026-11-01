@@ -217,7 +217,8 @@ function runSearch() {
 
   // 剧情入口：命中即跳转
   if (isSecretTrigger(keyword)) {
-    window.location.href = 'secret.html';
+    // 现在直接接到聊天室，中间那页不再设密码
+    window.location.href = 'archive.html';
     return;
   }
 
