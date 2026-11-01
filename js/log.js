@@ -42,9 +42,9 @@ if (!isAdmin()) {
     root.innerHTML = `
         <p class="detail__kicker">日志 · 由站务系统自动记录</p>
         <h2 class="detail__title">管理员日志</h2>
-        <p class="admin-mode__hint">这些条目不是论坛自己写的。日志的写入者另有其人——它一直在记录，也一直在替论坛补东西。</p>
+        <p class="admin-mode__hint">本日志由站务系统自动记录，供管理员核对。条目「待补」表示内容尚未归档，不影响其余记录的查阅。</p>
         <ol class="logview">${ENTRIES.map(entryHtml).join('')}</ol>
         <div class="row-actions">
-            <a class="btn btn--primary" href="duel.html">做出决定 →</a>
+            <a class="btn btn--primary" href="duel.html">进入站务操作 →</a>
         </div>`;
 }
