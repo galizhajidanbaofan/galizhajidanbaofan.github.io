@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>异常事件图书馆</title>
+
+    <meta name="description" content="异常事件图书馆：登记在档的卷宗与它们的去处。">
+    <meta name="theme-color" content="#14100F">
+
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'">
+
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="library.css">
+</head>
+<body>
+    <div class="lib-strip">
+        <span class="lib-strip__tag">
+            <i class="lib-strip__dot"></i>
+            <span>异常事件图书馆 · 登记入档</span>
+        </span>
+        <span class="lib-strip__meta">在架 1 卷 · 待入库 2 卷</span>
+    </div>
+
+    <div class="lib-page">
+        <header class="lib-head">
+            <p class="lib-head__kicker">LIBRARY OF ANOMALOUS EVENTS</p>
+            <h1>异常事件图书馆</h1>
+            <p class="lib-head__tag">每一卷对应一处现场。取下卷宗，即为入档。</p>
+            <div class="lib-head__rule" aria-hidden="true"></div>
+            <p class="lib-head__note">
+                本馆仅提供在架卷宗。未入库的卷宗没有编号，也不接受预约。
+            </p>
+        </header>
+
+        <main class="lib-shelf" aria-label="在架卷宗">
+            <div class="lib-shelf__board" aria-hidden="true"></div>
+            <ul class="lib-books" id="bookList">
+                <li class="lib-book-slot">
+                    <button type="button" class="bk" data-book="001" data-target="index.html" aria-label="取下第一卷：奇闻异事">
+                        <span class="bk__box">
+                            <span class="bk__face bk__front">
+                                <span class="bk__no">第 001 卷</span>
+                                <span class="bk__name">奇闻异事</span>
+                                <span class="bk__hint">取下卷宗</span>
+                            </span>
+                            <span class="bk__face bk__back"></span>
+                            <span class="bk__face bk__spine">
+                                <span class="bk__spine-label">奇闻异事 · 001</span>
+                            </span>
+                            <span class="bk__face bk__edge"></span>
+                        </span>
+                    </button>
+                    <p class="bk__caption">论坛存档 · 民间怪谈</p>
+                </li>
+
+                <li class="lib-book-slot">
+                    <button type="button" class="bk bk--locked" data-book="002" disabled aria-label="第二卷尚未入库">
+                        <span class="bk__box">
+                            <span class="bk__face bk__front">
+                                <span class="bk__no">第 002 卷</span>
+                                <span class="bk__name">未入库</span>
+                                <span class="bk__hint">尚无编号</span>
+                            </span>
+                            <span class="bk__face bk__back"></span>
+                            <span class="bk__face bk__spine">
+                                <span class="bk__spine-label">待入库</span>
+                            </span>
+                            <span class="bk__face bk__edge"></span>
+                        </span>
+                    </button>
+                    <p class="bk__caption">卷宗未到</p>
+                </li>
+
+                <li class="lib-book-slot">
+                    <button type="button" class="bk bk--locked" data-book="003" disabled aria-label="第三卷尚未入库">
+                        <span class="bk__box">
+                            <span class="bk__face bk__front">
+                                <span class="bk__no">第 003 卷</span>
+                                <span class="bk__name">未入库</span>
+                                <span class="bk__hint">尚无编号</span>
+                            </span>
+                            <span class="bk__face bk__back"></span>
+                            <span class="bk__face bk__spine">
+                                <span class="bk__spine-label">待入库</span>
+                            </span>
+                            <span class="bk__face bk__edge"></span>
+                        </span>
+                    </button>
+                    <p class="bk__caption">卷宗未到</p>
+                </li>
+            </ul>
+        </main>
+
+        <footer class="lib-foot">
+            <span>© 异常事件图书馆</span>
+            <span>取下卷宗后，馆内记录不再更新</span>
+        </footer>
+    </div>
+
+    <div class="lib-flip" id="flipLayer" aria-hidden="true">
+        <span class="lib-flip__half lib-flip__half--l"></span>
+        <span class="lib-flip__half lib-flip__half--r"></span>
+    </div>
+
+    <script type="module" src="js/library.js"></script>
+</body>
+</html>
