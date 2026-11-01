@@ -158,7 +158,7 @@ const CHAT = {
             label: '一排「AAA」开头的号',
             hint: '有一类账号，名字前面挂着三个字母，回帖永远只有两个字。',
             /* 这些号点开署名底下那行 ID，翻来覆去就是这两个 */
-            uids: ['user_r0a4np06', 'user_5wkmj0tr'],
+            uids: ['user_r0a4np06'],
             pattern: /广告|AAA|道士|代课|代考|驱魔|代做/,
             replies: [
                 '那些「AAA」开头的号，我第一天看着就不对。',
@@ -201,6 +201,8 @@ const CHAT = {
             id: 'split-id',
             label: '同一个署名，两个 ID',
             hint: '有一个署名，底下挂着两个不同的 ID —— 一个是真的，一个不是。',
+            /* user_5wkmj0tr 是「恸山行记」的署名 ID，同一个号底下还挂着一条道士服务号 */
+            uids: ['user_5wkmj0tr'],
             pattern: /署名|两个号|两个账号|🌕|月亮|月圆/,
             replies: [
                 '……等一下。',
