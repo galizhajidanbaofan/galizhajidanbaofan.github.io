@@ -74,7 +74,10 @@ async function renderArchive(root) {
         <p class="admin-mode">管理员模式 · 只读</p>
         <p class="admin-mode__hint">显示的是未公开条目，格式与公开帖一致。</p>
       </div>
-      <button type="button" class="btn btn--quiet" id="adminLogout">退出管理员模式</button>
+      <div class="admin-toolbar__ops">
+        <a class="btn btn--quiet" href="log.html">查看管理员日志 →</a>
+        <button type="button" class="btn btn--quiet" id="adminLogout">退出管理员模式</button>
+      </div>
     </div>
     <p class="list-stats" id="archiveStats">正在读取档案…</p>
     <ol class="post-list" id="archiveList"></ol>`;

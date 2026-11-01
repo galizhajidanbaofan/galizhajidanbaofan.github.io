@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员日志 - 奇闻异事</title>
+
+    <meta name="description" content="站务系统日志。">
+    <meta name="theme-color" content="#14110D">
+
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'">
+
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style-modern.css" id="css-modern">
+    <link rel="stylesheet" href="style-retro.css" id="css-retro" disabled>
+    <link rel="stylesheet" href="ui.css">
+    <link rel="stylesheet" href="hidden.css">
+</head>
+<body data-page="hidden" data-theme="modern" data-hidden="mid" data-hidden-kind="log">
+    <div class="desktop-icons" aria-hidden="true">
+        <a href="index.html"><span class="ico">▤</span>我的电脑</a>
+        <a href="archive.html"><span class="ico">▣</span>聊天室</a>
+        <a href="admin.html"><span class="ico">▥</span>管理员登录</a>
+    </div>
+
+    <div class="shell">
+        <header class="mast mast--compact" data-window="管理员日志">
+            <p class="kicker">奇闻异事 · 站务入口 · 只读</p>
+            <nav class="top">
+                <a href="admin.html">← 返回档案区</a>
+                <a href="index.html">首页</a>
+                <span class="spacer"></span>
+                <button type="button" class="theme-switch" data-theme-toggle title="切换风格">
+                    <span data-theme-label>风格</span>
+                </button>
+            </nav>
+            <hr class="hairline">
+        </header>
+
+        <main class="feed" data-window="管理员日志 - 只读">
+            <div id="logRoot">
+                <p class="empty-state">正在读取日志…</p>
+            </div>
+        </main>
+
+        <footer class="foot">
+            <span>奇闻异事 · 民间怪谈存档</span>
+            <span>日志只增不改</span>
+        </footer>
+    </div>
+
+    <div class="taskbar" aria-hidden="true">
+        <span class="start"><span class="flag"></span>开始</span>
+        <span class="task is-active">管理员日志</span>
+        <span class="task">奇闻异事</span>
+        <span class="clock" id="clock">--:--</span>
+    </div>
+
+    <script type="module" src="js/log.js"></script>
+</body>
+</html>

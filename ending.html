@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>结局 - 奇闻异事</title>
+
+    <meta name="description" content="这一次的记录到此为止。">
+    <meta name="theme-color" content="#0C0A08">
+
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'">
+
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style-modern.css" id="css-modern">
+    <link rel="stylesheet" href="style-retro.css" id="css-retro" disabled>
+    <link rel="stylesheet" href="ui.css">
+    <link rel="stylesheet" href="hidden.css">
+</head>
+<body data-page="hidden" data-theme="modern" data-hidden="heavy" data-hidden-kind="ending">
+    <div class="desktop-icons" aria-hidden="true">
+        <a href="index.html"><span class="ico">▤</span>我的电脑</a>
+        <a href="archive.html"><span class="ico">▣</span>聊天室</a>
+        <a href="office.html"><span class="ico">✎</span>研究室</a>
+    </div>
+
+    <div class="shell shell--narrow">
+        <header class="mast mast--compact" data-window="结局">
+            <p class="kicker">奇闻异事 · 终局记录</p>
+            <nav class="top">
+                <a href="index.html">← 返回首页</a>
+                <a href="archive.html">聊天室</a>
+                <span class="spacer"></span>
+                <button type="button" class="theme-switch" data-theme-toggle title="切换风格">
+                    <span data-theme-label>风格</span>
+                </button>
+            </nav>
+            <hr class="hairline">
+        </header>
+
+        <main class="feed" data-window="终局记录">
+            <section class="ending" id="endingRoot">
+                <p class="ending__kicker" id="endingNo">END —</p>
+                <h1 class="ending__title" id="endingTitle">读取中</h1>
+                <div class="msg-system ending__line"><span class="msg-system__text" id="endingLine">请稍候</span></div>
+                <p class="ending__text" id="endingText">正在读取这一次的选择。</p>
+
+                <div class="row-actions ending__actions">
+                    <a class="btn btn--primary" href="duel.html">回到决策</a>
+                    <a class="btn btn--quiet" href="index.html">回到论坛首页</a>
+                </div>
+            </section>
+        </main>
+
+        <footer class="foot">
+            <span>奇闻异事 · 民间怪谈存档</span>
+            <span>此条记录已归档</span>
+        </footer>
+    </div>
+
+    <div class="taskbar" aria-hidden="true">
+        <span class="start"><span class="flag"></span>开始</span>
+        <span class="task is-active" id="taskTitle">结局</span>
+        <span class="task">奇闻异事</span>
+        <span class="clock" id="clock">--:--</span>
+    </div>
+
+    <script type="module" src="js/ending.js"></script>
+</body>
+</html>

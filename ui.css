@@ -982,3 +982,11 @@ main.feed { margin-top: 26px; }
     color: var(--accent);
     font-weight: 700;
 }
+
+/* 管理员工具栏右侧的一组按钮 */
+.admin-toolbar__ops {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+}

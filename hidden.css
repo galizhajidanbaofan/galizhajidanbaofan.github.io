@@ -698,3 +698,208 @@ body[data-theme="retro"] .msg__link:hover { background: #000080; color: #FFFFFF;
 .msg-system::before,
 .msg-system::after { content: '———'; flex: 0 0 auto; opacity: .55; }
 .msg-system__text { flex: 0 1 auto; }
+
+/* ── 管理员日志 ───────────────────────────── */
+.logview {
+    list-style: none;
+    margin: 18px 0 0;
+    font-family: var(--font-mono, ui-monospace, Consolas, monospace);
+    font-size: 12.5px;
+    line-height: 1.9;
+}
+
+.logview__row {
+    display: grid;
+    grid-template-columns: 52px 128px minmax(0, 1fr);
+    gap: 10px;
+    padding: 12px 0;
+    border-bottom: 1px dotted var(--line);
+}
+
+.logview__row:last-child { border-bottom: 0; }
+
+.logview__no { color: var(--accent); letter-spacing: .06em; }
+
+.logview__time { color: var(--muted); white-space: nowrap; }
+
+.logview__main { min-width: 0; }
+
+.logview__tag {
+    display: inline-block;
+    margin-bottom: 4px;
+    padding: 1px 6px;
+    border: 1px solid var(--line);
+    font-size: 10.5px;
+    letter-spacing: .12em;
+    color: var(--muted);
+}
+
+.logview__body {
+    color: var(--fg);
+    white-space: pre-wrap;
+    font-family: var(--font-ui, inherit);
+    font-size: 13.5px;
+    line-height: 1.95;
+}
+
+.logview__pend {
+    color: var(--muted);
+    font-style: italic;
+    letter-spacing: .18em;
+}
+
+/* ── 决策页 ───────────────────────────────── */
+.duel__lead {
+    max-width: 62ch;
+    margin: 14px 0 22px;
+    line-height: 2.05;
+    color: var(--fg);
+}
+
+.duel__ops {
+    display: grid;
+    gap: 12px;
+    max-width: 560px;
+}
+
+.duel__op {
+    display: block;
+    width: 100%;
+    padding: 15px 17px;
+    text-align: left;
+    background: var(--card-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius, 2px);
+    color: var(--fg);
+    cursor: pointer;
+    transition: border-color .15s, color .15s, background .15s;
+}
+
+.duel__op b {
+    display: block;
+    margin-bottom: 5px;
+    font-family: var(--font-title);
+    font-size: 17px;
+    letter-spacing: .04em;
+}
+
+.duel__op span {
+    display: block;
+    font-size: 13px;
+    line-height: 1.85;
+    color: var(--muted);
+}
+
+.duel__op:hover,
+.duel__op:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.duel__op:hover span { color: var(--fg); }
+
+.duel__accounts {
+    list-style: none;
+    display: grid;
+    gap: 12px;
+    max-width: 560px;
+    margin: 0 0 22px;
+}
+
+.duel__acc {
+    display: block;
+    width: 100%;
+    padding: 13px 16px;
+    text-align: left;
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--fg);
+    cursor: pointer;
+    font-family: var(--font-mono, monospace);
+}
+
+.duel__acc b { font-size: 14.5px; letter-spacing: .02em; }
+
+.duel__acc span {
+    display: block;
+    margin-top: 6px;
+    font-family: var(--font-ui, inherit);
+    font-size: 12.5px;
+    color: var(--muted);
+}
+
+.duel__acc:hover,
+.duel__acc:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* 复古主题下把按钮做成 Win98 凸起 */
+body[data-theme="retro"] .duel__op,
+body[data-theme="retro"] .duel__acc {
+    background: var(--card, #C0C0C0);
+    border: 2px solid;
+    border-color: #FFF #808080 #808080 #FFF;
+    border-radius: 0;
+    font-family: inherit;
+}
+
+body[data-theme="retro"] .duel__op:active,
+body[data-theme="retro"] .duel__acc:active {
+    border-color: #808080 #FFF #FFF #808080;
+}
+
+body[data-theme="retro"] .logview { font-size: 11.5px; }
+
+@media (max-width: 600px) {
+    .logview__row {
+        grid-template-columns: 44px minmax(0, 1fr);
+        gap: 8px;
+        font-size: 11.5px;
+    }
+
+    .logview__time { grid-column: 2; grid-row: 1; }
+
+    .logview__main { grid-column: 1 / -1; }
+
+    .logview__body { font-size: 13px; }
+
+    .duel__op b { font-size: 15.5px; }
+
+    .duel__acc { padding: 11px 13px; }
+}
+
+/* 复古重档：窗口内部压黑之后，正文得跟着换浅色，
+   否则 .detail__title 之类吃 --fg（复古里是纯黑）会直接看不见 */
+body[data-theme="retro"][data-hidden="heavy"] .feed { color: #D6CEC6; }
+
+body[data-theme="retro"][data-hidden="heavy"] .feed .detail__title,
+body[data-theme="retro"][data-hidden="heavy"] .feed h2,
+body[data-theme="retro"][data-hidden="heavy"] .feed h3 {
+    color: #EDE3D5;
+}
+
+body[data-theme="retro"][data-hidden="heavy"] .feed .detail__kicker,
+body[data-theme="retro"][data-hidden="heavy"] .feed .detail__meta a,
+body[data-theme="retro"][data-hidden="heavy"] .feed .logview__no {
+    color: #E23A32;
+}
+
+body[data-theme="retro"][data-hidden="heavy"] .feed .detail__meta,
+body[data-theme="retro"][data-hidden="heavy"] .feed .duel__lead,
+body[data-theme="retro"][data-hidden="heavy"] .feed .admin-mode__hint,
+body[data-theme="retro"][data-hidden="heavy"] .feed .logview__time,
+body[data-theme="retro"][data-hidden="heavy"] .feed .logview__tag,
+body[data-theme="retro"][data-hidden="heavy"] .feed .list-stats {
+    color: #B3A79A;
+}
+
+body[data-theme="retro"][data-hidden="heavy"] .feed .logview__row { border-bottom-color: #332B25; }
+
+body[data-theme="retro"][data-hidden="heavy"] .feed .ending__title { color: #C8201E; }
+body[data-theme="retro"][data-hidden="heavy"] .feed .ending__text,
+body[data-theme="retro"][data-hidden="heavy"] .feed .ending__kicker { color: #D6CEC6; }
+
+/* 复古隐藏页：桌面是深色，页脚别再用纯黑 */
+body[data-theme="retro"][data-hidden] .foot { color: #E0D9D0; }
+body[data-theme="retro"][data-hidden] .foot a { color: #E0D9D0; }
