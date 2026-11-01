@@ -157,7 +157,9 @@ const CHAT = {
             id: 'ad',
             label: '一排「AAA」开头的号',
             hint: '有一类账号，名字前面挂着三个字母，回帖永远只有两个字。',
-            pattern: /广告|AAA|道士|代课|代考/,
+            /* 这些号点开署名底下那行 ID，翻来覆去就是这两个 */
+            uids: ['user_r0a4np06', 'user_5wkmj0tr'],
+            pattern: /广告|AAA|道士|代课|代考|驱魔|代做/,
             replies: [
                 '那些「AAA」开头的号，我第一天看着就不对。',
                 '它们把名字改成那样，是为了在列表里排到最前面。可它们回帖的时间，集中在凌晨两三点，而且一模一样。'
@@ -187,6 +189,7 @@ const CHAT = {
             id: 'shared-id',
             label: '四个作者共用一个 ID',
             hint: '有几篇完全不同的人写的帖子，署名底下那行 ID 是同一个。',
+            uids: ['user_tmdiygzf', 'user_duynljbi'],
             pattern: /ID|账号|用户名|同一个号|一号多用/i,
             replies: [
                 '姜生、南安、张月升、林晓夏——把那四篇翻出来，看页面右侧那行 ID。',
@@ -365,7 +368,14 @@ function saveChatState(state) {
 
 const BANNED_RE = new RegExp(CHAT.banned.join('|'));
 
-const anomalyFor = (text) => CHAT.anomalies.find((item) => item.pattern.test(text));
+/* 先看有没有直接念出某个登记在案的 ID（玩家会从帖子里点过来），
+   没有再按话术匹配 —— 同一句话里，ID 比形容词更可信 */
+const anomalyFor = (text) => {
+    const lower = text.toLowerCase();
+    const byUid = CHAT.anomalies.find((item) => (item.uids || []).some((uid) => lower.includes(uid.toLowerCase())));
+    if (byUid) return byUid;
+    return CHAT.anomalies.find((item) => item.pattern.test(text));
+};
 
 /* 玩家按下「想一想」：她把手上的线索排一遍，缺哪条就只说个模糊方向 */
 function thinkDialog() {
