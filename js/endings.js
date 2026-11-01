@@ -25,15 +25,15 @@ export const ENDINGS = {
     outplayed: {
         no: 'END 05',
         title: '棋差一着',
-        line: '你退出了系统',
-        text: '你退出了。它还在。',
+        line: '只差一步',
+        text: '功败垂成',
         tone: 'false'
     },
     innocent: {
         no: 'END 06',
         title: '无辜的牺牲者',
         line: '账号已封停',
-        text: '井底再也没有回过话。',
+        text: '消散的蝴蝶',
         tone: 'bad'
     }
 };
