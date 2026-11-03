@@ -1,108 +1,711 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>异常事件图书馆</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>异常事件档案馆 · 桌面</title>
 
-    <meta name="description" content="异常事件图书馆：登记在档的卷宗与它们的去处。">
-    <meta name="theme-color" content="#081226">
+<meta name="description" content="异常事件档案馆：已归档的卷宗都在这里，只有第一卷对外开放。">
+<meta name="theme-color" content="#FFFFFF">
 
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'">
 
-    <link rel="icon" href="favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="library.css">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+<style>
+    :root {
+        /* 白为主，蓝为点：蓝只出现在图标、焦点、选中态与极少数结构线 */
+        --paper: #FFFFFF;
+        --paper-2: #F5F7FB;
+        --paper-3: #EDF1F7;
+        --line: #DDE4EE;
+        --line-soft: #E9EEF5;
+        --ink: #12161C;
+        --ink-soft: #5B6675;
+        --ink-mute: #8A94A3;
+        --blue: #4A67A2;
+        --blue-deep: #22355F;
+        --blue-bright: #5A9BE6;
+        --blue-wash: rgba(74, 103, 162, .08);
+        --shadow: 0 18px 46px -18px rgba(34, 53, 95, .28);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+        height: 100%;
+        background: var(--paper-2);
+        color: var(--ink);
+        font-family: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        overflow: hidden;
+    }
+
+    /* ── 壁纸：白底 + 极淡蓝线 ─────────────────────────── */
+    .wall {
+        position: fixed;
+        inset: 0;
+        background:
+            radial-gradient(120% 90% at 18% -10%, rgba(90, 155, 230, .12), transparent 58%),
+            radial-gradient(90% 80% at 88% 108%, rgba(74, 103, 162, .10), transparent 62%),
+            linear-gradient(180deg, #FFFFFF 0%, #F4F7FC 62%, #E9EFF8 100%);
+    }
+
+    .wall__pattern {
+        position: absolute;
+        inset: 0;
+        opacity: .55;
+        background-image:
+            repeating-linear-gradient(45deg, rgba(74, 103, 162, .07) 0 1px, transparent 1px 148px),
+            repeating-linear-gradient(-45deg, rgba(74, 103, 162, .07) 0 1px, transparent 1px 148px),
+            radial-gradient(rgba(90, 155, 230, .16) 1px, transparent 1.4px);
+        background-size: auto, auto, 22px 22px;
+        mask-image: radial-gradient(74% 64% at 50% 44%, #000 12%, rgba(0, 0, 0, .42) 62%, transparent 92%);
+        -webkit-mask-image: radial-gradient(74% 64% at 50% 44%, #000 12%, rgba(0, 0, 0, .42) 62%, transparent 92%);
+    }
+
+    /* ── 桌面图标 ─────────────────────────────────────── */
+    .desktop {
+        position: absolute;
+        left: 34px;
+        top: 30px;
+        display: grid;
+        grid-auto-flow: column;
+        grid-template-rows: repeat(6, auto);
+        gap: 6px 4px;
+        z-index: 3;
+    }
+
+    .icon {
+        width: 92px;
+        padding: 10px 4px 9px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        background: none;
+        font: inherit;
+        color: var(--ink);
+        cursor: default;
+        transition: background .18s, border-color .18s;
+    }
+
+    .icon--open { cursor: pointer; }
+    .icon--open:hover { background: var(--blue-wash); border-color: rgba(74, 103, 162, .22); }
+
+    .icon__glyph {
+        width: 34px;
+        height: 30px;
+        position: relative;
+        flex: 0 0 auto;
+    }
+
+    .icon__label {
+        font-size: 11.5px;
+        letter-spacing: .02em;
+        line-height: 1.3;
+        text-align: center;
+    }
+
+    /* 此电脑：一台显示器 */
+    .glyph-pc {
+        border: 2px solid var(--blue-deep);
+        border-radius: 4px;
+        background: #FFFFFF;
+    }
+
+    .glyph-pc::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: 2px;
+        width: 12px;
+        height: 2px;
+        transform: translateX(-50%);
+        background: var(--blue);
+    }
+
+    .glyph-pc::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 3px;
+        width: 20px;
+        height: 12px;
+        transform: translateX(-50%);
+        background: linear-gradient(180deg, rgba(90, 155, 230, .5), rgba(74, 103, 162, .16));
+    }
+
+    /* 文件夹：蓝边白面 */
+    .glyph-folder {
+        border: 2px solid var(--blue-deep);
+        border-radius: 3px 3px 5px 5px;
+        background: #FFFFFF;
+    }
+
+    .glyph-folder::before {
+        content: '';
+        position: absolute;
+        left: -2px;
+        top: -6px;
+        width: 18px;
+        height: 7px;
+        border: 2px solid var(--blue-deep);
+        border-bottom: 0;
+        border-radius: 3px 3px 0 0;
+        background: #FFFFFF;
+    }
+
+    .glyph-folder::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 9px;
+        background: linear-gradient(180deg, rgba(74, 103, 162, .16), rgba(74, 103, 162, .34));
+        border-top: 1px solid rgba(34, 53, 95, .35);
+    }
+
+    /* ── 窗口 ─────────────────────────────────────────── */
+    .win {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -46%) scale(.97);
+        width: min(760px, 78vw);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, .94);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(22px) saturate(1.2);
+        -webkit-backdrop-filter: blur(22px) saturate(1.2);
+        overflow: hidden;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .22s ease, transform .22s cubic-bezier(.3, .8, .3, 1);
+        z-index: 5;
+    }
+
+    .win.is-wide {
+        width: min(1080px, 88vw);
+        height: min(560px, 72vh);
+    }
+
+    .win.is-wide .win__body {
+        grid-template-rows: 1fr;
+        align-items: start;
+        height: calc(100% - 118px);
+        overflow: auto;
+    }
+
+    .win.is-open {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+        pointer-events: auto;
+    }
+
+    .win__title {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        padding: 8px 8px 0;
+        background: linear-gradient(180deg, #FFFFFF, #F7F9FD);
+        border-bottom: 1px solid var(--line-soft);
+    }
+
+    .tab {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 12px 9px;
+        font-size: 12px;
+        color: var(--ink-soft);
+        border-radius: 8px 8px 0 0;
+        border: 1px solid transparent;
+        border-bottom: 0;
+    }
+
+    .tab.is-active {
+        color: var(--ink);
+        background: #FFFFFF;
+        border-color: var(--line);
+    }
+
+    .tab__dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 2px;
+        background: var(--blue);
+    }
+
+    .wc {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 2px;
+    }
+
+    .wc button {
+        width: 34px;
+        height: 26px;
+        border: 0;
+        border-radius: 6px;
+        background: none;
+        color: var(--ink-soft);
+        font-size: 12px;
+        line-height: 1;
+        cursor: pointer;
+        transition: background .15s, color .15s;
+    }
+
+    .wc button:hover { background: var(--paper-3); color: var(--ink); }
+    .wc button.wc--close:hover { background: #C8433A; color: #FFFFFF; }
+
+    .win__bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--line-soft);
+        background: #FFFFFF;
+    }
+
+    .crumb {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--ink-soft);
+    }
+
+    .crumb b { color: var(--ink); font-weight: 600; }
+    .crumb i { color: var(--ink-mute); font-style: normal; }
+
+    /* 文件格 */
+    .win__body {
+        padding: 22px 18px 26px;
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 8px;
+        background: #FFFFFF;
+    }
+
+    .file {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;                 /* 图标与文字贴紧 */
+        padding: 8px 4px 7px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        background: none;
+        font: inherit;
+        color: var(--ink);
+        cursor: default;
+        transition: background .15s, border-color .15s, transform .15s;
+    }
+
+    .file__icon {
+        width: 40px;
+        height: 34px;
+        position: relative;
+        flex: 0 0 auto;
+    }
+
+    .file--open { cursor: pointer; }
+    .file--open:hover { background: var(--blue-wash); border-color: rgba(74, 103, 162, .3); }
+    .file--open:active { transform: translateY(1px); }
+
+    .file--locked:hover { background: #FAFBFD; border-color: var(--line-soft); }
+    .file--locked.is-shake { animation: shake .34s ease; }
+
+    .file__no {
+        position: absolute;
+        left: 5px;
+        bottom: 3px;
+        font-family: "Courier New", monospace;
+        font-size: 8.5px;
+        letter-spacing: .02em;
+        color: var(--blue-deep);
+        opacity: .85;
+    }
+
+    .file__lock {
+        position: absolute;
+        z-index: 2;
+        right: -1px;
+        bottom: -1px;
+        width: 15px;
+        height: 15px;
+        border-radius: 4px;
+        background: #FFFFFF;
+        border: 1px solid var(--line);
+    }
+
+    .file__lock::before {
+        content: '';
+        position: absolute;
+        left: 4px;
+        top: 7px;
+        width: 7px;
+        height: 5px;
+        border: 1px solid var(--ink-mute);
+        border-radius: 1px;
+    }
+
+    .file__lock::after {
+        content: '';
+        position: absolute;
+        left: 5.5px;
+        top: 4px;
+        width: 4px;
+        height: 4px;
+        border: 1px solid var(--ink-mute);
+        border-bottom: 0;
+        border-radius: 3px 3px 0 0;
+    }
+
+    .file__name {
+        font-size: 11.5px;
+        line-height: 1.3;
+        text-align: center;
+        letter-spacing: .01em;
+    }
+
+    .file--open .file__name { font-weight: 600; color: var(--blue-deep); }
+
+    .win__status {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 8px 14px;
+        border-top: 1px solid var(--line-soft);
+        background: #FBFCFE;
+        font-size: 11px;
+        color: var(--ink-mute);
+    }
+
+    /* ── 弹窗 ─────────────────────────────────────────── */
+    .veil {
+        position: fixed;
+        inset: 0;
+        z-index: 8;
+        background: rgba(18, 22, 28, .18);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .18s;
+    }
+
+    .veil.is-open { opacity: 1; pointer-events: auto; }
+
+    .dialog {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -48%) scale(.98);
+        width: min(380px, 86vw);
+        z-index: 9;
+        padding: 18px 20px 14px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #FFFFFF;
+        box-shadow: 0 24px 60px -22px rgba(34, 53, 95, .45);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .18s, transform .18s;
+    }
+
+    .dialog.is-open {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+        pointer-events: auto;
+    }
+
+    .dialog__title {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .dialog__body {
+        font-size: 12.5px;
+        line-height: 1.8;
+        color: var(--ink-soft);
+        margin-bottom: 14px;
+    }
+
+    .dialog__actions { display: flex; justify-content: flex-end; gap: 8px; }
+
+    .btn {
+        padding: 7px 16px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: #FFFFFF;
+        font: inherit;
+        font-size: 12px;
+        color: var(--ink);
+        cursor: pointer;
+        transition: background .15s, border-color .15s;
+    }
+
+    .btn:hover { background: var(--paper-2); }
+    .btn--primary { background: var(--blue); border-color: var(--blue); color: #FFFFFF; }
+    .btn--primary:hover { background: var(--blue-deep); border-color: var(--blue-deep); }
+
+    /* ── 任务栏 ───────────────────────────────────────── */
+    .taskbar {
+        position: fixed;
+        left: 50%;
+        bottom: 14px;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 7px 9px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, .9);
+        box-shadow: 0 14px 34px -16px rgba(34, 53, 95, .35);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        z-index: 6;
+    }
+
+    .taskbar__btn {
+        width: 34px;
+        height: 32px;
+        display: grid;
+        place-items: center;
+        border: 0;
+        border-radius: 8px;
+        background: none;
+        color: var(--ink-soft);
+        cursor: pointer;
+        transition: background .15s, color .15s;
+    }
+
+    .taskbar__btn:hover { background: var(--blue-wash); color: var(--blue-deep); }
+    .taskbar__btn.is-active { background: var(--blue-wash); color: var(--blue-deep); }
+
+    .flag {
+        width: 15px;
+        height: 15px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2px;
+    }
+
+    .flag i { display: block; border-radius: 1px; background: var(--blue); }
+    .flag i:nth-child(2) { background: var(--blue-bright); }
+    .flag i:nth-child(3) { background: var(--blue-deep); }
+    .flag i:nth-child(4) { background: var(--blue); opacity: .72; }
+
+    .taskbar__sep {
+        width: 1px;
+        height: 18px;
+        margin: 0 3px;
+        background: var(--line);
+    }
+
+    .tray {
+        position: fixed;
+        right: 18px;
+        bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: rgba(255, 255, 255, .9);
+        font-family: "Courier New", monospace;
+        font-size: 11.5px;
+        color: var(--ink-soft);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        z-index: 6;
+    }
+
+    .tray::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        border: 1.5px solid var(--blue);
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-3px); }
+        75% { transform: translateX(3px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        * { transition: none !important; animation: none !important; }
+    }
+
+    /* ── 窄屏 ─────────────────────────────────────────── */
+    @media (max-width: 760px) {
+        .desktop { left: 16px; top: 16px; gap: 2px; }
+        .icon { width: 76px; padding: 8px 2px; }
+        .icon__label { font-size: 11px; }
+
+        .win { width: min(94vw, 560px); }
+        .win__body {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 6px;
+            padding: 16px 12px 20px;
+        }
+
+        .taskbar { bottom: 10px; padding: 6px 7px; }
+        .tray { right: 10px; bottom: 62px; font-size: 11px; }
+    }
+</style>
 </head>
 <body>
-    <div class="lib-strip">
-        <span class="lib-strip__tag">
-            <i class="lib-strip__dot"></i>
-            <span>异常事件图书馆 · 登记入档</span>
+<div class="wall" aria-hidden="true"><div class="wall__pattern"></div></div>
+
+<nav class="desktop" aria-label="桌面">
+    <div class="icon" aria-disabled="true">
+        <span class="icon__glyph glyph-pc" aria-hidden="true"></span>
+        <span class="icon__label">此电脑</span>
+    </div>
+
+    <button class="icon icon--open" id="openWin" type="button" aria-label="打开异常档案文件夹">
+        <span class="icon__glyph glyph-folder" aria-hidden="true"></span>
+        <span class="icon__label">异常档案</span>
+    </button>
+</nav>
+
+<section class="win" id="win" aria-label="异常档案">
+    <div class="win__title">
+        <span class="tab is-active"><i class="tab__dot"></i>异常档案</span>
+        <span class="wc">
+            <button type="button" aria-label="最小化" id="wcMin">—</button>
+            <button type="button" aria-label="最大化" id="wcMax">▢</button>
+            <button type="button" class="wc--close" aria-label="关闭" id="wcClose">✕</button>
         </span>
-        <span class="lib-strip__meta">在架 1 卷 · 待入库 2 卷</span>
     </div>
 
-    <div class="lib-page">
-        <header class="lib-head">
-            <p class="lib-head__kicker">LIBRARY OF ANOMALOUS EVENTS</p>
-            <h1>异常事件图书馆</h1>
-            <p class="lib-head__tag">每一卷对应一处现场。取下卷宗，即为入档。</p>
-            <div class="lib-head__rule" aria-hidden="true"></div>
-            <p class="lib-head__note">
-                本馆仅提供在架卷宗。未入库的卷宗没有编号，也不接受预约。
-            </p>
-        </header>
-
-        <main class="lib-shelf" aria-label="在架卷宗">
-            <div class="lib-shelf__board" aria-hidden="true"></div>
-            <ul class="lib-books" id="bookList">
-                <li class="lib-book-slot">
-                    <button type="button" class="bk" data-book="001" data-target="forum.html" aria-label="取下第一卷：奇闻异事">
-                        <span class="bk__box">
-                            <span class="bk__face bk__front">
-                                <span class="bk__no">第 001 卷</span>
-                                <span class="bk__name">奇闻异事</span>
-                                <span class="bk__hint">取下卷宗</span>
-                            </span>
-                            <span class="bk__face bk__back"></span>
-                            <span class="bk__face bk__spine">
-                                <span class="bk__spine-label">奇闻异事 · 001</span>
-                            </span>
-                            <span class="bk__face bk__edge"></span>
-                        </span>
-                    </button>
-                    <p class="bk__caption">论坛存档 · 民间怪谈</p>
-                </li>
-
-                <li class="lib-book-slot">
-                    <button type="button" class="bk bk--locked" data-book="002" disabled aria-label="第二卷尚未入库">
-                        <span class="bk__box">
-                            <span class="bk__face bk__front">
-                                <span class="bk__no">第 002 卷</span>
-                                <span class="bk__name">未入库</span>
-                                <span class="bk__hint">尚无编号</span>
-                            </span>
-                            <span class="bk__face bk__back"></span>
-                            <span class="bk__face bk__spine">
-                                <span class="bk__spine-label">待入库</span>
-                            </span>
-                            <span class="bk__face bk__edge"></span>
-                        </span>
-                    </button>
-                    <p class="bk__caption">卷宗未到</p>
-                </li>
-
-                <li class="lib-book-slot">
-                    <button type="button" class="bk bk--locked" data-book="003" disabled aria-label="第三卷尚未入库">
-                        <span class="bk__box">
-                            <span class="bk__face bk__front">
-                                <span class="bk__no">第 003 卷</span>
-                                <span class="bk__name">未入库</span>
-                                <span class="bk__hint">尚无编号</span>
-                            </span>
-                            <span class="bk__face bk__back"></span>
-                            <span class="bk__face bk__spine">
-                                <span class="bk__spine-label">待入库</span>
-                            </span>
-                            <span class="bk__face bk__edge"></span>
-                        </span>
-                    </button>
-                    <p class="bk__caption">卷宗未到</p>
-                </li>
-            </ul>
-        </main>
-
-        <footer class="lib-foot">
-            <span>© 异常事件图书馆</span>
-            <span>取下卷宗后，馆内记录不再更新</span>
-        </footer>
+    <div class="win__bar">
+        <span class="crumb">此电脑 <i>›</i> <b>异常档案</b></span>
     </div>
 
-    <div class="lib-flip" id="flipLayer" aria-hidden="true">
-        <span class="lib-flip__half lib-flip__half--l"></span>
-        <span class="lib-flip__half lib-flip__half--r"></span>
+    <div class="win__body" id="fileGrid">
+        <button class="file file--open" type="button" data-target="forum.html">
+            <span class="file__icon glyph-folder"><span class="file__no">01</span></span>
+            <span class="file__name">奇闻异事</span>
+        </button>
+
+        <button class="file file--locked" type="button" data-lock="02">
+            <span class="file__icon glyph-folder"><span class="file__no">02</span><span class="file__lock" aria-hidden="true"></span></span>
+            <span class="file__name">file 02</span>
+        </button>
+
+        <button class="file file--locked" type="button" data-lock="03">
+            <span class="file__icon glyph-folder"><span class="file__no">03</span><span class="file__lock" aria-hidden="true"></span></span>
+            <span class="file__name">file 03</span>
+        </button>
+
+        <button class="file file--locked" type="button" data-lock="04">
+            <span class="file__icon glyph-folder"><span class="file__no">04</span><span class="file__lock" aria-hidden="true"></span></span>
+            <span class="file__name">file 04</span>
+        </button>
+
+        <button class="file file--locked" type="button" data-lock="05">
+            <span class="file__icon glyph-folder"><span class="file__no">05</span><span class="file__lock" aria-hidden="true"></span></span>
+            <span class="file__name">file 05</span>
+        </button>
     </div>
 
-    <script type="module" src="js/library.js"></script>
+    <div class="win__status">
+        <span>5 个项目 · 1 个可访问</span>
+        <span>只读</span>
+    </div>
+</section>
+
+<div class="veil" id="veil"></div>
+
+<div class="dialog" id="dialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle">
+    <p class="dialog__title" id="dialogTitle">file 02 已锁定</p>
+    <p class="dialog__body" id="dialogBody">该文件当前无法访问。已归档的卷宗只有第一卷对外开放，其余条目仍在封存中。</p>
+    <div class="dialog__actions">
+        <button class="btn btn--primary" type="button" id="dialogOk">知道了</button>
+    </div>
+</div>
+
+<nav class="taskbar" aria-label="任务栏">
+    <button class="taskbar__btn" type="button" aria-label="开始"><span class="flag"><i></i><i></i><i></i><i></i></span></button>
+    <button class="taskbar__btn" type="button" aria-label="搜索">⌕</button>
+    <span class="taskbar__sep" aria-hidden="true"></span>
+    <button class="taskbar__btn is-active" type="button" aria-label="资源管理器" id="taskWin">▤</button>
+    <button class="taskbar__btn" type="button" aria-label="设置">⚙</button>
+</nav>
+
+<div class="tray" id="clock">--:--</div>
+
+<script>
+(() => {
+    const win = document.getElementById('win');
+    const veil = document.getElementById('veil');
+    const dialog = document.getElementById('dialog');
+    const dialogTitle = document.getElementById('dialogTitle');
+    const dialogBody = document.getElementById('dialogBody');
+    const grid = document.getElementById('fileGrid');
+    const clock = document.getElementById('clock');
+
+    const openWin = () => win.classList.add('is-open');
+    const closeWin = () => win.classList.remove('is-open');
+
+    document.getElementById('openWin').addEventListener('click', openWin);
+    document.getElementById('wcMin').addEventListener('click', closeWin);
+    document.getElementById('wcMax').addEventListener('click', () => win.classList.toggle('is-wide'));
+    document.getElementById('wcClose').addEventListener('click', closeWin);
+    document.getElementById('taskWin').addEventListener('click', () => win.classList.toggle('is-open'));
+
+    const closeDialog = () => {
+        dialog.classList.remove('is-open');
+        veil.classList.remove('is-open');
+    };
+
+    document.getElementById('dialogOk').addEventListener('click', closeDialog);
+    veil.addEventListener('click', closeDialog);
+
+    grid.addEventListener('click', (event) => {
+        const file = event.target.closest('.file');
+        if (!file) return;
+
+        if (file.dataset.target) {
+            window.location.href = file.dataset.target;
+            return;
+        }
+
+        const no = file.dataset.lock;
+        dialogTitle.textContent = 'file ' + no + ' 已锁定';
+        dialogBody.textContent = '该文件当前无法访问。已归档的卷宗只有第一卷对外开放，其余条目仍在封存中。';
+        dialog.classList.add('is-open');
+        veil.classList.add('is-open');
+        file.classList.add('is-shake');
+        window.setTimeout(() => file.classList.remove('is-shake'), 360);
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') return;
+        if (dialog.classList.contains('is-open')) closeDialog();
+        else closeWin();
+    });
+
+    const tick = () => {
+        const now = new Date();
+        clock.textContent = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+    };
+
+    tick();
+    window.setInterval(tick, 20000);
+    window.setTimeout(openWin, 600);
+})();
+</script>
 </body>
 </html>

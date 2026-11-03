@@ -8,6 +8,17 @@
 - 线上地址：<https://galizhajidanbaofan.github.io/>
 - 技术栈：HTML + 原生 CSS + 原生 ES modules（无构建、无依赖、无 npm）
 
+## 入口
+
+`index.html` 是「异常事件档案馆」桌面：模拟一台 Windows 11 的桌面，文件夹 `异常档案` 里有五卷 `file 01–05`，只有 `file 01 奇闻异事` 可打开并进入论坛，其余四卷点开提示「已锁定」。
+
+起点页另有三版备选稿，都放在仓库外的 `preview/` 目录（不进 Pages 发布）：
+
+- `preview/design-desk.html`（俯视档案桌：文件袋 + 线扣拆封）
+- `preview/design-win11.html`（本版，独立预览）
+- `preview/design-zine.html`（漫画风书脊：黑勾边 + 白底 + 灰二分）
+- `preview/library-entry.html`（原图书馆入口，3D 选书）
+
 ## 现在的状态
 
 | 项目 | 状态 |
@@ -23,10 +34,10 @@
 
 ```
 .
-├── index.html            起点：异常事件图书馆（3D 选书 → 第一卷进论坛）
+├── index.html            起点：异常事件档案馆（Win11 式桌面 → file 01 进论坛）
 ├── forum.html            论坛首页：帖子列表、搜索、发帖入口（维护提示）
-├── library.css           图书馆独立皮肤（深藏青 + 金，不吃论坛两套主题）
-├── js/library.js         图书馆：卷宗登记、3D 取出、翻页过场
+├── library.css           旧入口「异常事件图书馆」的皮肤（深藏青 + 金，不吃论坛两套主题）
+├── js/library.js         图书馆：卷宗登记、3D 取出、翻页过场（现仅备选稿引用）
 ├── post.html             帖子详情 + 评论区（只读）
 ├── admin.html            管理员模式 / 档案区
 ├── 404.html              找不到页面
