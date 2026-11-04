@@ -102,6 +102,8 @@
 
 状态存在 `sessionStorage.chat_state`（`{ redact, anomalies, impostor }`），刷新不丢，关掉标签页重来。加/改线索都在 `js/hidden.js` 顶部的 `CHAT` 常量里，不用动逻辑。
 
+**论坛里那些异常 ID 是可点的，但要先过门槛**：必须①进过聊天室、②问过她一句 `怎么回事`。两个印记存在 `localStorage` 的 `qiwenyishi_progress.flags`（`chat.entered` / `chat.briefed`）里，换个标签页也还在。没满足之前，`js/render.js` 的 `uidHtml()` 把可疑 ID 当普通文字渲染（`<span>`，不加粗、没有虚线下划线），点了也不会跳；满足之后才变成按钮，点下去回 `archive.html?probe=<id>`，她会把这个 ID 从头念一遍。`js/main.js` 里的点击处理还留了一道同样的判断，防止缓存里的旧 DOM 绕过去。
+
 **帖子会随进度长出来**：`js/store.js` 的 `loadStoryPosts()` 会把 `data/posts.json` 与两份剧情数据合起来——`data/posts-glitch.json`（每条异常的残片，`tier` 越小越早出现；时间被写坏的那篇会显示「时间未知」，排到最后）和 `data/posts-late.json`（假她写的三篇，评论区里用同一个昵称、另一个 ID 反驳）。所以「帖子数从 15 变 17、变 24」是设计好的，不是 bug；没有聊天室进度时这两份文件一篇都不出现。
 
 ## 双主题是怎么做的

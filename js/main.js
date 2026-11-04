@@ -2,6 +2,7 @@
  * 入口：先定主题，再按 <body data-page="..."> 装载对应页面。
  */
 import { initTheme, toggleTheme } from './theme.js';
+import { hasFlag } from './state.js';
 
 initTheme();
 
@@ -40,10 +41,12 @@ if (modulePath) {
   }
 }
 
-/* 帖子里的可疑 ID 是按钮：点它，回聊天室，让她把这句话从头听一遍 */
+/* 帖子里的可疑 ID 是按钮：点它，回聊天室，让她把这句话从头听一遍。
+   但先得过门槛——没进过聊天室、没问过「怎么回事」，点了也不跳（防止缓存里的旧 DOM 绕过渲染层）。 */
 document.addEventListener('click', (event) => {
   const trigger = event.target.closest('[data-probe-id]');
   if (!trigger) return;
   event.preventDefault();
+  if (!hasFlag('chat.entered') || !hasFlag('chat.briefed')) return;
   window.location.href = `archive.html?probe=${encodeURIComponent(trigger.dataset.probeId)}`;
 });

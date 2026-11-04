@@ -5,6 +5,7 @@
 import { CONFIG } from './config.js';
 import { escapeHtml, excerpt, formatDateTime } from './format.js';
 import { highlight } from './search.js';
+import { hasFlag } from './state.js';
 
 export function emptyStateHtml(text) {
   return `<p class="empty-state">${escapeHtml(text)}</p>`;
@@ -21,11 +22,17 @@ function splitStamp(value) {
   return { date, clock: clockPart.slice(0, 5) };
 }
 
-/* 可疑 ID 加粗可点：点下去回聊天室，把它原样念给她听 */
+/* 可疑 ID 加粗可点：点下去回聊天室，把它原样念给她听。
+   前置条件——进过聊天室、并且问过「怎么回事」，否则一律当普通 ID 渲染，
+   不给可点的样子，免得玩家在还没被告知要查之前就撞见出口。 */
+function probeUnlocked() {
+  return hasFlag('chat.entered') && hasFlag('chat.briefed');
+}
+
 function uidHtml(uid) {
   const suspect = (CONFIG.clues?.suspectUids || []).includes(uid);
   const label = `ID: ${escapeHtml(uid)}`;
-  if (!suspect) return `<span class="uid">${label}</span>`;
+  if (!suspect || !probeUnlocked()) return `<span class="uid">${label}</span>`;
   return `<button type="button" class="uid uid--flag" data-probe-id="${escapeHtml(uid)}" title="这个 ID 有点不对">${label}</button>`;
 }
 

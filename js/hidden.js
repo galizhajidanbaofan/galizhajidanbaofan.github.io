@@ -13,6 +13,7 @@ import { initTheme, toggleTheme } from './theme.js';
 import { openDialog, toast } from './ui.js';
 import { escapeHtml } from './format.js';
 import { getAccount, isLoggedIn, logout, openLoginDialog } from './account.js';
+import { setFlag } from './state.js';
 
 const KIND = document.body.dataset.hiddenKind;
 
@@ -579,6 +580,11 @@ function bindChat() {
 
     const isFirstVisit = !sessionStorage.getItem(CHAT.firstVisitKey);
 
+    /* 通讯一旦接通就在本机留个印记：论坛里那些异常 ID，要「进过聊天室」并且
+       「问过怎么回事」之后才允许点。印记存 localStorage，换个标签页也还在。 */
+    setFlag('chat.entered');
+    if (loadChatState().toldOrigin) setFlag('chat.briefed');
+
     if (isFirstVisit) {
         sessionStorage.setItem(CHAT.firstVisitKey, 'false');
         log.innerHTML = systemHtml('通讯已建立');
@@ -700,6 +706,7 @@ function bindChat() {
             const replies = repliesFor(text);
             if (text.includes('怎么回事')) {
                 replies.push(...CHAT.afterOriginStory);
+                setFlag('chat.briefed');
                 if (!chatState.toldOrigin) {
                     chatState.toldOrigin = true;
                     saveChatState(chatState);
