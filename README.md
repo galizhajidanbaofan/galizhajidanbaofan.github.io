@@ -1,255 +1,198 @@
 # 奇闻异事
 
-一个收集"身边怪事"的小论坛，同时是一条用静态页讲出来的怪谈线索：
-论坛里的帖子 → 搜索特定关键词 → 隐藏入口 → 聊天记录 → 档案条目。
+> 一个旧论坛，一个人说她被困在井里，还有一些东西不太对劲。
 
-站点是纯静态的（GitHub Pages），没有后端，所有内容都是 JSON 文件 + 前端渲染。
+**▶ 开始玩：<https://galizhajidanbaofan.github.io/>**
 
-- 线上地址：<https://galizhajidanbaofan.github.io/>
-- 技术栈：HTML + 原生 CSS + 原生 ES modules（无构建、无依赖、无 npm）
+![起点：异常事件档案馆](docs/preview/01-desktop.png)
 
-## 入口
+---
 
-`index.html` 是「异常事件档案馆」桌面：模拟一台 Windows 11 的桌面，文件夹 `异常档案` 里有五卷 `file 01–05`，只有 `file 01 奇闻异事` 可打开并进入论坛，其余四卷点开提示「已锁定」。
+## 这是什么
 
-起点页另有三版备选稿，都放在仓库外的 `preview/` 目录（不进 Pages 发布）：
+一个做在浏览器里的短篇都市怪谈，形式是一整个假网站：一台桌面、一个 2000 年代的小民间论坛、几层不该被点开的页面。
 
-- `preview/design-desk.html`（俯视档案桌：文件袋 + 线扣拆封）
-- `preview/design-win11.html`（本版，独立预览）
-- `preview/design-zine.html`（漫画风书脊：黑勾边 + 白底 + 灰二分）
-- `preview/library-entry.html`（原图书馆入口，3D 选书）
+你是访客。论坛里有人在发帖，也有人在回帖；有人在求救，有人只是在闲聊，而有些东西在第一遍读的时候看不出来。
 
-## 现在的状态
+- 单周目 20–40 分钟，可反复重玩，结局不止一个
+- 桌面和手机都能玩，不需要注册、不需要下载
+- 没有跳脸惊吓，没有音效，没有需要开声音的地方
+- 项目进度**暂定完结**（V1），剧情线已写到结局
 
-| 项目 | 状态 |
+## 怎么开始
+
+1. 打开 <https://galizhajidanbaofan.github.io/>，点桌面上的「异常档案」文件夹
+2. 五卷档案里只有 `file 01 奇闻异事` 能打开，其余四卷会提示「已锁定」
+3. 接下来就是一个论坛。读帖、点评论、用搜索框。
+4. 论坛顶部写着「维护中」，发帖和评论按钮会弹一段说明——**这不是 bug**，是设定
+5. 有些页面不会主动告诉你怎么进去；找不到路的时候，先想想这个站为什么长得这么旧
+
+## 玩法提示（不剧透）
+
+- **搜索框**是这个站最值得反复试的地方，它对某些词的反应不太一样
+- 论坛有「管理员登录」，口令藏在帖子正文里，不用猜
+- 列表里有些用户 ID 长得不太像 ID
+- 右上角可以切「风格·现代 / 风格·复古」：同一份内容，两套皮（复古那套是 Windows 98）
+- 进度存在你自己的浏览器里（`localStorage`），换设备、清缓存就没了
+- 建议别先找攻略：这站一共没多大，剧透掉就没什么可玩的了
+
+## 内容规模
+
+| 项目 | 数量 |
 | --- | --- |
-| 浏览帖子 / 评论 | 正常 |
-| 搜索（含关键词彩蛋） | 正常 |
-| 发帖 / 评论 | **已关闭**，点击会弹出"功能维护中"说明 |
-| 管理后台 | 改为**管理员模式**：口令登录后**只读**阅读隐藏档案 |
-| 双主题（现代 / 复古） | 正常，选择记在 localStorage |
-| 剧情线 | 未写完，后续继续补 |
+| 公开帖子 / 评论 | 15 篇 / 62 条 |
+| 随进度长出来的帖子 | 异常帖 6 篇 + 冒名帖 3 篇（最多 24 篇 / 69 条） |
+| 隐藏页 | 3 层，一层比一层不对劲 |
+| 结局 | 6 个（含 1 个坏结局） |
+| 皮肤 | 现代（纸面档案）/ 复古（Windows 98） |
 
-## 目录结构
+## 预览
+
+**论坛 · 现代皮肤**——米白纸面，像一份整理过的档案。
+
+![论坛 · 现代](docs/preview/02-forum-modern.png)
+
+**论坛 · 复古皮肤**——Windows 98 桌面，连任务栏都摆好了。
+
+![论坛 · 复古](docs/preview/04-forum-retro.png)
+
+**帖子详情**——正文是这套东西的主体，排版照着旧站长文的读感做。
+
+![帖子详情](docs/preview/03-post.png)
+
+**聊天室**——越往里走，页面越不像一个正常网站。
+
+![聊天室](docs/preview/05-chat.png)
+
+**手机竖屏**——单列排版，编号栏让位给标题。
+
+<img src="docs/preview/06-mobile.png" width="330" alt="手机竖屏">
+
+---
+
+<details>
+<summary><strong>⚠️ 剧透：六个结局与触发条件</strong>（想自己玩就别点）</summary>
+
+| 编号 | 结局 | 怎么来的 |
+| --- | --- | --- |
+| END 01 | 失联 | 聊天室里连说三次违禁词，通讯被强制中断 |
+| END 02 | 关站 | 读完管理员日志，选择关闭全站 |
+| END 03 | 折中的对策 | 选择封停账号，两个号一起封 |
+| END 04 | 识破 | 只封冒名的那个，保住真正求救的人 |
+| END 05 | 棋差一着 | 封号封错了对象 |
+| END 06 | 无辜的牺牲者 | 把唯一还在求救的人封掉 |
+
+</details>
+
+## 技术
+
+- 纯静态站点，托管在 GitHub Pages，**没有后端、没有构建步骤、没有 npm 依赖**
+- HTML + 原生 CSS + 原生 ES modules（`<script type="module">`）
+- 所有内容都是 `data/*.json`，前端读取后渲染；玩家进度与剧情状态存在 `localStorage` / `sessionStorage`
+- 两套皮肤共用一个 DOM，只换 CSS 变量与皮肤文件（复古的窗口标题栏靠 `data-window` 属性 → `::before{content:attr(...)}` 画出来）
+
+### 本地跑起来
+
+`js/` 用了 ES modules，双击 `index.html` 会被浏览器的 `file://` 策略拦下，需要起一个静态服务：
+
+```bash
+cd galizhajidanbaofan.github.io
+python -m http.server 8000
+# 打开 http://127.0.0.1:8000/
+```
+
+推送 `main` 分支即发布，不需要 Actions。
+
+## 说明
+
+- 站内人物、地名、机构、事件全部为虚构；论坛里的帖子与评论是本作的叙事文本，不是真实投稿。
+- 管理员口令只是页面上的门，不是安全边界：静态站的隐藏内容（`data/archive.json`）随时可以被人直接下载。这里放的是叙事彩蛋，不是真秘密。
+- 站点历史上有过一枚第三方数据服务的密钥随公开代码泄露，已经删除并在仓库里替换为占位符；如果那枚密钥还有效，请去后台吊销。
+- 这个仓库只为讲故事，不做社区：发帖与评论在 2026 年 10 月起关闭，页面保留表单，点击只弹维护说明。
+
+---
+
+<details>
+<summary><strong>🛠 维护者笔记</strong>（目录、线索表、状态键，含剧透）</summary>
+
+### 目录
 
 ```
 .
 ├── index.html            起点：异常事件档案馆（Win11 式桌面 → file 01 进论坛）
 ├── forum.html            论坛首页：帖子列表、搜索、发帖入口（维护提示）
-├── library.css           旧入口「异常事件图书馆」的皮肤（深藏青 + 金，不吃论坛两套主题）
-├── js/library.js         图书馆：卷宗登记、3D 取出、翻页过场（现仅备选稿引用）
 ├── post.html             帖子详情 + 评论区（只读）
 ├── admin.html            管理员模式 / 档案区
-├── 404.html              找不到页面
-├── secret.html           隐藏入口 · 一档「轻」：点文件夹 → 输入口令 2000
-├── archive.html          伪聊天窗口（江望舒）· 二档「中」
-├── dossier.html          档案条目 #7742「拟物」· 三档「重」
-├── office.html           江望舒的民俗研究室（官网外壳，从聊天关键词「工作」进入）
-├── map.html              恸山局部图（手绘等高线 SVG，从关键词「恸山」进入）
-├── ending-lost.html      坏结局 01「失联」（聊天室连说三次违禁词后触发）
+├── secret.html           隐藏页 一档「轻」：点文件夹 → 口令
+├── archive.html          聊天室 二档「中」
+├── dossier.html          档案条目 #7742 三档「重」
+├── office.html           民俗研究室（聊天关键词「工作」进入）
+├── map.html              恸山局部图（手绘等高线 SVG，「恸山」进入）
+├── ending-lost.html      坏结局 01「失联」
 ├── ending.html           结局页（?e=shutdown|compromise|insight|outplayed|innocent）
-├── log.html              管理员日志（只读，入口在管理员模式工具栏）
-├── duel.html             站务决策页（关站 / 封号，五条结局分支）
-├── ui.css                结构层 + 组件（布局、列表行、详情、弹窗、提示条、任务栏）
-├── hidden.css            隐藏页的「不该看到」皮肤：三档配色 + 扫描线 / 噪点 / 呼吸
-├── style-modern.css      主题：现代（米白纸面 / 编辑部排版）
-├── style-retro.css       主题：复古（Win98 桌面 + 窗口 + 任务栏 / 2000 年论坛）
-├── favicon.svg
-├── .nojekyll             让 Pages 不要跑 Jekyll，并允许发布 _archive/
+├── log.html              管理员日志（只读）
+├── duel.html             站务决策页（关站 / 封号）
+├── 404.html
+├── ui.css                结构层 + 组件（布局、列表行、详情、弹窗、任务栏）
+├── style-modern.css      皮肤：现代（米白纸面）
+├── style-retro.css       皮肤：复古（Win98 窗口 + 任务栏）
+├── hidden.css            隐藏页三档配色 + 扫描线 / 噪点
+├── library.css           旧入口「图书馆」皮肤（仅预览稿引用）
 ├── js/
-│   ├── main.js           入口：定主题 + 按 body[data-page] 装载页面
-│   ├── config.js         站点配置（名称、数据路径、维护文案、管理员凭据）
-│   ├── format.js         转义、时间解析与格式化、摘要截断
-│   ├── store.js          读取 data/*.json 并归一化
-│   ├── search.js         过滤、关键词高亮、彩蛋关键词
-│   ├── render.js         帖子 / 详情 / 评论的 HTML 渲染
-│   ├── theme.js          双主题切换
-│   ├── state.js          玩家进度（localStorage，只存选择不存正文）
-│   ├── auth.js           管理员口令校验（纯前端门槛）
-│   ├── ui.js             toast + 弹窗（openDialog / openModal）
-│   ├── hidden.js         隐藏页：冻结时钟、多出来的任务按钮、编号抖动、口令、聊天与三类线索
-│   ├── account.js        开篇谜题的账号门（卖号帖 → 账号 / 密码 → 聊天室）
-│   ├── lore.js           彩蛋关键词与触发词
-│   ├── endings.js        结局表（END 02–06）
-│   ├── ending.js         结局页渲染
-│   ├── log.js            管理员日志（骨架，正文待补）
-│   ├── duel.js           站务决策：关站 / 封号 / 五条结局分支
-│   ├── library.js        → 见上，图书馆
-│   └── pages/
-│       ├── home.js       首页逻辑
-│       ├── post.js       详情页逻辑
-│       └── admin.js      管理员模式逻辑
+│   ├── main.js           入口：定主题 + 按 body[data-page] 装载
+│   ├── config.js         站点配置、维护文案、管理员凭据、可疑 ID 表
+│   ├── store.js          读 data/*.json 并合并剧情帖（loadStoryPosts）
+│   ├── render.js         列表 / 详情 / 评论渲染；uidHtml() 管可疑 ID 的可点门槛
+│   ├── state.js          玩家进度（localStorage: qiwenyishi_progress）
+│   ├── hidden.js         隐藏页：冻结时钟、口令、聊天与三类线索
+│   ├── account.js        账号门（卖号帖 → 账号 / 密码 → 聊天室）
+│   ├── endings.js / ending.js / log.js / duel.js   结局、日志、站务决策
+│   ├── lore.js / search.js / format.js / ui.js / theme.js / auth.js
+│   └── pages/            home.js / post.js / admin.js
 ├── data/
-│   ├── posts.json        公开帖子（当前 15 篇 / 62 条评论）
-│   ├── posts-glitch.json 异常帖（拟物抄坏的残片，按 tier 逐步出现）
-│   ├── posts-late.json   假江望舒的帖子（聊天室进入 impostor 后才出现）
-│   └── archive.json      隐藏档案（当前为空，留给后续剧情）
+│   ├── posts.json        公开帖 15 篇 / 62 条评论
+│   ├── posts-glitch.json 异常帖 6 篇（按 tier 逐步出现）
+│   ├── posts-late.json   冒名帖 3 篇（进入 impostor 后出现）
+│   └── archive.json      隐藏档案（目前为空）
+├── docs/preview/         README 用的截图
 ├── tools/
-│   └── password-hash.html  本地生成 PBKDF2 口令凭据的小工具
-├── _archive/             停用的旧文件（script.js、style.css）
+│   ├── password-hash.html  生成 PBKDF2 口令凭据
+│   └── strip-hud.py        截图去除截图工具悬浮条的辅助脚本
+├── _archive/             停用的旧文件（原 script.js / style.css）
 └── _data-backup/         迁移前的 JSONBin 原始快照
 ```
 
-## 聊天室的三类线索
+### 聊天室的三类线索
 
-`archive.html` 的输入框是所有剧情分支的入口，命中的顺序是**违禁词 → 异常 → 背景补充**。
+`archive.html` 的输入框是所有分支的入口，命中顺序 **违禁词 → 异常 → 背景补充**。
 
 | 类 | 触发词（举例） | 结果 |
-|---|---|---|
-| 一类 · 背景补充 | `工作` / `职业`、`恸山`、`姜家寨`、`井`、`那东西` | 她讲一段设定；`工作` 给 `office.html` 链接，`恸山` 给 `map.html` 链接 |
-| 二类 · 异常 | `广告` / `AAA` / `道士`、`编号` / `序号`、`口口` / `方块` / `打码`、`ID` / `账号` / `同一个号`、`署名` / `两个号` / `🌕` | 每次新发现，井壁多一道刻痕，**并且论坛会多出 1–2 篇异常帖**；集齐三条后假江望舒入场（「有人用我的账号在发帖」），论坛顶部出现三篇署她名字的假帖 |
-| 三类 · 违禁词 | `拟物`、`仿造`、`收容`、`仿制品` | 她说的话被涂黑，系统提示「已自动屏蔽违禁词，请文明用语」；第二次后多出一枚红色「拟物」选项；第三次跳 `ending-lost.html` |
+| --- | --- | --- |
+| 背景补充 | `工作`、`恸山`、`姜家寨`、`井`、`那东西` | 讲一段设定；`工作` 给 `office.html`，`恸山` 给 `map.html` |
+| 异常 | `广告`/`AAA`/`道士`、`编号`、`口口`/`打码`、`ID`/`账号`、`署名`/`🌕` | 井壁多一道刻痕，论坛多出 1–2 篇异常帖；集齐三条后冒名者入场 |
+| 违禁词 | `拟物`、`仿造`、`收容`、`仿制品` | 涂黑 + 「已自动屏蔽违禁词」；第三次触发 `ending-lost.html` |
 
-状态存在 `sessionStorage.chat_state`（`{ redact, anomalies, impostor }`），刷新不丢，关掉标签页重来。加/改线索都在 `js/hidden.js` 顶部的 `CHAT` 常量里，不用动逻辑。
+状态存在 `sessionStorage.chat_state`（`{ redact, anomalies, impostor }`）。触发词全在 `js/hidden.js` 顶部的 `CHAT` 常量里，改线索不用动逻辑。
 
-**论坛里那些异常 ID 是可点的，但要先过门槛**：必须①进过聊天室、②问过她一句 `怎么回事`。两个印记存在 `localStorage` 的 `qiwenyishi_progress.flags`（`chat.entered` / `chat.briefed`）里，换个标签页也还在。没满足之前，`js/render.js` 的 `uidHtml()` 把可疑 ID 当普通文字渲染（`<span>`，不加粗、没有虚线下划线），点了也不会跳；满足之后才变成按钮，点下去回 `archive.html?probe=<id>`，她会把这个 ID 从头念一遍。`js/main.js` 里的点击处理还留了一道同样的判断，防止缓存里的旧 DOM 绕过去。
+### 可疑 ID 的门槛
 
-**帖子会随进度长出来**：`js/store.js` 的 `loadStoryPosts()` 会把 `data/posts.json` 与两份剧情数据合起来——`data/posts-glitch.json`（每条异常的残片，`tier` 越小越早出现；时间被写坏的那篇会显示「时间未知」，排到最后）和 `data/posts-late.json`（假她写的三篇，评论区里用同一个昵称、另一个 ID 反驳）。所以「帖子数从 15 变 17、变 24」是设计好的，不是 bug；没有聊天室进度时这两份文件一篇都不出现。
+论坛里 `CONFIG.clues.suspectUids` 里的 ID 是可点的，但必须先①进过聊天室、②问过一句 `怎么回事`。两个印记存在 `qiwenyishi_progress.flags`（`chat.entered` / `chat.briefed`）。没满足时 `render.js` 的 `uidHtml()` 直接渲染成普通 `<span>`，`main.js` 里还有一道同样的判断兜底。
 
-## 双主题是怎么做的
+### 帖子的层叠
 
-只有**一份 HTML**，两套主题只换「变量 + 皮肤」，结构不重复：
+`store.js` 的 `loadStoryPosts()` 把 `posts.json` 与 `posts-glitch.json`、`posts-late.json` 合并：前者按 `tier` 逐步出现（时间被写坏的那篇会显示「时间未知」并排到最后），后者在聊天室进入 impostor 后出现。所以「帖子数从 15 变 17、变 24」是设计好的。
 
-- `ui.css` 定布局与组件（`.shell` `.mast` `.feed` `.row` `.detail` `.ui-modal` `.taskbar` …），
-  颜色字体全走变量，`body[data-theme]` 不参与样式判断；
-- `style-modern.css` / `style-retro.css` 只负责变量与皮肤；
-- 复古主题要画「窗口」，靠的是元素上的 `data-window="标题"` 属性：
-  `style-retro.css` 用 `[data-window]::before{content:attr(data-window)}` 画标题栏、
-  `::after` 画右上角按钮，`style-modern.css` 再用 `content:none` 关掉。
-  所以给一个区块加窗口外观 = 加一个属性，不用改结构；
-- `.desktop-icons`、`.taskbar` 只在复古主题下 `display:flex`，现代主题里是 `display:none`。
+### 添加内容
 
-窄屏（≤600px）两套主题都退化成单列：复古隐藏桌面图标、压缩任务栏、列表编号栏让位给标题。
+- **公开帖**：往 `data/posts.json` 的 `posts` 里加一条，`id` 用字符串毫秒时间戳，时间写带时区的 ISO 8601（`+08:00`），`editTime` 有值就显示「(已编辑)」。
+- **隐藏档案**：同样的结构写进 `data/archive.json`，只能通过 `post.html?id=…&from=archive` 且先进管理员模式打开。
+- **管理员口令**：本地打开 `tools/password-hash.html` 生成凭据，粘进 `js/config.js` 的 `admin.credentials`（支持 `pbkdf2` 与旧 `sha256` 并存）。
+- **维护开关**：文案在 `js/config.js` 的 `maintenance`；真要开放发帖得接后端，纯静态做不到。
 
-## 隐藏页的三档反差
+### 已知取舍
 
-`secret.html` → `archive.html` → `dossier.html` 越往里越不对劲，靠 `<body data-hidden="light|mid|heavy">` 分档，
-`hidden.css` 只覆盖变量与少量皮肤，不改结构：
+- 管理员模式不是安全边界，`data/archive.json` 是公开文件。
+- 原 `script.js` 里曾明文写着 JSONBin Master Key，已删除并替换为占位符；若仍有效请吊销。
+- 老帖子里的 `■□` 是原样文本，还没有做成可交互的打码效果；`js/lore.js` 的彩蛋词表也没和它联动。
 
-| 档位 | 页面 | 现代主题 | 复古主题 |
-|---|---|---|---|
-| 轻 | `secret.html` | 纸色偏黄、锈红强调 | 桌面青绿压暗一档、标题栏转灰 |
-| 中 | `archive.html` | 墨黑纸 + 锈红，聊天记录像老终端 | 暗酒红桌面、标题栏酒红、聊天记录白底内凹 |
-| 重 | `dossier.html` | 近黑、锈红、噪点最重 | 窗口内部全黑、只剩标题栏还是系统色 |
-
-反差手段只有三类：**配色反转**、**系统症状**、**动效**。
-
-- 系统症状（`js/hidden.js`）：任务栏时钟冻结在 `00:00`；任务栏上多一个没有任何说明的 `?` 按钮；
-  档案编号每隔 5–11 秒抖动一下（`jitterNumber`，取数字位的 34% 改成相邻数字，620ms 后恢复）。
-  这些症状在常态页面不会出现——`js/main.js` 的时钟每 20 秒刷新一次，`hidden.js` 不启动定时器。
-- 动效：扫描线 / 噪点 / 极轻的整块闪烁（`@keyframes hiddenFlicker`），
-  全部挂在 `@media (prefers-reduced-motion: reduce)` 之下，系统开了「减少动态效果」就整组关掉。
-- 刻意**不加**任何警告文案：不对劲要靠玩家自己看出来，不能靠一行字告诉他们。
-
-## 玩家进度（localStorage）
-
-`js/state.js` 把玩家的选择存在 `localStorage['qiwenyishi_progress']`：
-
-```js
-{ version: 1, updatedAt: 1761888000000, choices: { duel: 'save_real' }, flags: {}, visited: [] }
-```
-
-- `recordChoice(key, value)` 记一次选择，`getChoice(key)` 读回来，`hasFlag/setFlags` 记剧情标记；
-- 只存选择与标记，**不存正文、不存口令**；读写都包了 try/catch，隐私模式下静默失败；
-- 目前还没人调用它，留给后续「两个江望舒对峙」的结局判定。
-
-## 本地预览
-
-`js/` 用了 ES modules，直接双击 `index.html` 会被浏览器拦（file:// 不允许 import），
-必须起一个静态服务：
-
-```bash
-cd galizhajidanbaofan.github.io
-python -m http.server 8000
-# 浏览器打开 http://127.0.0.1:8000/
-```
-
-## 内容怎么维护
-
-### 加一篇公开帖子
-
-编辑 `data/posts.json`，往 `posts` 数组里加一条：
-
-```json
-{
-  "id": "1790000000000",
-  "userId": "usr_abc123",
-  "author": "🌕",
-  "title": "帖子标题",
-  "content": "正文，支持换行（渲染时按原文保留）",
-  "time": "2026-10-31T14:30:00+08:00",
-  "editTime": null,
-  "comments": [
-    {
-      "id": "1790000000001",
-      "floor": 1,
-      "author": "路人",
-      "content": "评论内容",
-      "time": "2026-10-31T15:02:00+08:00"
-    }
-  ]
-}
-```
-
-要点：
-
-- `id` 用字符串形式的毫秒时间戳即可，全站唯一。
-- 时间统一写带时区的 ISO 8601（`+08:00`），前端按本地时区显示成 `2026/10/31 14:30:00`。
-- 列表按发布时间倒序，前端不做排序以外的任何处理。
-- `editTime` 有值就在标题后显示「(已编辑)」。
-
-### 加一条隐藏档案
-
-同样的结构写进 `data/archive.json` 的 `posts` 数组。
-这类条目只能通过 `post.html?id=...&from=archive` 打开，并且必须先进入管理员模式。
-
-### 改管理员口令
-
-1. 本地打开 `tools/password-hash.html`（或线上同名页面），输入新口令，点「生成凭据」；
-2. 把输出的 JSON 粘进 `js/config.js` 的 `admin.credentials`，并删掉旧的 `sha256` 条目。
-
-`credentials` 支持两种类型，可以并存：
-
-```js
-credentials: [
-  { type: 'pbkdf2', salt: '...', iterations: 150000, hash: '...' }, // 推荐
-  { type: 'sha256', hash: '...' }                                    // 旧格式，兼容用
-]
-```
-
-### 维护开关
-
-发帖 / 评论的弹窗文案在 `js/config.js`：
-
-```js
-maintenance: {
-  title: '功能维护中',
-  message: '本站因维护，已关闭发帖与评论功能。\n\n已有内容仍可正常阅读。',
-  confirmText: '知道了'
-}
-```
-
-想把发帖功能真的打开，需要接一个能写数据的后端（或退回 JSONBin 那类托管），
-纯静态站做不到。
-
-## 部署
-
-推送到 `main` 分支即可，GitHub Pages 会自动发布仓库根目录。
-不需要构建步骤，也不需要 Actions。
-
-## 已知取舍（重要）
-
-- **管理员模式不是安全边界**。静态站没有服务端，`data/archive.json` 是公开可下载的文件，
-  口令只挡页面上的门，不挡直接抓文件。所以隐藏内容适合放"叙事彩蛋"，不适合放真秘密。
-- **旧的 JSONBin 数据源已彻底停用**。原 `script.js` 里以明文形式写了一枚 JSONBin Master Key，
-  它曾随公开站点暴露，等于全网可读写、甚至清空整份数据。迁移时该文件已归档到
-  `_archive/script.js` 并把 key 换成了占位符。**如果那枚 key 还在 JSONBin 后台生效，请务必吊销。**
-- `_archive/script.js`、`_archive/style.css` 只是历史留档，页面已不再引用。
-
-## 后续待办
-
-- [ ] 把剧情线写完整（隐藏档案 `data/archive.json` 目前是空壳）
-- [ ] 管理员口令换成 PBKDF2（工具已就位，需要你亲自生成）
-- [ ] 搜索彩蛋的关键词表仍然写在 `js/lore.js`，跟帖子的 `■□` 遮蔽还没联动
-- [ ] 老帖子里的 `■□` 遮蔽字符目前是原样文本，尚未做成可交互的`打码`效果
-- [ ] 拟物的"瑕疵"线索还没埋进 UI 元信息（编号、ID、编辑时间、状态行都可做手脚）
+</details>
